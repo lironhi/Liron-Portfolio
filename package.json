@@ -13,6 +13,7 @@
     "contentlayer": "contentlayer build"
   },
   "dependencies": {
+    "@emotion/is-prop-valid": "^1.2.1",
     "@hookform/resolvers": "3.3.4",
     "@next/mdx": "^15.0.0",
     "@vercel/og": "^0.6.2",
