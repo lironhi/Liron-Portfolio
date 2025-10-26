@@ -354,9 +354,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 If you have questions or need help:
 
 - **Issues**: Create an issue on GitHub
-- **Email**: liron.himbert@example.com
+- **Email**: liron.benharrouch@gmail.com
 - **LinkedIn**: [linkedin.com/in/lironhimbert](https://linkedin.com/in/lironhimbert)
 
 ---
 
-Built with ❤️ by [Liron Himbert](https://lironhimbert.dev)
+Built by [Liron Himbert](https://lironhimbert.dev)
