@@ -1,0 +1,81 @@
+[
+  {
+    "id": "it-team-leader-callisto",
+    "company": "Callisto",
+    "position": "IT & Software Solutions Developer / Team Leader IT",
+    "startDate": "2024-08-01",
+    "endDate": null,
+    "location": "Ashkelon, Israel",
+    "type": "work",
+    "description": "Leading the IT team, managing infrastructure and software development across six international call centers. Designing and implementing automation pipelines and backend services while experimenting with cutting-edge AI agent technologies.",
+    "achievements": [
+      "Led IT team managing infrastructure across 6 international call centers",
+      "Designed and implemented automation pipelines using Python, SQL, and Google Sheets for data extraction and reporting",
+      "Built and maintained backend services integrating with APIs and distributed databases",
+      "Experimented with LangGraph and MCP for LLM-based agent prototypes to automate data management and customer support tasks",
+      "Oversaw system performance, servers, and databases, ensuring high availability and security"
+    ],
+    "technologies": [
+      "Python",
+      "SQL",
+      "LangGraph",
+      "MCP",
+      "Google Sheets API",
+      "Distributed Databases",
+      "Backend Development",
+      "System Administration"
+    ]
+  },
+  {
+    "id": "instructor-codii",
+    "company": "Codii E-Programming School",
+    "position": "Programmer Instructor",
+    "startDate": "2022-09-01",
+    "endDate": "2024-08-31",
+    "location": "Netanya, Israel",
+    "type": "work",
+    "description": "Developed and delivered comprehensive programming lessons to over 100 students while building a full-stack CRM system. Established strategic partnerships with town halls to support French new immigrants.",
+    "achievements": [
+      "Developed and delivered lessons in C, C++, Java, and Python to over 100 students",
+      "Built a comprehensive CRM system using Node.js (backend) and React (frontend) with Docker for containerization",
+      "Implemented security measures against injection attacks, improving system security by 30%",
+      "Established partnerships with various town halls for French new immigrants, enhancing community outreach",
+      "Created custom teaching materials and exercises adapted to different skill levels"
+    ],
+    "technologies": [
+      "Node.js",
+      "React",
+      "Docker",
+      "C",
+      "C++",
+      "Java",
+      "Python",
+      "MySQL",
+      "Security Best Practices",
+      "Git"
+    ]
+  },
+  {
+    "id": "military-service-kfir",
+    "company": "Kfir Brigade, Nahshon Battalion",
+    "position": "Fighter & Team Leader",
+    "startDate": "2013-12-01",
+    "endDate": "2016-06-30",
+    "location": "Israel",
+    "type": "volunteer",
+    "description": "Served as a combat soldier and team leader in the Kfir Brigade. Successfully completed the Medics Course and demonstrated strong leadership skills under high-pressure situations.",
+    "achievements": [
+      "Successfully completed the Medics Course and demonstrated proficiency in managing stressful situations",
+      "Led a team of 8 soldiers with responsibility for their training and welfare",
+      "Received certificates of excellence from Brigade and Battalion Generals",
+      "Developed strong leadership, teamwork, and decision-making skills in challenging environments"
+    ],
+    "technologies": [
+      "Leadership",
+      "Team Management",
+      "Crisis Management",
+      "Medical Training",
+      "Tactical Operations"
+    ]
+  }
+]

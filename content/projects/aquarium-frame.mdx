@@ -1,0 +1,583 @@
+---
+title: "Aquarium Frame - Design Patterns in Action"
+summary: "Interactive aquarium simulation in Java demonstrating design patterns, multi-threading, and object-oriented programming principles."
+year: 2023
+featured: true
+status: "completed"
+tags:
+  - id: "java"
+    name: "Java"
+    color: "#007396"
+  - id: "design-patterns"
+    name: "Design Patterns"
+    color: "#FF6B6B"
+  - id: "oop"
+    name: "OOP"
+    color: "#4CAF50"
+  - id: "simulation"
+    name: "Simulation"
+    color: "#9C27B0"
+  - id: "multithreading"
+    name: "Multithreading"
+    color: "#FF9800"
+links:
+  - label: "GitHub Repository"
+    url: "https://github.com/lironhi/Aquarium-Frame"
+    type: "repo"
+highlights:
+  - "Real-time aquarium simulation with animated fish and plants"
+  - "Implements 8+ design patterns (Factory, Singleton, Observer, Memento, Builder, etc.)"
+  - "Multi-threaded architecture for concurrent fish movement"
+  - "Interactive GUI with pause/resume, speed control, and state management"
+updatedAt: "2023-12-05"
+createdAt: "2023-09-01"
+---
+
+# Aquarium Frame - Design Patterns in Action
+
+An interactive Java Swing application that simulates a living aquarium ecosystem, built to demonstrate software design patterns, multi-threading, and object-oriented programming principles in a visual and engaging way.
+
+## 🎯 Project Overview
+
+This project creates a realistic aquarium simulation where various fish species swim around, plants grow, and the user can interact with the environment. It serves as a comprehensive educational resource for understanding how design patterns work together in a complex system.
+
+## 🏗️ Architecture & Design Patterns
+
+### 1. **Factory Pattern** - Creating Marine Life
+```java
+public abstract class MarineLifeFactory {
+    public abstract Fish createFish(String type, Color color, int size, int speed);
+    public abstract Plant createPlant(String type, int height);
+}
+
+public class TropicalFactory extends MarineLifeFactory {
+    @Override
+    public Fish createFish(String type, Color color, int size, int speed) {
+        switch(type.toLowerCase()) {
+            case "clownfish":
+                return new ClownFish(color, size, speed);
+            case "angelfish":
+                return new AngelFish(color, size, speed);
+            case "tang":
+                return new Tang(color, size, speed);
+            default:
+                throw new IllegalArgumentException("Unknown fish type: " + type);
+        }
+    }
+
+    @Override
+    public Plant createPlant(String type, int height) {
+        switch(type.toLowerCase()) {
+            case "seaweed":
+                return new Seaweed(height);
+            case "coral":
+                return new Coral(height);
+            case "anemone":
+                return new Anemone(height);
+            default:
+                throw new IllegalArgumentException("Unknown plant type: " + type);
+        }
+    }
+}
+```
+**Why**: Provides flexible creation of different marine life types without tight coupling to concrete classes.
+
+### 2. **Singleton Pattern** - Aquarium Manager
+```java
+public class AquariumManager {
+    private static AquariumManager instance;
+    private List<Fish> fishList;
+    private List<Plant> plantList;
+    private AquariumState state;
+    private int totalFood;
+
+    private AquariumManager() {
+        fishList = Collections.synchronizedList(new ArrayList<>());
+        plantList = new ArrayList<>();
+        state = AquariumState.RUNNING;
+        totalFood = 0;
+    }
+
+    public static synchronized AquariumManager getInstance() {
+        if (instance == null) {
+            instance = new AquariumManager();
+        }
+        return instance;
+    }
+
+    public synchronized void addFish(Fish fish) {
+        fishList.add(fish);
+        notifyObservers(new AquariumEvent(EventType.FISH_ADDED, fish));
+    }
+
+    public synchronized void removeFish(Fish fish) {
+        fishList.remove(fish);
+        fish.stop(); // Stop the fish's thread
+        notifyObservers(new AquariumEvent(EventType.FISH_REMOVED, fish));
+    }
+
+    public synchronized List<Fish> getFishList() {
+        return new ArrayList<>(fishList); // Return defensive copy
+    }
+}
+```
+**Why**: Ensures a single point of control for the entire aquarium ecosystem.
+
+### 3. **Observer Pattern** - Event Notifications
+```java
+public interface AquariumObserver {
+    void onFishAdded(Fish fish);
+    void onFishRemoved(Fish fish);
+    void onFoodAdded(int x, int y);
+    void onStateChanged(AquariumState state);
+}
+
+public class AquariumPanel extends JPanel implements AquariumObserver {
+    private AquariumManager manager;
+
+    public AquariumPanel() {
+        this.manager = AquariumManager.getInstance();
+        this.manager.addObserver(this);
+    }
+
+    @Override
+    public void onFishAdded(Fish fish) {
+        System.out.println("New fish added: " + fish.getName());
+        repaint(); // Redraw the aquarium
+    }
+
+    @Override
+    public void onFoodAdded(int x, int y) {
+        // Create food particle animation
+        FoodParticle food = new FoodParticle(x, y);
+        food.start();
+        repaint();
+    }
+
+    @Override
+    public void onStateChanged(AquariumState state) {
+        if (state == AquariumState.PAUSED) {
+            pauseAllFish();
+        } else if (state == AquariumState.RUNNING) {
+            resumeAllFish();
+        }
+    }
+}
+```
+**Why**: Decouples the aquarium logic from the UI, enabling flexible event handling and updates.
+
+### 4. **Memento Pattern** - Save/Load State
+```java
+public class AquariumMemento {
+    private final List<FishData> fishDataList;
+    private final List<PlantData> plantDataList;
+    private final int totalFood;
+    private final long timestamp;
+
+    public AquariumMemento(AquariumManager manager) {
+        this.fishDataList = new ArrayList<>();
+        for (Fish fish : manager.getFishList()) {
+            fishDataList.add(new FishData(
+                fish.getType(),
+                fish.getX(),
+                fish.getY(),
+                fish.getColor(),
+                fish.getSize(),
+                fish.getSpeed()
+            ));
+        }
+
+        this.plantDataList = new ArrayList<>();
+        for (Plant plant : manager.getPlantList()) {
+            plantDataList.add(new PlantData(
+                plant.getType(),
+                plant.getX(),
+                plant.getHeight()
+            ));
+        }
+
+        this.totalFood = manager.getTotalFood();
+        this.timestamp = System.currentTimeMillis();
+    }
+
+    public void restore(AquariumManager manager) {
+        manager.clear();
+
+        MarineLifeFactory factory = new TropicalFactory();
+
+        for (FishData data : fishDataList) {
+            Fish fish = factory.createFish(
+                data.getType(),
+                data.getColor(),
+                data.getSize(),
+                data.getSpeed()
+            );
+            fish.setPosition(data.getX(), data.getY());
+            manager.addFish(fish);
+        }
+
+        for (PlantData data : plantDataList) {
+            Plant plant = factory.createPlant(data.getType(), data.getHeight());
+            plant.setPosition(data.getX());
+            manager.addPlant(plant);
+        }
+
+        manager.setTotalFood(totalFood);
+    }
+}
+
+public class AquariumCaretaker {
+    private final Stack<AquariumMemento> history = new Stack<>();
+    private final int maxHistory = 10;
+
+    public void save(AquariumManager manager) {
+        if (history.size() >= maxHistory) {
+            history.remove(0); // Remove oldest state
+        }
+        history.push(new AquariumMemento(manager));
+    }
+
+    public void undo(AquariumManager manager) {
+        if (!history.isEmpty()) {
+            AquariumMemento memento = history.pop();
+            memento.restore(manager);
+        }
+    }
+}
+```
+**Why**: Allows users to save and restore aquarium states without exposing internal structure.
+
+### 5. **Builder Pattern** - Complex Fish Construction
+```java
+public class FishBuilder {
+    private String name;
+    private Color color = Color.BLUE;
+    private int size = 50;
+    private int speed = 2;
+    private int hunger = 50;
+    private boolean isFriendly = true;
+    private SwimBehavior swimBehavior;
+    private EatingBehavior eatingBehavior;
+
+    public FishBuilder setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public FishBuilder setColor(Color color) {
+        this.color = color;
+        return this;
+    }
+
+    public FishBuilder setSize(int size) {
+        if (size < 10 || size > 200) {
+            throw new IllegalArgumentException("Size must be between 10 and 200");
+        }
+        this.size = size;
+        return this;
+    }
+
+    public FishBuilder setSpeed(int speed) {
+        if (speed < 1 || speed > 10) {
+            throw new IllegalArgumentException("Speed must be between 1 and 10");
+        }
+        this.speed = speed;
+        return this;
+    }
+
+    public FishBuilder setSwimBehavior(SwimBehavior behavior) {
+        this.swimBehavior = behavior;
+        return this;
+    }
+
+    public FishBuilder setEatingBehavior(EatingBehavior behavior) {
+        this.eatingBehavior = behavior;
+        return this;
+    }
+
+    public Fish build() {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalStateException("Fish must have a name");
+        }
+
+        // Set default behaviors if not specified
+        if (swimBehavior == null) {
+            swimBehavior = new RandomSwimBehavior();
+        }
+        if (eatingBehavior == null) {
+            eatingBehavior = new StandardEatingBehavior();
+        }
+
+        return new Fish(name, color, size, speed, hunger, isFriendly,
+                       swimBehavior, eatingBehavior);
+    }
+}
+
+// Usage
+Fish nemo = new FishBuilder()
+    .setName("Nemo")
+    .setColor(Color.ORANGE)
+    .setSize(40)
+    .setSpeed(3)
+    .setSwimBehavior(new ZigZagSwimBehavior())
+    .build();
+```
+**Why**: Simplifies creation of complex fish objects with many optional parameters.
+
+### 6. **Strategy Pattern** - Fish Behaviors
+```java
+public interface SwimBehavior {
+    Point getNextPosition(Fish fish, Dimension aquariumSize);
+}
+
+public class RandomSwimBehavior implements SwimBehavior {
+    private Random random = new Random();
+
+    @Override
+    public Point getNextPosition(Fish fish, Dimension aquariumSize) {
+        int dx = random.nextInt(3) - 1; // -1, 0, or 1
+        int dy = random.nextInt(3) - 1;
+
+        int newX = fish.getX() + (dx * fish.getSpeed());
+        int newY = fish.getY() + (dy * fish.getSpeed());
+
+        // Keep fish within bounds
+        newX = Math.max(0, Math.min(newX, aquariumSize.width - fish.getSize()));
+        newY = Math.max(0, Math.min(newY, aquariumSize.height - fish.getSize()));
+
+        return new Point(newX, newY);
+    }
+}
+
+public class ZigZagSwimBehavior implements SwimBehavior {
+    private int direction = 1;
+    private int cycles = 0;
+
+    @Override
+    public Point getNextPosition(Fish fish, Dimension aquariumSize) {
+        int newX = fish.getX() + (fish.getSpeed() * direction);
+        int newY = fish.getY() + (int)(Math.sin(cycles * 0.1) * 3);
+
+        cycles++;
+
+        // Bounce off walls
+        if (newX <= 0 || newX >= aquariumSize.width - fish.getSize()) {
+            direction *= -1;
+        }
+
+        return new Point(newX, newY);
+    }
+}
+
+public class CircularSwimBehavior implements SwimBehavior {
+    private double angle = 0;
+    private Point center;
+    private int radius;
+
+    public CircularSwimBehavior(Point center, int radius) {
+        this.center = center;
+        this.radius = radius;
+    }
+
+    @Override
+    public Point getNextPosition(Fish fish, Dimension aquariumSize) {
+        angle += 0.05 * fish.getSpeed();
+
+        int newX = center.x + (int)(radius * Math.cos(angle));
+        int newY = center.y + (int)(radius * Math.sin(angle));
+
+        return new Point(newX, newY);
+    }
+}
+```
+**Why**: Different swimming patterns can be assigned and changed dynamically at runtime.
+
+### 7. **Decorator Pattern** - Enhanced Fish Features
+```java
+public abstract class FishDecorator extends Fish {
+    protected Fish decoratedFish;
+
+    public FishDecorator(Fish fish) {
+        super(fish.getName(), fish.getColor(), fish.getSize(),
+              fish.getSpeed(), fish.getHunger(), fish.isFriendly(),
+              fish.getSwimBehavior(), fish.getEatingBehavior());
+        this.decoratedFish = fish;
+    }
+
+    @Override
+    public void draw(Graphics g) {
+        decoratedFish.draw(g);
+    }
+}
+
+public class GlowingFish extends FishDecorator {
+    private Color glowColor;
+    private int glowRadius;
+
+    public GlowingFish(Fish fish, Color glowColor, int glowRadius) {
+        super(fish);
+        this.glowColor = glowColor;
+        this.glowRadius = glowRadius;
+    }
+
+    @Override
+    public void draw(Graphics g) {
+        // Draw glow effect
+        Graphics2D g2d = (Graphics2D) g;
+        RadialGradientPaint gradient = new RadialGradientPaint(
+            decoratedFish.getX() + decoratedFish.getSize() / 2,
+            decoratedFish.getY() + decoratedFish.getSize() / 2,
+            glowRadius,
+            new float[]{0f, 1f},
+            new Color[]{glowColor, new Color(glowColor.getRed(),
+                                             glowColor.getGreen(),
+                                             glowColor.getBlue(), 0)}
+        );
+        g2d.setPaint(gradient);
+        g2d.fillOval(
+            decoratedFish.getX() - glowRadius / 2,
+            decoratedFish.getY() - glowRadius / 2,
+            decoratedFish.getSize() + glowRadius,
+            decoratedFish.getSize() + glowRadius
+        );
+
+        // Draw the fish
+        super.draw(g);
+    }
+}
+
+public class SpecialEffectFish extends FishDecorator {
+    private List<Particle> particles = new ArrayList<>();
+
+    public SpecialEffectFish(Fish fish) {
+        super(fish);
+    }
+
+    @Override
+    public void draw(Graphics g) {
+        // Draw trail particles
+        for (Particle p : particles) {
+            p.draw(g);
+            p.update();
+        }
+
+        // Add new particle
+        particles.add(new Particle(decoratedFish.getX(), decoratedFish.getY()));
+
+        // Remove old particles
+        particles.removeIf(p -> p.getAge() > 50);
+
+        // Draw the fish
+        super.draw(g);
+    }
+}
+```
+**Why**: Add visual effects and features to fish without modifying the base Fish class.
+
+## 🎮 Multi-Threading Implementation
+
+```java
+public class Fish extends Thread {
+    private volatile boolean running = true;
+    private volatile boolean paused = false;
+    private final Object pauseLock = new Object();
+
+    @Override
+    public void run() {
+        while (running) {
+            synchronized (pauseLock) {
+                while (paused) {
+                    try {
+                        pauseLock.wait();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        return;
+                    }
+                }
+            }
+
+            // Update fish position
+            Point newPos = swimBehavior.getNextPosition(this, aquariumSize);
+            setPosition(newPos.x, newPos.y);
+
+            // Update hunger
+            hunger--;
+            if (hunger <= 0) {
+                lookForFood();
+            }
+
+            // Notify observers
+            notifyPositionChanged();
+
+            // Sleep based on speed
+            try {
+                Thread.sleep(100 / speed);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return;
+            }
+        }
+    }
+
+    public void pauseSwimming() {
+        paused = true;
+    }
+
+    public void resumeSwimming() {
+        synchronized (pauseLock) {
+            paused = false;
+            pauseLock.notifyAll();
+        }
+    }
+
+    public void stopSwimming() {
+        running = false;
+        resumeSwimming(); // Wake up if paused
+    }
+}
+```
+
+## 🎨 Interactive GUI Features
+
+- **Add Fish**: Click button to add new fish with random properties
+- **Feed Fish**: Click aquarium to drop food particles
+- **Pause/Resume**: Control animation
+- **Speed Control**: Adjust simulation speed
+- **Save/Load**: Save aquarium state and restore it later
+- **Remove Fish**: Click on a fish to remove it
+- **Statistics Panel**: Display fish count, food count, etc.
+
+## 📊 Technical Achievements
+
+- **Thread-safe operations** with synchronized collections
+- **Smooth animations** with double buffering
+- **Collision detection** between fish
+- **Realistic physics** for food falling
+- **Memory efficient** with proper resource management
+- **Extensible architecture** for adding new species
+
+## 📚 What I Learned
+
+1. **Design Patterns** - How they solve real problems in complex systems
+2. **Multi-threading** - Managing concurrent fish movements safely
+3. **Swing GUI** - Creating interactive and responsive interfaces
+4. **Thread Synchronization** - Using locks, wait/notify for coordination
+5. **Object-Oriented Design** - SOLID principles in practice
+6. **Performance Optimization** - Efficient rendering and animation
+
+## 🔮 Future Enhancements
+
+1. **More Species** - Add sharks, jellyfish, turtles
+2. **Breeding System** - Fish can reproduce
+3. **Ecosystem Simulation** - Food chain dynamics
+4. **3D Graphics** - Upgrade to JavaFX 3D
+5. **AI Behavior** - Neural networks for fish intelligence
+6. **Multiplayer** - Network aquariums
+
+---
+
+**Tech Stack**: Java, Swing, AWT, Multi-threading
+
+**Domain**: Simulation, GUI Development, Design Patterns
+
+**Educational Value**: Perfect for learning design patterns and concurrent programming

@@ -1,0 +1,681 @@
+---
+title: "WeddingEvaLiron - Wedding Website"
+summary: "Elegant and personalized wedding website built with HTML, SCSS, and JavaScript featuring RSVP management and event details."
+year: 2023
+featured: false
+status: "completed"
+tags:
+  - id: "html"
+    name: "HTML5"
+    color: "#E34F26"
+  - id: "scss"
+    name: "SCSS"
+    color: "#CC6699"
+  - id: "javascript"
+    name: "JavaScript"
+    color: "#F7DF1E"
+  - id: "frontend"
+    name: "Frontend"
+    color: "#61DAFB"
+  - id: "responsive"
+    name: "Responsive Design"
+    color: "#00D9FF"
+links:
+  - label: "GitHub Repository"
+    url: "https://github.com/lironhi/weddingevaliron"
+    type: "repo"
+highlights:
+  - "Custom-designed wedding website with elegant animations"
+  - "RSVP form with validation and email integration"
+  - "Responsive design optimized for mobile and desktop"
+  - "Photo gallery with lightbox functionality"
+updatedAt: "2023-10-01"
+createdAt: "2023-07-01"
+---
+
+# WeddingEvaLiron - Wedding Website
+
+A beautiful and personalized wedding website built from scratch to share our special day with family and friends, featuring event details, RSVP management, photo galleries, and an elegant design.
+
+## 🎯 Project Overview
+
+This project was a personal endeavor to create a unique wedding website that reflects our style and provides guests with all the information they need. Built with modern web technologies and attention to detail, it showcases both technical skills and design sensibility.
+
+## ✨ Key Features
+
+### 1. Hero Section with Countdown
+```html
+<section class="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1 class="couple-names">Eva & Liron</h1>
+    <p class="wedding-date">October 15, 2023</p>
+    <div class="countdown" id="countdown">
+      <div class="countdown-item">
+        <span class="countdown-value" id="days">00</span>
+        <span class="countdown-label">Days</span>
+      </div>
+      <div class="countdown-item">
+        <span class="countdown-value" id="hours">00</span>
+        <span class="countdown-label">Hours</span>
+      </div>
+      <div class="countdown-item">
+        <span class="countdown-value" id="minutes">00</span>
+        <span class="countdown-label">Minutes</span>
+      </div>
+      <div class="countdown-item">
+        <span class="countdown-value" id="seconds">00</span>
+        <span class="countdown-label">Seconds</span>
+      </div>
+    </div>
+  </div>
+</section>
+```
+
+```javascript
+// Countdown timer
+function updateCountdown() {
+  const weddingDate = new Date('2023-10-15T18:00:00').getTime();
+  const now = new Date().getTime();
+  const distance = weddingDate - now;
+
+  if (distance < 0) {
+    document.getElementById('countdown').innerHTML =
+      '<p class="celebration">We\'re married! 🎉</p>';
+    return;
+  }
+
+  const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  document.getElementById('days').textContent = String(days).padStart(2, '0');
+  document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+  document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+  document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+}
+
+// Update every second
+setInterval(updateCountdown, 1000);
+updateCountdown();
+```
+
+### 2. RSVP Form with Validation
+```html
+<section class="rsvp" id="rsvp">
+  <div class="container">
+    <h2 class="section-title">RSVP</h2>
+    <p class="section-subtitle">Please let us know if you can join us</p>
+
+    <form id="rsvp-form" class="rsvp-form">
+      <div class="form-group">
+        <label for="name">Full Name *</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          required
+          placeholder="Enter your full name"
+        >
+        <span class="error-message" id="name-error"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          placeholder="your.email@example.com"
+        >
+        <span class="error-message" id="email-error"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input
+          type="tel"
+          id="phone"
+          name="phone"
+          placeholder="05X-XXXXXXX"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="attending">Will you be attending? *</label>
+        <select id="attending" name="attending" required>
+          <option value="">Please select</option>
+          <option value="yes">Yes, I'll be there!</option>
+          <option value="no">Sorry, I can't make it</option>
+        </select>
+        <span class="error-message" id="attending-error"></span>
+      </div>
+
+      <div class="form-group" id="guests-group" style="display: none;">
+        <label for="guests">Number of Guests</label>
+        <input
+          type="number"
+          id="guests"
+          name="guests"
+          min="1"
+          max="5"
+          value="1"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="dietary">Dietary Restrictions</label>
+        <textarea
+          id="dietary"
+          name="dietary"
+          rows="3"
+          placeholder="Please let us know about any dietary restrictions"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="message">Special Message</label>
+        <textarea
+          id="message"
+          name="message"
+          rows="4"
+          placeholder="Share your wishes or special requests"
+        ></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary">
+        <span class="btn-text">Submit RSVP</span>
+        <span class="btn-loader" style="display: none;">Sending...</span>
+      </button>
+
+      <div class="form-success" id="success-message" style="display: none;">
+        <p>Thank you for your RSVP! We can't wait to celebrate with you! 💕</p>
+      </div>
+    </form>
+  </div>
+</section>
+```
+
+```javascript
+// Form validation and submission
+class RSVPForm {
+  constructor(formId) {
+    this.form = document.getElementById(formId);
+    this.submitBtn = this.form.querySelector('button[type="submit"]');
+    this.attendingSelect = document.getElementById('attending');
+    this.guestsGroup = document.getElementById('guests-group');
+
+    this.init();
+  }
+
+  init() {
+    // Show/hide guests field based on attendance
+    this.attendingSelect.addEventListener('change', () => {
+      if (this.attendingSelect.value === 'yes') {
+        this.guestsGroup.style.display = 'block';
+      } else {
+        this.guestsGroup.style.display = 'none';
+      }
+    });
+
+    // Form submission
+    this.form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (this.validate()) {
+        this.submit();
+      }
+    });
+
+    // Real-time validation
+    this.form.querySelectorAll('input, select, textarea').forEach(field => {
+      field.addEventListener('blur', () => this.validateField(field));
+    });
+  }
+
+  validate() {
+    let isValid = true;
+
+    // Clear previous errors
+    this.form.querySelectorAll('.error-message').forEach(error => {
+      error.textContent = '';
+      error.parentElement.classList.remove('has-error');
+    });
+
+    // Name validation
+    const name = document.getElementById('name');
+    if (!name.value.trim() || name.value.trim().length < 2) {
+      this.showError(name, 'Please enter your full name');
+      isValid = false;
+    }
+
+    // Email validation
+    const email = document.getElementById('email');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.value)) {
+      this.showError(email, 'Please enter a valid email address');
+      isValid = false;
+    }
+
+    // Attendance validation
+    const attending = document.getElementById('attending');
+    if (!attending.value) {
+      this.showError(attending, 'Please let us know if you can attend');
+      isValid = false;
+    }
+
+    return isValid;
+  }
+
+  validateField(field) {
+    const errorElement = document.getElementById(`${field.id}-error`);
+    if (!errorElement) return;
+
+    errorElement.textContent = '';
+    field.parentElement.classList.remove('has-error');
+
+    // Field-specific validation
+    if (field.hasAttribute('required') && !field.value.trim()) {
+      this.showError(field, 'This field is required');
+    } else if (field.type === 'email' && field.value) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(field.value)) {
+        this.showError(field, 'Please enter a valid email address');
+      }
+    }
+  }
+
+  showError(field, message) {
+    const errorElement = document.getElementById(`${field.id}-error`);
+    if (errorElement) {
+      errorElement.textContent = message;
+      field.parentElement.classList.add('has-error');
+    }
+  }
+
+  async submit() {
+    const formData = new FormData(this.form);
+    const data = Object.fromEntries(formData.entries());
+
+    // Show loading state
+    this.submitBtn.disabled = true;
+    this.submitBtn.querySelector('.btn-text').style.display = 'none';
+    this.submitBtn.querySelector('.btn-loader').style.display = 'inline';
+
+    try {
+      // Send to Web3Forms or your backend
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: 'YOUR_WEB3FORMS_ACCESS_KEY',
+          ...data,
+          subject: 'New Wedding RSVP',
+        }),
+      });
+
+      if (response.ok) {
+        this.showSuccess();
+        this.form.reset();
+      } else {
+        throw new Error('Submission failed');
+      }
+    } catch (error) {
+      alert('Sorry, there was an error submitting your RSVP. Please try again or contact us directly.');
+      console.error('RSVP submission error:', error);
+    } finally {
+      // Reset button state
+      this.submitBtn.disabled = false;
+      this.submitBtn.querySelector('.btn-text').style.display = 'inline';
+      this.submitBtn.querySelector('.btn-loader').style.display = 'none';
+    }
+  }
+
+  showSuccess() {
+    const successMessage = document.getElementById('success-message');
+    successMessage.style.display = 'block';
+    successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    setTimeout(() => {
+      successMessage.style.display = 'none';
+    }, 5000);
+  }
+}
+
+// Initialize form
+new RSVPForm('rsvp-form');
+```
+
+### 3. Photo Gallery with Lightbox
+```javascript
+class PhotoGallery {
+  constructor(galleryId) {
+    this.gallery = document.getElementById(galleryId);
+    this.lightbox = this.createLightbox();
+    this.currentIndex = 0;
+    this.images = [];
+
+    this.init();
+  }
+
+  init() {
+    // Get all gallery images
+    this.images = Array.from(this.gallery.querySelectorAll('img'));
+
+    // Add click handlers
+    this.images.forEach((img, index) => {
+      img.addEventListener('click', () => this.openLightbox(index));
+    });
+  }
+
+  createLightbox() {
+    const lightbox = document.createElement('div');
+    lightbox.className = 'lightbox';
+    lightbox.innerHTML = `
+      <div class="lightbox-content">
+        <button class="lightbox-close">&times;</button>
+        <button class="lightbox-prev">&#10094;</button>
+        <img src="" alt="" class="lightbox-img">
+        <button class="lightbox-next">&#10095;</button>
+        <div class="lightbox-counter"></div>
+      </div>
+    `;
+
+    document.body.appendChild(lightbox);
+
+    // Event listeners
+    lightbox.querySelector('.lightbox-close').addEventListener('click', () => this.closeLightbox());
+    lightbox.querySelector('.lightbox-prev').addEventListener('click', () => this.prevImage());
+    lightbox.querySelector('.lightbox-next').addEventListener('click', () => this.nextImage());
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) this.closeLightbox();
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (!lightbox.classList.contains('active')) return;
+
+      if (e.key === 'Escape') this.closeLightbox();
+      if (e.key === 'ArrowLeft') this.prevImage();
+      if (e.key === 'ArrowRight') this.nextImage();
+    });
+
+    return lightbox;
+  }
+
+  openLightbox(index) {
+    this.currentIndex = index;
+    this.updateLightbox();
+    this.lightbox.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeLightbox() {
+    this.lightbox.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  nextImage() {
+    this.currentIndex = (this.currentIndex + 1) % this.images.length;
+    this.updateLightbox();
+  }
+
+  prevImage() {
+    this.currentIndex = (this.currentIndex - 1 + this.images.length) % this.images.length;
+    this.updateLightbox();
+  }
+
+  updateLightbox() {
+    const img = this.lightbox.querySelector('.lightbox-img');
+    const counter = this.lightbox.querySelector('.lightbox-counter');
+
+    img.src = this.images[this.currentIndex].src;
+    img.alt = this.images[this.currentIndex].alt;
+    counter.textContent = `${this.currentIndex + 1} / ${this.images.length}`;
+  }
+}
+
+// Initialize gallery
+new PhotoGallery('photo-gallery');
+```
+
+## 🎨 SCSS Styling Architecture
+
+```scss
+// _variables.scss
+$primary-color: #c4a47c;
+$secondary-color: #f5f5f5;
+$text-dark: #333;
+$text-light: #666;
+
+$font-heading: 'Playfair Display', serif;
+$font-body: 'Lato', sans-serif;
+
+$breakpoint-mobile: 768px;
+$breakpoint-tablet: 1024px;
+
+// _mixins.scss
+@mixin respond-to($breakpoint) {
+  @media (max-width: $breakpoint) {
+    @content;
+  }
+}
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// Hero section styles
+.hero {
+  position: relative;
+  height: 100vh;
+  background-image: url('../images/hero-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  @include flex-center;
+
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.3),
+      rgba(0, 0, 0, 0.5)
+    );
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: white;
+
+    .couple-names {
+      font-family: $font-heading;
+      font-size: 4rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+      @include respond-to($breakpoint-mobile) {
+        font-size: 2.5rem;
+      }
+    }
+
+    .wedding-date {
+      font-size: 1.5rem;
+      letter-spacing: 2px;
+      margin-bottom: 3rem;
+    }
+  }
+}
+
+// Countdown timer
+.countdown {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+
+  @include respond-to($breakpoint-mobile) {
+    gap: 1rem;
+  }
+
+  .countdown-item {
+    text-align: center;
+
+    .countdown-value {
+      display: block;
+      font-size: 3rem;
+      font-weight: 700;
+      font-family: $font-heading;
+      line-height: 1;
+
+      @include respond-to($breakpoint-mobile) {
+        font-size: 2rem;
+      }
+    }
+
+    .countdown-label {
+      display: block;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 0.5rem;
+      opacity: 0.9;
+    }
+  }
+}
+
+// Form styling
+.rsvp-form {
+  max-width: 600px;
+  margin: 0 auto;
+
+  .form-group {
+    margin-bottom: 1.5rem;
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: $text-dark;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 4px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+
+      &:focus {
+        outline: none;
+        border-color: $primary-color;
+      }
+    }
+
+    &.has-error {
+      input,
+      select,
+      textarea {
+        border-color: #e74c3c;
+      }
+    }
+
+    .error-message {
+      display: block;
+      color: #e74c3c;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 1rem 2rem;
+    background: $primary-color;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: darken($primary-color, 10%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+  }
+}
+```
+
+## 📱 Responsive Design
+
+- **Mobile-first approach** with progressive enhancement
+- **Fluid typography** that scales with viewport
+- **Flexible layouts** using Flexbox and CSS Grid
+- **Touch-friendly** buttons and interactions
+- **Optimized images** for different screen sizes
+
+## ⚡ Performance Optimizations
+
+- **Lazy loading** images below the fold
+- **Minified CSS and JavaScript** for production
+- **Optimized images** with WebP format and fallbacks
+- **Preconnect** to external resources
+- **Critical CSS** inlined in the head
+
+## 📊 Technical Stack
+
+- **HTML5**: Semantic markup for SEO
+- **SCSS**: Modular and maintainable styling
+- **Vanilla JavaScript**: No framework dependencies
+- **Web3Forms**: RSVP form backend
+- **Responsive Design**: Mobile-first approach
+
+## 🎉 Personal Touch
+
+This project holds special significance as it was our actual wedding website. Every detail was carefully crafted to reflect our personalities and provide guests with a memorable experience. The combination of elegant design and practical functionality made it a joy to build and share.
+
+## 📚 What I Learned
+
+1. **SCSS Architecture** - Organizing styles with variables, mixins, and partials
+2. **Form Validation** - Comprehensive client-side validation patterns
+3. **Accessibility** - Semantic HTML and keyboard navigation
+4. **Performance** - Image optimization and lazy loading
+5. **UX Design** - Creating intuitive and delightful user experiences
+6. **Project Management** - Balancing personal and technical requirements
+
+## 🔮 Post-Wedding Updates
+
+1. **Photo Gallery Update** - Added professional wedding photos
+2. **Thank You Page** - Gratitude message for all attendees
+3. **Video Highlights** - Embedded wedding video
+4. **Guest Book** - Online guestbook for messages
+
+---
+
+**Tech Stack**: HTML5, SCSS, JavaScript, Responsive Design
+
+**Domain**: Frontend Development, UI/UX Design, Web Design
+
+**Skills Demonstrated**: SCSS Architecture, Form Validation, Responsive Design, JavaScript

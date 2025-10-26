@@ -1,0 +1,28 @@
+[
+  {
+    "id": "bsc-software-engineering-sce",
+    "institution": "SCE - Sami Shamoon College of Engineering",
+    "degree": "Bachelor of Science",
+    "field": "Software Engineering",
+    "startDate": "2019-10-01",
+    "endDate": "2024-09-30",
+    "location": "Beer Sheva, Israel",
+    "gpa": "",
+    "honors": [],
+    "coursework": [
+      "Advanced Programming (C, C++, Java, Python)",
+      "Data Structures and Algorithms",
+      "Database Systems (SQL, NoSQL)",
+      "Software Engineering Principles",
+      "Operating Systems",
+      "Computer Networks",
+      "Web Development (Frontend & Backend)",
+      "Mobile Application Development",
+      "Distributed Systems",
+      "Cybersecurity Fundamentals",
+      "Artificial Intelligence Fundamentals",
+      "Software Testing and Quality Assurance"
+    ],
+    "description": "Comprehensive software engineering program covering full-stack development, systems programming, and modern software architecture. Strong emphasis on practical projects and industry-relevant technologies."
+  }
+]

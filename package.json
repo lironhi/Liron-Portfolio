@@ -1,0 +1,59 @@
+{
+  "name": "liron-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "contentlayer build && next build",
+    "start": "next start",
+    "lint": "biome lint .",
+    "format": "biome format --write .",
+    "typecheck": "tsc --noEmit",
+    "check": "biome check --write .",
+    "contentlayer": "contentlayer build"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "3.3.4",
+    "@next/mdx": "^15.0.0",
+    "@vercel/og": "^0.6.2",
+    "clsx": "^2.1.1",
+    "contentlayer": "^0.3.4",
+    "flexsearch": "^0.8.212",
+    "framer-motion": "^12.23.24",
+    "gray-matter": "^4.0.3",
+    "lucide-react": "^0.436.0",
+    "mdx-bundler": "^10.0.1",
+    "next": "^15.0.0",
+    "next-contentlayer": "^0.3.4",
+    "next-themes": "^0.4.6",
+    "pdfjs-dist": "^5.4.296",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.65.0",
+    "react-pdf": "^10.2.0",
+    "reading-time": "^1.5.0",
+    "rehype": "^13.0.1",
+    "rehype-pretty-code": "^0.13.2",
+    "remark": "^15.0.1",
+    "remark-gfm": "^4.0.0",
+    "remark-html": "^16.0.1",
+    "shiki": "^1.10.1",
+    "tailwind-merge": "^2.4.0",
+    "zod": "3.23.8"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.8.3",
+    "@tailwindcss/typography": "^0.5.10",
+    "@types/node": "^20.14.10",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.40",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.5.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}

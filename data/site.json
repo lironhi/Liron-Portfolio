@@ -1,0 +1,50 @@
+{
+  "name": "Liron Himbert Portfolio",
+  "title": "Liron Himbert - Software Engineer | AI & Backend Specialist",
+  "description": "Software Engineer specialized in backend, full-stack, and AI-driven systems. Expert in LangGraph, MCP, and LLM agentic development with strong focus on cybersecurity and distributed architectures.",
+  "url": "https://lironhimbert.dev",
+  "author": {
+    "name": "Liron Himbert",
+    "email": "lironbenharrouch@gmail.com",
+    "bio": "Software Engineer specialized in backend, full-stack, and AI-driven systems, with hands-on experience in designing distributed architectures, microservices, and automation pipelines. Skilled in LangGraph, MCP, and LLM agentic development, with a strong foundation in Python, Node.js, and cloud-native technologies. Passionate about leveraging AI Agents to enhance cybersecurity, optimize processes, and build scalable, intelligent systems.",
+    "location": "Ashkelon, Israel",
+    "avatar": "/images/avatar.jpg",
+    "social": {
+      "github": "https://github.com/lironhi",
+      "linkedin": "https://linkedin.com/in/liron-himbert",
+      "twitter": "",
+      "email": "lironbenharrouch@gmail.com"
+    }
+  },
+  "navigation": [
+    { "label": "Home", "href": "/" },
+    { "label": "Projects", "href": "/projects" },
+    { "label": "Experience", "href": "/experience" },
+    { "label": "Skills", "href": "/skills" },
+    { "label": "Certifications", "href": "/certifications" },
+    { "label": "CV", "href": "/cv" },
+    { "label": "Education", "href": "/education" },
+    { "label": "About", "href": "/about" },
+    { "label": "Contact", "href": "/contact" }
+  ],
+  "seo": {
+    "keywords": [
+      "software engineer",
+      "AI engineer",
+      "backend developer",
+      "full stack developer",
+      "LangGraph",
+      "LangChain",
+      "MCP",
+      "AI agents",
+      "LLM development",
+      "python developer",
+      "cybersecurity",
+      "distributed systems",
+      "microservices",
+      "node.js",
+      "typescript"
+    ],
+    "ogImage": "/images/og-image.jpg"
+  }
+}

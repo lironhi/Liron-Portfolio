@@ -1,0 +1,242 @@
+[
+  {
+    "id": "python",
+    "name": "Python",
+    "category": "languages",
+    "level": "expert",
+    "yearsOfExperience": 6,
+    "description": "Backend development, AI/ML, automation pipelines, and distributed systems"
+  },
+  {
+    "id": "java",
+    "name": "Java",
+    "category": "languages",
+    "level": "advanced",
+    "yearsOfExperience": 4,
+    "description": "Object-oriented programming, backend services, and enterprise applications"
+  },
+  {
+    "id": "javascript",
+    "name": "JavaScript",
+    "category": "languages",
+    "level": "expert",
+    "yearsOfExperience": 5,
+    "description": "Modern ES6+ JavaScript, Node.js backend, and full-stack development"
+  },
+  {
+    "id": "typescript",
+    "name": "TypeScript",
+    "category": "languages",
+    "level": "advanced",
+    "yearsOfExperience": 3,
+    "description": "Type-safe development for scalable applications"
+  },
+  {
+    "id": "c",
+    "name": "C",
+    "category": "languages",
+    "level": "intermediate",
+    "yearsOfExperience": 3,
+    "description": "Systems programming and low-level development"
+  },
+  {
+    "id": "cpp",
+    "name": "C++",
+    "category": "languages",
+    "level": "intermediate",
+    "yearsOfExperience": 3,
+    "description": "Object-oriented programming and performance-critical applications"
+  },
+  {
+    "id": "csharp",
+    "name": "C#",
+    "category": "languages",
+    "level": "intermediate",
+    "yearsOfExperience": 2,
+    "description": ".NET development and enterprise applications"
+  },
+  {
+    "id": "sql",
+    "name": "SQL",
+    "category": "languages",
+    "level": "advanced",
+    "yearsOfExperience": 5,
+    "description": "MySQL database design, optimization, and complex queries"
+  },
+  {
+    "id": "langgraph",
+    "name": "LangGraph",
+    "category": "frameworks",
+    "level": "advanced",
+    "yearsOfExperience": 1,
+    "description": "Building agentic AI workflows and multi-agent systems"
+  },
+  {
+    "id": "langchain",
+    "name": "LangChain",
+    "category": "frameworks",
+    "level": "advanced",
+    "yearsOfExperience": 1,
+    "description": "LLM application development and chain-of-thought reasoning"
+  },
+  {
+    "id": "mcp",
+    "name": "MCP (Model Context Protocol)",
+    "category": "frameworks",
+    "level": "advanced",
+    "yearsOfExperience": 1,
+    "description": "LLM context management and protocol implementation"
+  },
+  {
+    "id": "django",
+    "name": "Django",
+    "category": "frameworks",
+    "level": "advanced",
+    "yearsOfExperience": 3,
+    "description": "Full-stack web framework for rapid development"
+  },
+  {
+    "id": "nodejs",
+    "name": "Node.js",
+    "category": "frameworks",
+    "level": "expert",
+    "yearsOfExperience": 4,
+    "description": "Backend development, REST APIs, and microservices"
+  },
+  {
+    "id": "react",
+    "name": "React",
+    "category": "frameworks",
+    "level": "advanced",
+    "yearsOfExperience": 3,
+    "description": "Frontend development with hooks and modern patterns"
+  },
+  {
+    "id": "nextjs",
+    "name": "Next.js",
+    "category": "frameworks",
+    "level": "intermediate",
+    "yearsOfExperience": 2,
+    "description": "Server-side rendering and full-stack React applications"
+  },
+  {
+    "id": "jquery",
+    "name": "jQuery",
+    "category": "frameworks",
+    "level": "intermediate",
+    "yearsOfExperience": 3,
+    "description": "DOM manipulation and legacy web applications"
+  },
+  {
+    "id": "docker",
+    "name": "Docker",
+    "category": "tools",
+    "level": "advanced",
+    "yearsOfExperience": 3,
+    "description": "Containerization, deployment, and microservices architecture"
+  },
+  {
+    "id": "git",
+    "name": "Git",
+    "category": "tools",
+    "level": "expert",
+    "yearsOfExperience": 6,
+    "description": "Version control, branching strategies, and team collaboration"
+  },
+  {
+    "id": "android-studio",
+    "name": "Android Studio",
+    "category": "tools",
+    "level": "intermediate",
+    "yearsOfExperience": 2,
+    "description": "Android app development with Java and Kotlin"
+  },
+  {
+    "id": "aws",
+    "name": "AWS",
+    "category": "cloud",
+    "level": "intermediate",
+    "yearsOfExperience": 2,
+    "description": "Cloud infrastructure, EC2, S3, and serverless services"
+  },
+  {
+    "id": "mysql",
+    "name": "MySQL",
+    "category": "databases",
+    "level": "advanced",
+    "yearsOfExperience": 5,
+    "description": "Relational database design, optimization, and administration"
+  },
+  {
+    "id": "mongodb",
+    "name": "MongoDB",
+    "category": "cloud",
+    "level": "advanced",
+    "yearsOfExperience": 3,
+    "description": "NoSQL database for scalable document storage"
+  },
+  {
+    "id": "firebase",
+    "name": "Firebase",
+    "category": "cloud",
+    "level": "intermediate",
+    "yearsOfExperience": 2,
+    "description": "Real-time database, authentication, and mobile backend"
+  },
+  {
+    "id": "redis",
+    "name": "Redis",
+    "category": "databases",
+    "level": "intermediate",
+    "yearsOfExperience": 1,
+    "description": "In-memory caching and data structures for AI applications"
+  },
+  {
+    "id": "faiss",
+    "name": "FAISS",
+    "category": "other",
+    "level": "intermediate",
+    "yearsOfExperience": 1,
+    "description": "Vector similarity search for AI and semantic retrieval"
+  },
+  {
+    "id": "ai-agents",
+    "name": "AI Agents Development",
+    "category": "other",
+    "level": "advanced",
+    "yearsOfExperience": 1,
+    "description": "Multi-agent systems, agentic workflows, and LLM orchestration"
+  },
+  {
+    "id": "microservices",
+    "name": "Microservices Architecture",
+    "category": "other",
+    "level": "advanced",
+    "yearsOfExperience": 2,
+    "description": "Distributed systems design and implementation"
+  },
+  {
+    "id": "cybersecurity",
+    "name": "Cybersecurity",
+    "category": "other",
+    "level": "intermediate",
+    "yearsOfExperience": 2,
+    "description": "Security best practices, injection prevention, and threat detection"
+  },
+  {
+    "id": "automation",
+    "name": "Automation & Pipelines",
+    "category": "other",
+    "level": "advanced",
+    "yearsOfExperience": 3,
+    "description": "Data extraction, ETL pipelines, and process automation"
+  },
+  {
+    "id": "rest-api",
+    "name": "REST API Design",
+    "category": "other",
+    "level": "expert",
+    "yearsOfExperience": 5,
+    "description": "RESTful architecture, API integration, and backend services"
+  }
+]

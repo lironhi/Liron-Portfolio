@@ -1,0 +1,156 @@
+---
+title: "DrProject - Blood Test Analysis Platform"
+summary: "Web application to understand blood test results and diagnose potential health issues from medical data."
+year: 2024
+featured: false
+status: "completed"
+tags:
+  - id: "html"
+    name: "HTML5"
+    color: "#E34F26"
+  - id: "css"
+    name: "CSS3"
+    color: "#1572B6"
+  - id: "javascript"
+    name: "JavaScript"
+    color: "#F7DF1E"
+  - id: "healthcare"
+    name: "Healthcare"
+    color: "#00D9FF"
+  - id: "web"
+    name: "Web Dev"
+    color: "#61DAFB"
+links:
+  - label: "GitHub Repository"
+    url: "https://github.com/lironhi/DrProject"
+    type: "repo"
+highlights:
+  - "Interactive blood test result analyzer with visual indicators"
+  - "Educational resource for understanding medical parameters"
+  - "User-friendly interface for non-medical professionals"
+  - "Real-time analysis and health recommendations"
+updatedAt: "2024-01-15"
+createdAt: "2023-09-01"
+---
+
+# DrProject - Blood Test Analysis Platform
+
+A web application designed to help patients understand their blood test results and identify potential health concerns based on medical data analysis.
+
+## 🎯 Problem & Solution
+
+**Problem**: Blood test results are often confusing for patients, with complex medical terminology and reference ranges that are hard to interpret.
+
+**Solution**: An intuitive web platform that analyzes blood test parameters, explains what they mean, and provides insights into potential health issues.
+
+## 🔑 Key Features
+
+### 1. Blood Test Analysis
+- **Upload test results** manually or via form input
+- **Compare with normal ranges** for each parameter
+- **Visual indicators** (color-coded) for abnormal values
+- **Detailed explanations** of each blood marker
+
+### 2. Health Insights
+- Identify potential health issues based on abnormal values
+- Provide educational content about each parameter
+- Suggest follow-up tests or medical consultation when needed
+- Track changes over time
+
+### 3. User-Friendly Interface
+- Clean, modern design with CSS3
+- Responsive layout for mobile and desktop
+- Interactive charts and visualizations
+- Easy navigation between different test categories
+
+## 📊 Technical Implementation
+
+### Frontend Stack
+- **HTML5**: Semantic markup for accessibility
+- **CSS3**: Modern styling with flexbox/grid
+- **JavaScript**: Interactive features and data visualization
+- **Vanilla JS**: No framework dependencies for lightweight performance
+
+### Core Functionality
+```javascript
+// Blood test parameter analysis
+function analyzeParameter(value, normalRange) {
+  const { min, max } = normalRange;
+
+  if (value < min) {
+    return {
+      status: 'low',
+      severity: calculateSeverity(value, min),
+      recommendations: getLowRecommendations(parameter)
+    };
+  } else if (value > max) {
+    return {
+      status: 'high',
+      severity: calculateSeverity(value, max),
+      recommendations: getHighRecommendations(parameter)
+    };
+  }
+
+  return { status: 'normal' };
+}
+```
+
+## 🏥 Blood Parameters Covered
+
+### Complete Blood Count (CBC)
+- Red Blood Cells (RBC)
+- White Blood Cells (WBC)
+- Hemoglobin (Hb)
+- Hematocrit (Hct)
+- Platelets
+
+### Metabolic Panel
+- Glucose
+- Creatinine
+- Blood Urea Nitrogen (BUN)
+- Electrolytes (Na, K, Cl)
+
+### Lipid Panel
+- Total Cholesterol
+- LDL (Bad cholesterol)
+- HDL (Good cholesterol)
+- Triglycerides
+
+### Liver Function
+- ALT (Alanine Aminotransferase)
+- AST (Aspartate Aminotransferase)
+- Bilirubin
+- Alkaline Phosphatase
+
+## 🎨 UI/UX Features
+
+- **Color-coded results**: Green (normal), Yellow (borderline), Red (abnormal)
+- **Interactive tooltips**: Hover for detailed information
+- **Print-friendly** reports
+- **Responsive design** for mobile access
+- **Dark mode** support
+
+## 📈 Impact
+
+- **Educational tool** for health-conscious individuals
+- **Bridge communication** between patients and doctors
+- **Empower patients** with knowledge about their health
+- **Early detection** awareness for potential health issues
+
+## ⚠️ Disclaimer
+
+This tool is for educational purposes only and should not replace professional medical advice. Always consult with healthcare professionals for medical diagnosis and treatment.
+
+## 🔮 Future Enhancements
+
+1. **PDF upload** with OCR for automatic data extraction
+2. **Historical tracking** with trend analysis
+3. **Multi-language** support
+4. **AI-powered** insights using machine learning
+5. **Integration** with lab APIs for direct result import
+
+---
+
+**Tech Stack**: HTML5, CSS3, JavaScript
+
+**Domain**: Healthcare, Web Development, Data Visualization

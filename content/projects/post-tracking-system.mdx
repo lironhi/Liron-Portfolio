@@ -1,0 +1,321 @@
+---
+title: "Post Tracking System - Design Patterns Showcase"
+summary: "Enterprise-grade post office simulation in Java demonstrating multiple design patterns in a cohesive system architecture."
+year: 2023
+featured: true
+status: "completed"
+tags:
+  - id: "java"
+    name: "Java"
+    color: "#007396"
+  - id: "design-patterns"
+    name: "Design Patterns"
+    color: "#FF6B6B"
+  - id: "oop"
+    name: "OOP"
+    color: "#4CAF50"
+  - id: "architecture"
+    name: "Software Architecture"
+    color: "#9C27B0"
+links:
+  - label: "GitHub Repository"
+    url: "https://github.com/lironhi/Post-Tracking-System"
+    type: "repo"
+highlights:
+  - "Implements 6+ design patterns (Singleton, Factory, Observer, Strategy, Decorator, Command)"
+  - "Simulates complete post office operations with realistic package tracking"
+  - "Clean architecture with separation of concerns"
+  - "Comprehensive testing and documentation"
+updatedAt: "2023-11-20"
+createdAt: "2023-08-01"
+---
+
+# Post Tracking System
+
+A sophisticated Java application that simulates a complete post office tracking system, built as an educational showcase of design patterns and software architecture principles.
+
+## 🎯 Project Overview
+
+This project demonstrates how multiple design patterns work together in a real-world scenario, creating a maintainable, extensible, and robust system for managing postal operations.
+
+## 🏗️ Architecture & Design Patterns
+
+### 1. **Singleton Pattern** - Post Office Manager
+```java
+public class PostOfficeManager {
+    private static PostOfficeManager instance;
+    private List<Package> packages;
+
+    private PostOfficeManager() {
+        packages = new ArrayList<>();
+    }
+
+    public static synchronized PostOfficeManager getInstance() {
+        if (instance == null) {
+            instance = new PostOfficeManager();
+        }
+        return instance;
+    }
+
+    public void registerPackage(Package pkg) {
+        packages.add(pkg);
+        notifyObservers(pkg);
+    }
+}
+```
+**Why**: Ensures a single point of coordination for all postal operations.
+
+### 2. **Factory Pattern** - Package Creation
+```java
+public abstract class PackageFactory {
+    public abstract Package createPackage(String type, Address from, Address to);
+}
+
+public class StandardPackageFactory extends PackageFactory {
+    @Override
+    public Package createPackage(String type, Address from, Address to) {
+        switch(type) {
+            case "EXPRESS":
+                return new ExpressPackage(from, to);
+            case "STANDARD":
+                return new StandardPackage(from, to);
+            case "ECONOMY":
+                return new EconomyPackage(from, to);
+            default:
+                throw new IllegalArgumentException("Unknown package type");
+        }
+    }
+}
+```
+**Why**: Flexible package creation without tight coupling to concrete classes.
+
+### 3. **Observer Pattern** - Package Status Notifications
+```java
+public interface PackageObserver {
+    void update(Package pkg, PackageStatus status);
+}
+
+public class Customer implements PackageObserver {
+    private String email;
+
+    @Override
+    public void update(Package pkg, PackageStatus status) {
+        sendNotification(email,
+            "Package " + pkg.getTrackingNumber() +
+            " status: " + status);
+    }
+}
+```
+**Why**: Real-time notifications to customers when package status changes.
+
+### 4. **Strategy Pattern** - Delivery Methods
+```java
+public interface DeliveryStrategy {
+    double calculateCost(Package pkg);
+    int estimateDeliveryTime(Package pkg);
+}
+
+public class ExpressDelivery implements DeliveryStrategy {
+    @Override
+    public double calculateCost(Package pkg) {
+        return pkg.getWeight() * 5.0 + 15.0; // Premium pricing
+    }
+
+    @Override
+    public int estimateDeliveryTime(Package pkg) {
+        return 1; // Next day delivery
+    }
+}
+
+public class StandardDelivery implements DeliveryStrategy {
+    @Override
+    public double calculateCost(Package pkg) {
+        return pkg.getWeight() * 2.0 + 5.0;
+    }
+
+    @Override
+    public int estimateDeliveryTime(Package pkg) {
+        return 3; // 3 day delivery
+    }
+}
+```
+**Why**: Different delivery options with varying costs and times.
+
+### 5. **Decorator Pattern** - Package Features
+```java
+public abstract class PackageDecorator extends Package {
+    protected Package decoratedPackage;
+
+    public PackageDecorator(Package pkg) {
+        this.decoratedPackage = pkg;
+    }
+}
+
+public class InsuredPackage extends PackageDecorator {
+    private double insuranceValue;
+
+    public InsuredPackage(Package pkg, double value) {
+        super(pkg);
+        this.insuranceValue = value;
+    }
+
+    @Override
+    public double getCost() {
+        return decoratedPackage.getCost() + (insuranceValue * 0.01);
+    }
+}
+
+public class SignatureRequired extends PackageDecorator {
+    public SignatureRequired(Package pkg) {
+        super(pkg);
+    }
+
+    @Override
+    public double getCost() {
+        return decoratedPackage.getCost() + 3.0;
+    }
+}
+```
+**Why**: Add features like insurance, signature, tracking without modifying base classes.
+
+### 6. **Command Pattern** - Operations
+```java
+public interface Command {
+    void execute();
+    void undo();
+}
+
+public class ShipPackageCommand implements Command {
+    private Package pkg;
+    private PostOfficeManager manager;
+
+    public ShipPackageCommand(Package pkg, PostOfficeManager manager) {
+        this.pkg = pkg;
+        this.manager = manager;
+    }
+
+    @Override
+    public void execute() {
+        manager.shipPackage(pkg);
+        pkg.setStatus(PackageStatus.IN_TRANSIT);
+    }
+
+    @Override
+    public void undo() {
+        pkg.setStatus(PackageStatus.PENDING);
+        manager.cancelShipment(pkg);
+    }
+}
+```
+**Why**: Encapsulates operations for undo/redo functionality and logging.
+
+## 🔑 Key Features
+
+### Package Management
+- **Create packages** with various types (Express, Standard, Economy)
+- **Track packages** with unique tracking numbers
+- **Update status** through lifecycle (Pending → In Transit → Out for Delivery → Delivered)
+- **Calculate costs** based on weight, distance, and delivery method
+
+### Customer Features
+- **Real-time notifications** when package status changes
+- **Package history** and tracking
+- **Estimate delivery** times and costs
+- **Add insurance** or special handling
+
+### Post Office Operations
+- **Process shipments** with automated routing
+- **Manage inventory** of packages
+- **Generate reports** on operations
+- **Handle exceptions** (lost packages, delays)
+
+## 📊 System Components
+
+### Core Classes
+1. **Package** - Abstract base class for all package types
+2. **Address** - Value object for locations
+3. **TrackingNumber** - Unique identifier generator
+4. **PackageStatus** - Enum for lifecycle states
+5. **DeliveryRoute** - Path calculation and optimization
+
+### Supporting Infrastructure
+- **Logger** - Comprehensive logging system
+- **Database** - Simple file-based persistence
+- **Configuration** - Properties management
+- **Validator** - Input validation utilities
+
+## 🎨 Object-Oriented Principles
+
+### SOLID Principles Applied
+- **Single Responsibility**: Each class has one reason to change
+- **Open/Closed**: Open for extension, closed for modification
+- **Liskov Substitution**: Subtypes can replace base types
+- **Interface Segregation**: Clients don't depend on unused interfaces
+- **Dependency Inversion**: Depend on abstractions, not concretions
+
+### Clean Code Practices
+- Meaningful variable and method names
+- Small, focused methods
+- DRY (Don't Repeat Yourself)
+- Comments for complex logic only
+- Consistent formatting
+
+## 📈 Technical Achievements
+
+- **Zero coupling** between business logic and UI
+- **100% testable** code with dependency injection
+- **Thread-safe** singleton implementation
+- **Extensible** design for future features
+- **Well-documented** with Javadoc
+
+## 🧪 Testing
+
+```java
+@Test
+public void testPackageCreation() {
+    PackageFactory factory = new StandardPackageFactory();
+    Package pkg = factory.createPackage("EXPRESS",
+        new Address("123 Main St"),
+        new Address("456 Oak Ave"));
+
+    assertNotNull(pkg);
+    assertEquals(PackageType.EXPRESS, pkg.getType());
+    assertTrue(pkg.getCost() > 0);
+}
+
+@Test
+public void testObserverNotification() {
+    Package pkg = new StandardPackage();
+    Customer customer = new Customer("test@email.com");
+
+    pkg.attach(customer);
+    pkg.setStatus(PackageStatus.DELIVERED);
+
+    // Verify notification was sent
+    verify(customer, times(1)).update(pkg, PackageStatus.DELIVERED);
+}
+```
+
+## 📚 What I Learned
+
+1. **Design Patterns** aren't just theory - they solve real problems
+2. **Composition over inheritance** creates flexible systems
+3. **Interface-based design** enables easy testing and maintenance
+4. **Proper abstraction** makes code readable and maintainable
+5. **Documentation** is as important as the code itself
+
+## 🔮 Future Enhancements
+
+1. **Web interface** with Spring Boot
+2. **Database integration** with JPA/Hibernate
+3. **REST API** for external integrations
+4. **Real-time tracking** map visualization
+5. **Machine learning** for route optimization
+
+---
+
+**Tech Stack**: Java 11, JUnit 5, Maven, Design Patterns
+
+**Domain**: Software Engineering, Object-Oriented Programming, System Design
+
+**Educational Value**: Excellent resource for learning design patterns in practice

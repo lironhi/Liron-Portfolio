@@ -1,0 +1,724 @@
+---
+title: "MyCupOverflows - Coffee Shop Management System"
+summary: "ASP.NET MVC application for coffee shop management with inventory tracking, order processing, and customer management features."
+year: 2022
+featured: false
+status: "completed"
+tags:
+  - id: "csharp"
+    name: "C#"
+    color: "#239120"
+  - id: "aspnet"
+    name: "ASP.NET MVC"
+    color: "#512BD4"
+  - id: "sql"
+    name: "SQL Server"
+    color: "#CC2927"
+  - id: "bootstrap"
+    name: "Bootstrap"
+    color: "#7952B3"
+  - id: "entity-framework"
+    name: "Entity Framework"
+    color: "#512BD4"
+links:
+  - label: "GitHub Repository"
+    url: "https://github.com/lironhi/MyCupOverflows"
+    type: "repo"
+highlights:
+  - "Full-stack ASP.NET MVC application with authentication and authorization"
+  - "Entity Framework Code-First approach with complex relationships"
+  - "RESTful API for order management and inventory tracking"
+  - "Responsive Bootstrap UI with real-time updates"
+updatedAt: "2022-11-20"
+createdAt: "2022-06-01"
+---
+
+# MyCupOverflows - Coffee Shop Management System
+
+A comprehensive ASP.NET MVC web application designed to manage coffee shop operations including order processing, inventory management, customer tracking, and sales analytics.
+
+## 🎯 Problem & Solution
+
+**Problem**: Coffee shops need efficient systems to manage orders, track inventory, handle customer data, and generate business insights—all while maintaining a smooth customer experience.
+
+**Solution**: A full-featured web application built with ASP.NET MVC that provides an intuitive interface for staff to manage operations, process orders, and track business metrics in real-time.
+
+## 🔑 Key Features
+
+### 1. Order Management System
+```csharp
+public class OrdersController : Controller
+{
+    private readonly ApplicationDbContext _context;
+
+    public OrdersController(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    // GET: Orders/Create
+    public IActionResult Create()
+    {
+        ViewBag.Products = _context.Products
+            .Where(p => p.IsAvailable)
+            .OrderBy(p => p.Category)
+            .ThenBy(p => p.Name)
+            .ToList();
+
+        ViewBag.Customers = _context.Customers
+            .OrderBy(c => c.Name)
+            .ToList();
+
+        return View();
+    }
+
+    // POST: Orders/Create
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(OrderViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        using (var transaction = await _context.Database.BeginTransactionAsync())
+        {
+            try
+            {
+                // Create order
+                var order = new Order
+                {
+                    CustomerId = model.CustomerId,
+                    OrderDate = DateTime.Now,
+                    Status = OrderStatus.Pending,
+                    TotalAmount = 0
+                };
+
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync();
+
+                decimal totalAmount = 0;
+
+                // Add order items
+                foreach (var item in model.Items)
+                {
+                    var product = await _context.Products.FindAsync(item.ProductId);
+
+                    if (product == null || product.Stock < item.Quantity)
+                    {
+                        throw new InvalidOperationException(
+                            $"Insufficient stock for {product?.Name ?? "product"}"
+                        );
+                    }
+
+                    var orderItem = new OrderItem
+                    {
+                        OrderId = order.Id,
+                        ProductId = item.ProductId,
+                        Quantity = item.Quantity,
+                        UnitPrice = product.Price,
+                        Subtotal = product.Price * item.Quantity
+                    };
+
+                    _context.OrderItems.Add(orderItem);
+
+                    // Update inventory
+                    product.Stock -= item.Quantity;
+                    _context.Products.Update(product);
+
+                    totalAmount += orderItem.Subtotal;
+                }
+
+                // Update order total
+                order.TotalAmount = totalAmount;
+                _context.Orders.Update(order);
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                TempData["Success"] = "Order created successfully!";
+                return RedirectToAction(nameof(Details), new { id = order.Id });
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                ModelState.AddModelError("", $"Error creating order: {ex.Message}");
+                return View(model);
+            }
+        }
+    }
+
+    // GET: Orders/Details/5
+    public async Task<IActionResult> Details(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var order = await _context.Orders
+            .Include(o => o.Customer)
+            .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+            .FirstOrDefaultAsync(o => o.Id == id);
+
+        if (order == null)
+        {
+            return NotFound();
+        }
+
+        return View(order);
+    }
+}
+```
+
+### 2. Product & Inventory Management
+```csharp
+public class Product
+{
+    public int Id { get; set; }
+
+    [Required]
+    [StringLength(100)]
+    public string Name { get; set; }
+
+    [StringLength(500)]
+    public string Description { get; set; }
+
+    [Required]
+    [Range(0.01, 10000)]
+    [DataType(DataType.Currency)]
+    public decimal Price { get; set; }
+
+    [Required]
+    public ProductCategory Category { get; set; }
+
+    [Range(0, int.MaxValue)]
+    public int Stock { get; set; }
+
+    public int ReorderLevel { get; set; }
+
+    public bool IsAvailable { get; set; }
+
+    public string ImageUrl { get; set; }
+
+    [DataType(DataType.DateTime)]
+    public DateTime CreatedDate { get; set; }
+
+    [DataType(DataType.DateTime)]
+    public DateTime? ModifiedDate { get; set; }
+
+    // Navigation properties
+    public virtual ICollection<OrderItem> OrderItems { get; set; }
+}
+
+public enum ProductCategory
+{
+    [Display(Name = "Hot Coffee")]
+    HotCoffee,
+
+    [Display(Name = "Iced Coffee")]
+    IcedCoffee,
+
+    [Display(Name = "Espresso")]
+    Espresso,
+
+    [Display(Name = "Tea")]
+    Tea,
+
+    [Display(Name = "Pastries")]
+    Pastries,
+
+    [Display(Name = "Sandwiches")]
+    Sandwiches
+}
+
+public class ProductsController : Controller
+{
+    private readonly ApplicationDbContext _context;
+
+    public async Task<IActionResult> CheckLowStock()
+    {
+        var lowStockProducts = await _context.Products
+            .Where(p => p.Stock <= p.ReorderLevel && p.IsAvailable)
+            .OrderBy(p => p.Stock)
+            .ToListAsync();
+
+        return View(lowStockProducts);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateStock(int id, int quantity)
+    {
+        var product = await _context.Products.FindAsync(id);
+
+        if (product == null)
+        {
+            return NotFound();
+        }
+
+        product.Stock += quantity;
+        product.ModifiedDate = DateTime.Now;
+
+        _context.Update(product);
+        await _context.SaveChangesAsync();
+
+        // Log inventory change
+        var log = new InventoryLog
+        {
+            ProductId = id,
+            ChangeAmount = quantity,
+            Reason = "Manual stock update",
+            Timestamp = DateTime.Now,
+            UserId = User.Identity.Name
+        };
+
+        _context.InventoryLogs.Add(log);
+        await _context.SaveChangesAsync();
+
+        return Json(new { success = true, newStock = product.Stock });
+    }
+}
+```
+
+### 3. Customer Management
+```csharp
+public class Customer
+{
+    public int Id { get; set; }
+
+    [Required]
+    [StringLength(100)]
+    public string Name { get; set; }
+
+    [EmailAddress]
+    [StringLength(100)]
+    public string Email { get; set; }
+
+    [Phone]
+    [StringLength(20)]
+    public string Phone { get; set; }
+
+    public DateTime RegistrationDate { get; set; }
+
+    public int LoyaltyPoints { get; set; }
+
+    public CustomerTier Tier { get; set; }
+
+    // Navigation properties
+    public virtual ICollection<Order> Orders { get; set; }
+
+    // Calculated properties
+    public decimal TotalSpent => Orders?
+        .Where(o => o.Status == OrderStatus.Completed)
+        .Sum(o => o.TotalAmount) ?? 0;
+
+    public int TotalOrders => Orders?
+        .Count(o => o.Status == OrderStatus.Completed) ?? 0;
+}
+
+public enum CustomerTier
+{
+    Bronze,
+    Silver,
+    Gold,
+    Platinum
+}
+
+public class CustomersController : Controller
+{
+    public async Task<IActionResult> UpdateTier(int id)
+    {
+        var customer = await _context.Customers
+            .Include(c => c.Orders)
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+        if (customer == null)
+        {
+            return NotFound();
+        }
+
+        // Automatically calculate tier based on total spent
+        var totalSpent = customer.TotalSpent;
+
+        customer.Tier = totalSpent switch
+        {
+            >= 1000 => CustomerTier.Platinum,
+            >= 500 => CustomerTier.Gold,
+            >= 200 => CustomerTier.Silver,
+            _ => CustomerTier.Bronze
+        };
+
+        _context.Update(customer);
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction(nameof(Details), new { id });
+    }
+}
+```
+
+### 4. Entity Framework Configuration
+```csharp
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+{
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
+    {
+    }
+
+    public DbSet<Product> Products { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
+    public DbSet<Customer> Customers { get; set; }
+    public DbSet<InventoryLog> InventoryLogs { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        // Product configuration
+        modelBuilder.Entity<Product>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Price).HasColumnType("decimal(18,2)");
+            entity.Property(e => e.CreatedDate).HasDefaultValueSql("GETDATE()");
+            entity.HasIndex(e => e.Name);
+        });
+
+        // Order configuration
+        modelBuilder.Entity<Order>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.TotalAmount).HasColumnType("decimal(18,2)");
+            entity.Property(e => e.OrderDate).HasDefaultValueSql("GETDATE()");
+
+            entity.HasOne(e => e.Customer)
+                .WithMany(c => c.Orders)
+                .HasForeignKey(e => e.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasIndex(e => e.OrderDate);
+        });
+
+        // OrderItem configuration
+        modelBuilder.Entity<OrderItem>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.UnitPrice).HasColumnType("decimal(18,2)");
+            entity.Property(e => e.Subtotal).HasColumnType("decimal(18,2)");
+
+            entity.HasOne(e => e.Order)
+                .WithMany(o => o.OrderItems)
+                .HasForeignKey(e => e.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Product)
+                .WithMany(p => p.OrderItems)
+                .HasForeignKey(e => e.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // Customer configuration
+        modelBuilder.Entity<Customer>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.Email).IsUnique();
+            entity.Property(e => e.RegistrationDate).HasDefaultValueSql("GETDATE()");
+        });
+
+        // Seed data
+        SeedData(modelBuilder);
+    }
+
+    private void SeedData(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Product>().HasData(
+            new Product
+            {
+                Id = 1,
+                Name = "Americano",
+                Description = "Classic espresso with hot water",
+                Price = 12.00M,
+                Category = ProductCategory.HotCoffee,
+                Stock = 100,
+                ReorderLevel = 20,
+                IsAvailable = true,
+                CreatedDate = DateTime.Now
+            },
+            new Product
+            {
+                Id = 2,
+                Name = "Cappuccino",
+                Description = "Espresso with steamed milk and foam",
+                Price = 15.00M,
+                Category = ProductCategory.HotCoffee,
+                Stock = 100,
+                ReorderLevel = 20,
+                IsAvailable = true,
+                CreatedDate = DateTime.Now
+            },
+            new Product
+            {
+                Id = 3,
+                Name = "Croissant",
+                Description = "Fresh buttery croissant",
+                Price = 8.00M,
+                Category = ProductCategory.Pastries,
+                Stock = 50,
+                ReorderLevel = 10,
+                IsAvailable = true,
+                CreatedDate = DateTime.Now
+            }
+        );
+    }
+}
+```
+
+### 5. Sales Analytics & Reporting
+```csharp
+public class DashboardController : Controller
+{
+    private readonly ApplicationDbContext _context;
+
+    public async Task<IActionResult> Index()
+    {
+        var today = DateTime.Today;
+        var thisMonth = new DateTime(today.Year, today.Month, 1);
+
+        var viewModel = new DashboardViewModel
+        {
+            TodaySales = await GetSalesForPeriod(today, today.AddDays(1)),
+            ThisMonthSales = await GetSalesForPeriod(thisMonth, thisMonth.AddMonths(1)),
+            TotalCustomers = await _context.Customers.CountAsync(),
+            ActiveOrders = await _context.Orders
+                .Where(o => o.Status != OrderStatus.Completed && o.Status != OrderStatus.Cancelled)
+                .CountAsync(),
+            LowStockProducts = await _context.Products
+                .Where(p => p.Stock <= p.ReorderLevel)
+                .CountAsync(),
+            TopSellingProducts = await GetTopSellingProducts(10),
+            RecentOrders = await _context.Orders
+                .Include(o => o.Customer)
+                .OrderByDescending(o => o.OrderDate)
+                .Take(5)
+                .ToListAsync(),
+            SalesChart = await GetSalesChartData(30)
+        };
+
+        return View(viewModel);
+    }
+
+    private async Task<decimal> GetSalesForPeriod(DateTime start, DateTime end)
+    {
+        return await _context.Orders
+            .Where(o => o.OrderDate >= start && o.OrderDate < end
+                       && o.Status == OrderStatus.Completed)
+            .SumAsync(o => o.TotalAmount);
+    }
+
+    private async Task<List<ProductSalesDto>> GetTopSellingProducts(int count)
+    {
+        return await _context.OrderItems
+            .Include(oi => oi.Product)
+            .Where(oi => oi.Order.Status == OrderStatus.Completed)
+            .GroupBy(oi => new { oi.ProductId, oi.Product.Name })
+            .Select(g => new ProductSalesDto
+            {
+                ProductName = g.Key.Name,
+                TotalQuantity = g.Sum(oi => oi.Quantity),
+                TotalRevenue = g.Sum(oi => oi.Subtotal)
+            })
+            .OrderByDescending(p => p.TotalQuantity)
+            .Take(count)
+            .ToListAsync();
+    }
+
+    private async Task<ChartData> GetSalesChartData(int days)
+    {
+        var startDate = DateTime.Today.AddDays(-days);
+
+        var salesData = await _context.Orders
+            .Where(o => o.OrderDate >= startDate && o.Status == OrderStatus.Completed)
+            .GroupBy(o => o.OrderDate.Date)
+            .Select(g => new
+            {
+                Date = g.Key,
+                Total = g.Sum(o => o.TotalAmount)
+            })
+            .OrderBy(x => x.Date)
+            .ToListAsync();
+
+        return new ChartData
+        {
+            Labels = salesData.Select(s => s.Date.ToString("MM/dd")).ToArray(),
+            Values = salesData.Select(s => s.Total).ToArray()
+        };
+    }
+}
+```
+
+## 🎨 Frontend Implementation
+
+### Responsive Bootstrap Views
+```html
+@model DashboardViewModel
+
+<div class="container-fluid">
+    <h2 class="mb-4">Dashboard</h2>
+
+    <!-- Stats Cards -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Today's Sales</h5>
+                    <h2>₪@Model.TodaySales.ToString("N2")</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">This Month</h5>
+                    <h2>₪@Model.ThisMonthSales.ToString("N2")</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Total Customers</h5>
+                    <h2>@Model.TotalCustomers</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Active Orders</h5>
+                    <h2>@Model.ActiveOrders</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sales Chart -->
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">Sales Trend (Last 30 Days)</div>
+                <div class="card-body">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Products -->
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">Top Selling Products</div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        @foreach (var product in Model.TopSellingProducts)
+                        {
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>@product.ProductName</span>
+                                <span class="badge bg-primary">@product.TotalQuantity sold</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.SalesChart.Labels)),
+                datasets: [{
+                    label: 'Sales (₪)',
+                    data: @Html.Raw(Json.Serialize(Model.SalesChart.Values)),
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            }
+        });
+    </script>
+}
+```
+
+## 🔒 Authentication & Authorization
+
+```csharp
+public class Startup
+{
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+        {
+            options.Password.RequireDigit = true;
+            options.Password.RequiredLength = 8;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequireUppercase = true;
+            options.Lockout.MaxFailedAccessAttempts = 5;
+            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+        })
+        .AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddDefaultTokenProviders();
+
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+            options.AddPolicy("ManagerOrAdmin", policy => policy.RequireRole("Manager", "Admin"));
+        });
+    }
+}
+
+[Authorize(Policy = "AdminOnly")]
+public class AdminController : Controller
+{
+    // Admin-only actions
+}
+```
+
+## 📊 Technical Stack
+
+- **Backend**: ASP.NET MVC 5 / .NET Core
+- **ORM**: Entity Framework Core (Code-First)
+- **Database**: SQL Server
+- **Frontend**: Razor Views, Bootstrap 5, jQuery
+- **Charts**: Chart.js
+- **Authentication**: ASP.NET Identity
+
+## 📚 What I Learned
+
+1. **MVC Pattern** - Model-View-Controller architecture
+2. **Entity Framework** - ORM, migrations, relationships
+3. **Authentication** - ASP.NET Identity for user management
+4. **LINQ** - Complex database queries
+5. **Transactions** - Database consistency and rollback
+6. **Razor Syntax** - Dynamic view generation
+7. **RESTful Design** - Clean controller actions
+
+## 🔮 Future Enhancements
+
+1. **API Layer** - RESTful API for mobile app
+2. **Real-time Updates** - SignalR for live order tracking
+3. **Payment Integration** - Credit card processing
+4. **Email Notifications** - Order confirmations and receipts
+5. **Reporting Module** - Advanced analytics and exports
+
+---
+
+**Tech Stack**: C#, ASP.NET MVC, Entity Framework, SQL Server, Bootstrap
+
+**Domain**: E-commerce, Business Management, Full-stack Development
+
+**Skills Demonstrated**: Backend Development, Database Design, Authentication, MVC Architecture

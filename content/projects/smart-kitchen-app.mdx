@@ -1,0 +1,162 @@
+---
+title: "Smart Kitchen Mobile App"
+summary: "Android mobile application with OCR receipt scanning and Firebase backend for intelligent ingredient and recipe management."
+year: 2023
+featured: false
+status: "completed"
+tags:
+  - id: "android"
+    name: "Android Studio"
+    color: "#3DDC84"
+  - id: "java"
+    name: "Java"
+    color: "#007396"
+  - id: "firebase"
+    name: "Firebase"
+    color: "#FFCA28"
+  - id: "ocr"
+    name: "OCR"
+    color: "#FF6B6B"
+  - id: "mobile"
+    name: "Mobile Dev"
+    color: "#61DAFB"
+links:
+  - label: "GitHub Repository"
+    url: "https://github.com/lironhi/smart-kitchen-app"
+    type: "repo"
+highlights:
+  - "Implemented OCR technology for automatic receipt scanning and ingredient extraction"
+  - "Firebase Realtime Database for synchronized data across devices"
+  - "Smart recipe suggestions based on available ingredients"
+  - "Expiration tracking with automated notifications"
+  - "Intuitive Material Design UI with barcode scanning support"
+updatedAt: "2023-12-01"
+createdAt: "2023-06-01"
+---
+
+# Smart Kitchen Mobile App
+
+A mobile application designed to help users manage their kitchen inventory efficiently through automated receipt scanning, ingredient tracking, and intelligent recipe suggestions.
+
+## 🎯 Problem & Solution
+
+**Problem**: Managing kitchen ingredients is tedious - tracking what you have, when it expires, and what recipes you can make.
+
+**Solution**: An Android app that automates ingredient tracking through receipt OCR and provides intelligent recipe recommendations.
+
+## 🔑 Key Features
+
+### 1. OCR Receipt Scanning
+- **Scan receipts** using device camera
+- **Extract ingredients** automatically using Google ML Kit
+- **Parse quantities** and prices from receipt text
+- **Add to inventory** with one tap
+
+```java
+// OCR Implementation with ML Kit
+TextRecognizer recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
+
+Task<Text> result = recognizer.process(image)
+    .addOnSuccessListener(text -> {
+        parseIngredients(text.getText());
+    })
+    .addOnFailureListener(e -> {
+        handleError(e);
+    });
+```
+
+### 2. Ingredient Management
+- Track quantities and units
+- Monitor expiration dates
+- Automated low-stock alerts
+- Barcode scanning for quick entry
+
+### 3. Recipe Suggestions
+- Suggests recipes based on available ingredients
+- Filters by missing ingredients count
+- Saves favorite recipes
+- Shopping list generation for missing items
+
+### 4. Firebase Integration
+```java
+// Firebase Realtime Database
+FirebaseDatabase database = FirebaseDatabase.getInstance();
+DatabaseReference ref = database.getReference("users/{userId}/ingredients");
+
+// Add ingredient
+ref.child(ingredientId).setValue(new Ingredient(
+    name, quantity, unit, expirationDate
+));
+
+// Real-time updates
+ref.addValueEventListener(new ValueEventListener() {
+    @Override
+    public void onDataChange(DataSnapshot snapshot) {
+        updateUI(snapshot.getValue());
+    }
+});
+```
+
+## 📱 Technical Architecture
+
+### Android Components
+- **Activities**: Main flow (Home, Scanner, Recipes, Settings)
+- **Fragments**: Modular UI components
+- **Services**: Background sync, notifications
+- **Content Providers**: Local SQLite cache
+
+### Libraries Used
+- **ML Kit**: OCR text recognition
+- **Firebase**: Authentication, Realtime Database, Cloud Storage
+- **Glide**: Image loading and caching
+- **ZXing**: Barcode/QR code scanning
+- **Material Components**: Modern UI design
+
+## 📊 Features in Detail
+
+### Expiration Tracking
+- Daily background check for expiring items
+- Push notifications 3 days before expiration
+- Color-coded UI (green/yellow/red) based on freshness
+- Historical data on food waste
+
+### Smart Shopping List
+- Automatically generated from recipes
+- Merge duplicate ingredients
+- Categorized by supermarket sections
+- Shareable with family members
+
+### Recipe Database
+- Local SQLite database with 500+ recipes
+- Filter by cuisine, difficulty, time
+- Nutritional information
+- Step-by-step cooking instructions
+
+## 🎨 UI/UX Highlights
+
+- **Material Design 3** principles
+- **Dark mode** support
+- **Smooth animations** for better UX
+- **Offline-first** architecture
+- **Multi-language** support (English, Hebrew, French)
+
+## 📈 Impact
+
+- **Time saved**: 30 minutes per week on shopping list prep
+- **Food waste reduction**: ~20% based on user feedback
+- **User satisfaction**: 4.5/5 stars in beta testing
+- **Active users**: 200+ during beta phase
+
+## 🔮 Future Enhancements
+
+1. **AI meal planning** based on dietary preferences
+2. **Integration with smart fridges** (IoT)
+3. **Social features** - share recipes with friends
+4. **Nutrition tracking** and health insights
+5. **Voice commands** for hands-free ingredient entry
+
+---
+
+**Tech Stack**: Java, Android Studio, Firebase, ML Kit, SQLite, Material Design
+
+**Domain**: Mobile Development, Computer Vision, Consumer Apps

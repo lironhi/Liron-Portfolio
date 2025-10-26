@@ -1,0 +1,18 @@
+[
+  {
+    "slug": "privacy",
+    "title": "Privacy Policy",
+    "description": "Privacy policy and data handling practices",
+    "content": "This portfolio website collects minimal data and respects your privacy. No personal information is collected without your consent.",
+    "updatedAt": "2024-01-01T00:00:00Z",
+    "published": true
+  },
+  {
+    "slug": "terms",
+    "title": "Terms of Service",
+    "description": "Terms and conditions for using this website",
+    "content": "By using this website, you agree to these terms and conditions. This is a personal portfolio website for informational purposes.",
+    "updatedAt": "2024-01-01T00:00:00Z",
+    "published": true
+  }
+]

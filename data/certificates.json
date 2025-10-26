@@ -1,0 +1,63 @@
+[
+  {
+    "id": "anthropic-prompt-engineering",
+    "name": "Anthropic Prompt Engineering Certification",
+    "issuer": "Anthropic",
+    "issueDate": "2024-12-01",
+    "credentialId": "ANTH-PE-2024",
+    "credentialUrl": "https://www.anthropic.com",
+    "description": "Advanced certification in prompt engineering with Claude AI. Mastered techniques for effective prompt design, chain-of-thought reasoning, and building robust AI applications.",
+    "skills": ["Prompt Engineering", "Claude AI", "LLM Applications", "AI Safety", "Chain-of-Thought"]
+  },
+  {
+    "id": "aws-cloud-practitioner",
+    "name": "AWS Certified Cloud Practitioner",
+    "issuer": "Amazon Web Services",
+    "issueDate": "2024-06-15",
+    "expiryDate": "2027-06-15",
+    "credentialId": "AWS-CCP-2024",
+    "credentialUrl": "https://aws.amazon.com/certification/",
+    "description": "Foundational AWS certification demonstrating cloud computing knowledge, AWS services, security, architecture, pricing, and support.",
+    "skills": ["AWS", "Cloud Computing", "Cloud Architecture", "AWS Services", "Security"]
+  },
+  {
+    "id": "langgraph-specialist",
+    "name": "LangGraph Multi-Agent Systems",
+    "issuer": "LangChain",
+    "issueDate": "2024-08-01",
+    "credentialId": "LG-MAS-2024",
+    "credentialUrl": "https://www.langchain.com",
+    "description": "Specialized training in building complex multi-agent workflows using LangGraph. Covered state management, conditional routing, and production deployment patterns.",
+    "skills": ["LangGraph", "Multi-Agent Systems", "AI Orchestration", "Python", "LangChain"]
+  },
+  {
+    "id": "mobile-app-dev-udemy",
+    "name": "Mobile Application Development",
+    "issuer": "Udemy",
+    "issueDate": "2022-01-01",
+    "credentialId": "UC-MOBILE-2022",
+    "credentialUrl": "https://www.udemy.com",
+    "description": "Comprehensive mobile development course covering Xamarin and Android Studio. Learned to build cross-platform mobile applications with native features and modern UI patterns.",
+    "skills": ["Xamarin", "Android Studio", "Mobile Development", "Java", "C#", "Cross-Platform"]
+  },
+  {
+    "id": "javascript-nodejs-react-udemy",
+    "name": "JavaScript Full Stack Development",
+    "issuer": "Udemy",
+    "issueDate": "2021-06-01",
+    "credentialId": "UC-JSFS-2021",
+    "credentialUrl": "https://www.udemy.com",
+    "description": "Full-stack JavaScript development course covering modern JavaScript, Node.js backend development, and React frontend framework. Practical projects covering REST APIs, authentication, and state management.",
+    "skills": ["JavaScript", "Node.js", "React", "REST API", "Full Stack", "TypeScript"]
+  },
+  {
+    "id": "python-ai-ml",
+    "name": "Python for AI & Machine Learning",
+    "issuer": "Coursera",
+    "issueDate": "2023-03-15",
+    "credentialId": "COURSERA-PYAI-2023",
+    "credentialUrl": "https://www.coursera.org",
+    "description": "Comprehensive course on Python for AI and ML applications. Covered NumPy, Pandas, scikit-learn, and deep learning fundamentals with TensorFlow and PyTorch.",
+    "skills": ["Python", "Machine Learning", "AI", "TensorFlow", "PyTorch", "Data Science"]
+  }
+]

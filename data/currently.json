@@ -1,0 +1,71 @@
+{
+  "learning": [
+    {
+      "id": "advanced-langgraph",
+      "title": "Advanced LangGraph Patterns",
+      "description": "Deep diving into multi-agent orchestration and state management for complex AI workflows",
+      "icon": "🤖",
+      "progress": 75,
+      "link": "https://langchain-ai.github.io/langgraph/"
+    },
+    {
+      "id": "anthropic-mcp",
+      "title": "Model Context Protocol (MCP)",
+      "description": "Exploring Anthropic's MCP for seamless LLM context management and tool integration",
+      "icon": "🔌",
+      "progress": 60,
+      "link": "https://docs.anthropic.com/"
+    }
+  ],
+  "working": [
+    {
+      "id": "portfolio-chatbot",
+      "title": "AI Portfolio Assistant",
+      "description": "Building an intelligent chatbot using LangGraph and Claude to answer questions about my experience and projects",
+      "icon": "💬",
+      "status": "in-progress",
+      "technologies": ["LangGraph", "Claude API", "Next.js", "TypeScript"]
+    },
+    {
+      "id": "automation-framework",
+      "title": "Multi-Agent Automation Framework",
+      "description": "Developing a scalable framework for orchestrating AI agents in enterprise environments",
+      "icon": "⚡",
+      "status": "planning",
+      "technologies": ["Python", "LangGraph", "Docker", "Redis"]
+    }
+  ],
+  "reading": [
+    {
+      "id": "designing-data-intensive",
+      "title": "Designing Data-Intensive Applications",
+      "author": "Martin Kleppmann",
+      "icon": "📚",
+      "progress": 40,
+      "link": "https://dataintensive.net/"
+    },
+    {
+      "id": "ai-engineering",
+      "title": "Building LLM Apps",
+      "author": "Anthropic Team",
+      "icon": "📖",
+      "progress": 80,
+      "link": "https://docs.anthropic.com/en/docs/build-with-claude"
+    }
+  ],
+  "exploring": [
+    {
+      "id": "rust-systems",
+      "title": "Rust for Systems Programming",
+      "description": "Learning Rust to build high-performance backend services",
+      "icon": "🦀"
+    },
+    {
+      "id": "vector-databases",
+      "title": "Vector Databases & RAG",
+      "description": "Implementing efficient semantic search with Pinecone and FAISS",
+      "icon": "🔍"
+    }
+  ],
+  "lastUpdated": "2025-01-22"
+}

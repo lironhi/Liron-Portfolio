@@ -1,0 +1,355 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Smooth transitions for theme switching */
+  * {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+  }
+}
+
+@layer utilities {
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Subtle glow animation for interactive elements */
+  @keyframes gentle-glow {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0);
+      border-color: hsl(var(--border));
+    }
+    50% {
+      box-shadow: 0 0 15px 2px rgba(var(--primary-rgb), 0.15);
+      border-color: hsl(var(--primary) / 0.4);
+    }
+  }
+
+  .hover-glow:hover {
+    animation: gentle-glow 2s ease-in-out infinite;
+  }
+
+  /* Option 1: Bounce and Scale - Effet rebondissant ludique */
+  @keyframes bubble-bounce {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px) scale(0.8);
+    }
+    60% {
+      opacity: 1;
+      transform: translateY(5px) scale(1.05);
+    }
+    80% {
+      transform: translateY(-2px) scale(0.98);
+    }
+    100% {
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .animate-bubble-bounce {
+    animation: bubble-bounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Option 2: Float - Effet flottant doux */
+  @keyframes bubble-float {
+    0% {
+      opacity: 0;
+      transform: translateY(10px) scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes gentle-float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+
+  .animate-bubble-float {
+    animation: bubble-float 0.4s ease-out, gentle-float 3s ease-in-out infinite 0.4s;
+  }
+
+  /* Option 3: Slide and Fade - Glissement latéral */
+  @keyframes bubble-slide {
+    0% {
+      opacity: 0;
+      transform: translateX(-20px) scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+  }
+
+  .animate-bubble-slide {
+    animation: bubble-slide 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Option 4: Pop - Effet "pop" comme une bulle qui éclate à l'envers */
+  @keyframes bubble-pop {
+    0% {
+      opacity: 0;
+      transform: scale(0);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .animate-bubble-pop {
+    animation: bubble-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Option 5: Rotate and Scale - Rotation douce avec scale */
+  @keyframes bubble-rotate {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px) scale(0.8) rotate(-5deg);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1) rotate(0deg);
+    }
+  }
+
+  .animate-bubble-rotate {
+    animation: bubble-rotate 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Option 6: Elastic - Effet élastique très dynamique */
+  @keyframes bubble-elastic {
+    0% {
+      opacity: 0;
+      transform: scale(0) translateY(-20px);
+    }
+    40% {
+      transform: scale(1.15) translateY(3px);
+    }
+    65% {
+      transform: scale(0.95) translateY(-2px);
+    }
+    82% {
+      transform: scale(1.05) translateY(1px);
+    }
+    93% {
+      transform: scale(0.98) translateY(0);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  .animate-bubble-elastic {
+    animation: bubble-elastic 0.7s ease-out;
+  }
+
+  /* Rainbow text animation */
+  @keyframes rainbow-text {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  .text-rainbow {
+    background: linear-gradient(
+      90deg,
+      #ff0080,
+      #ff8c00,
+      #ffd700,
+      #00ff00,
+      #00bfff,
+      #8a2be2,
+      #ff0080
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rainbow-text 3s linear infinite;
+  }
+}
+
+@layer base {
+  :root {
+    --primary-rgb: 56, 97, 251;
+  }
+
+  .dark {
+    --primary-rgb: 96, 165, 250;
+  }
+}
+
+/* MDX Styles */
+.mdx {
+  @apply text-foreground;
+}
+
+.mdx h1,
+.mdx h2,
+.mdx h3,
+.mdx h4,
+.mdx h5,
+.mdx h6 {
+  @apply font-semibold text-foreground;
+}
+
+.mdx h1 {
+  @apply text-3xl lg:text-4xl;
+}
+
+.mdx h2 {
+  @apply text-2xl lg:text-3xl;
+}
+
+.mdx h3 {
+  @apply text-xl lg:text-2xl;
+}
+
+.mdx h4 {
+  @apply text-lg lg:text-xl;
+}
+
+.mdx p {
+  @apply leading-7 text-muted-foreground;
+}
+
+.mdx ul,
+.mdx ol {
+  @apply my-6 ml-6;
+}
+
+.mdx ul {
+  @apply list-disc;
+}
+
+.mdx ol {
+  @apply list-decimal;
+}
+
+.mdx li {
+  @apply mt-2;
+}
+
+.mdx blockquote {
+  @apply mt-6 border-l-2 border-border pl-6 italic text-muted-foreground;
+}
+
+.mdx hr {
+  @apply my-4 border-border md:my-8;
+}
+
+.mdx a {
+  @apply font-medium text-primary underline underline-offset-4 hover:text-primary/80;
+}
+
+.mdx code {
+  @apply relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm;
+}
+
+.mdx pre {
+  @apply mb-4 mt-6 overflow-x-auto rounded-lg border bg-muted p-4;
+}
+
+.mdx pre code {
+  @apply bg-transparent p-0;
+}
+
+.mdx img {
+  @apply rounded-md;
+}
+
+.mdx table {
+  @apply my-6 w-full overflow-y-auto;
+}
+
+.mdx th,
+.mdx td {
+  @apply border px-4 py-2 text-left;
+}
+
+.mdx th {
+  @apply font-bold;
+}
+
+.mdx tr:nth-child(even) {
+  @apply bg-muted/50;
+}

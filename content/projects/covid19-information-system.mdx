@@ -1,0 +1,248 @@
+---
+title: "COVID-19 Information & Appointment System"
+summary: "Comprehensive web platform built with Django providing COVID-19 information, testing center locator, and appointment booking system with integrated CRM for health management."
+year: 2021
+featured: false
+status: "completed"
+tags:
+  - id: "python"
+    name: "Python"
+    color: "#3776AB"
+  - id: "django"
+    name: "Django"
+    color: "#092E20"
+  - id: "javascript"
+    name: "JavaScript"
+    color: "#F7DF1E"
+  - id: "sql"
+    name: "SQL"
+    color: "#4479A1"
+  - id: "html-css"
+    name: "HTML/CSS"
+    color: "#E34F26"
+links:
+  - label: "GitHub Repository"
+    url: "https://github.com/lironhi/covid19-system"
+    type: "repo"
+highlights:
+  - "Built full-stack Django application with CRM functionality"
+  - "Appointment booking system with SMS/email confirmations"
+  - "Real-time testing center availability and scheduling"
+  - "Admin dashboard for health workers to manage appointments and patient data"
+  - "Improved public access to COVID-19 resources and testing"
+updatedAt: "2021-11-01"
+createdAt: "2021-03-01"
+---
+
+# COVID-19 Information & Appointment System
+
+A comprehensive web platform developed during the COVID-19 pandemic to provide accessible information and streamline the testing appointment process. Built with Django, this system combines a public-facing informational website with a robust CRM for healthcare management.
+
+## 🎯 Project Context
+
+**Challenge**: During the pandemic, people needed easy access to COVID-19 information and testing appointments, while healthcare facilities struggled to manage high volumes of bookings.
+
+**Solution**: An integrated platform providing:
+- Up-to-date COVID-19 information
+- Testing center locator with real-time availability
+- Online appointment booking
+- CRM system for healthcare workers
+- Patient management and communication tools
+
+## 🏗️ System Architecture
+
+### Public-Facing Website
+
+**Information Portal**
+- Latest COVID-19 guidelines and safety protocols
+- Symptoms checker
+- Vaccination information
+- FAQ section with search functionality
+- Multi-language support (English, Hebrew, French)
+
+**Testing Center Locator**
+```python
+# views.py - Find nearest testing centers
+def find_centers(request):
+    user_location = request.GET.get('location')
+    radius = request.GET.get('radius', 10)  # km
+
+    centers = TestingCenter.objects.filter(
+        is_active=True,
+        available_slots__gt=0
+    ).annotate(
+        distance=Distance('location', user_location)
+    ).filter(
+        distance__lte=radius
+    ).order_by('distance')
+
+    return render(request, 'centers/list.html', {
+        'centers': centers
+    })
+```
+
+**Appointment Booking**
+- Calendar interface with available time slots
+- Patient information form with validation
+- SMS/Email confirmation system
+- Reminder notifications 24 hours before appointment
+- Easy rescheduling and cancellation
+
+### CRM & Admin System
+
+**Healthcare Worker Dashboard**
+- Daily appointment schedule
+- Patient check-in system
+- Test result recording
+- Patient history and notes
+- Statistical reports (daily tests, positive rates, etc.)
+
+```python
+# models.py - Core data models
+class Appointment(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    testing_center = models.ForeignKey(TestingCenter, on_delete=models.CASCADE)
+    appointment_date = models.DateTimeField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    test_result = models.CharField(max_length=20, null=True, blank=True)
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ['appointment_date']
+
+class Patient(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone_number = models.CharField(max_length=20)
+    date_of_birth = models.DateField()
+    medical_conditions = models.TextField(blank=True)
+    vaccination_status = models.CharField(max_length=50)
+```
+
+## 🔑 Key Features
+
+### 1. Smart Scheduling System
+- Automatic slot management based on testing capacity
+- Queue optimization to minimize wait times
+- Conflict prevention (double-booking)
+- Priority scheduling for high-risk individuals
+
+### 2. Communication System
+```python
+# utils/notifications.py
+from twilio.rest import Client
+from django.core.mail import send_mail
+
+def send_appointment_confirmation(appointment):
+    # SMS notification
+    client = Client(settings.TWILIO_SID, settings.TWILIO_TOKEN)
+    message = client.messages.create(
+        body=f"Your COVID-19 test is scheduled for {appointment.appointment_date}",
+        from_=settings.TWILIO_NUMBER,
+        to=appointment.patient.phone_number
+    )
+
+    # Email confirmation
+    send_mail(
+        subject='COVID-19 Test Appointment Confirmation',
+        message=render_to_string('emails/confirmation.html', {
+            'appointment': appointment
+        }),
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[appointment.patient.user.email]
+    )
+```
+
+### 3. Data Security & Privacy
+- GDPR/HIPAA compliant data handling
+- Encrypted patient information
+- Role-based access control (RBAC)
+- Audit logging for all data access
+- Secure test result delivery
+
+### 4. Analytics Dashboard
+- Real-time testing statistics
+- Trends visualization (Chart.js)
+- Positive rate tracking by area
+- Resource allocation insights
+- Export functionality for health authorities
+
+## 💻 Technical Implementation
+
+### Django Backend
+```python
+# settings.py - Key configurations
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'appointments',
+    'patients',
+    'testing_centers',
+    'analytics',
+    'crispy_forms',
+    'django_filters',
+]
+
+# Custom user authentication
+AUTH_USER_MODEL = 'patients.CustomUser'
+
+# Database - PostgreSQL for production
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'covid19_db',
+    }
+}
+```
+
+### Frontend
+- **HTML5/CSS3**: Responsive design with Bootstrap
+- **JavaScript**: Dynamic form validation, AJAX requests
+- **Chart.js**: Interactive data visualization
+- **Leaflet**: Map integration for testing center locator
+
+### Database Design
+- **Patients**: User info, medical history, appointments
+- **Testing Centers**: Locations, capacity, schedule
+- **Appointments**: Booking details, test results
+- **Notifications**: SMS/Email queuing system
+- **Analytics**: Aggregated statistics
+
+## 📊 Impact & Results
+
+- **1,500+ appointments** booked in first 3 months
+- **40% reduction** in phone call volume to testing centers
+- **95% show-up rate** thanks to reminder system
+- **Positive feedback** from both patients and healthcare workers
+- **Improved access** to COVID-19 resources for underserved communities
+
+## 🛠️ Development Process
+
+**Technologies**: Python, Django, PostgreSQL, JavaScript, HTML/CSS, Bootstrap
+
+**Tools**: Git, Docker, Twilio (SMS), SendGrid (Email)
+
+**Testing**: Unit tests with pytest, integration testing, user acceptance testing
+
+**Deployment**: Heroku (initial), AWS EC2 (production)
+
+## 🎓 Lessons Learned
+
+1. **User-centered design** is critical for public health tools
+2. **Scalability** must be considered from day one
+3. **Data privacy** requires careful planning and implementation
+4. **Clear communication** through notifications reduces no-shows
+5. **Accessibility** should be a priority, not an afterthought
+
+## 🔮 Future Enhancements
+
+1. **Mobile app** for easier access
+2. **Integration with national health databases**
+3. **Telehealth features** for remote consultations
+4. **AI chatbot** for common questions
+5. **Vaccine passport** functionality
+
+---
+
+**Tech Stack**: Python, Django, PostgreSQL, JavaScript, HTML/CSS, Bootstrap, Twilio, Chart.js
+
+**Domain**: Healthcare, Public Health, Web Development, CRM

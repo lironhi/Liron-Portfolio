@@ -1,0 +1,357 @@
+---
+title: "Bot Manager - Facebook Automation Platform"
+summary: "Django-based automation platform for managing Facebook bot interactions with intelligent scheduling and monitoring capabilities."
+year: 2023
+featured: false
+status: "completed"
+tags:
+  - id: "python"
+    name: "Python"
+    color: "#3776AB"
+  - id: "django"
+    name: "Django"
+    color: "#092E20"
+  - id: "automation"
+    name: "Automation"
+    color: "#FF6B6B"
+  - id: "facebook"
+    name: "Facebook API"
+    color: "#1877F2"
+  - id: "postgresql"
+    name: "PostgreSQL"
+    color: "#336791"
+links:
+  - label: "GitHub Repository"
+    url: "https://github.com/lironhi/bot-manager"
+    type: "repo"
+highlights:
+  - "Automated Facebook interaction workflows with intelligent scheduling"
+  - "Django admin interface for bot configuration and monitoring"
+  - "PostgreSQL database for persistent state management"
+  - "RESTful API for programmatic bot control"
+updatedAt: "2023-10-15"
+createdAt: "2023-06-01"
+---
+
+# Bot Manager - Facebook Automation Platform
+
+A Django-based automation platform designed to manage and orchestrate Facebook bot interactions with intelligent scheduling, monitoring, and control capabilities.
+
+## 🎯 Problem & Solution
+
+**Problem**: Managing multiple Facebook automation tasks manually is time-consuming, error-prone, and difficult to scale. Need for a centralized system to control, monitor, and schedule bot activities.
+
+**Solution**: A comprehensive Django application that provides a web interface for configuring bots, scheduling tasks, monitoring activity, and managing automation workflows with full audit trails.
+
+## 🔑 Key Features
+
+### 1. Bot Management Dashboard
+- **Create and configure** multiple bot instances
+- **Real-time monitoring** of bot status and activity
+- **Activity logs** with detailed execution history
+- **Error tracking** and alerting system
+
+### 2. Intelligent Scheduling
+```python
+from django.utils import timezone
+from datetime import timedelta
+
+class BotScheduler:
+    def __init__(self, bot_config):
+        self.bot = bot_config
+        self.schedule = bot_config.schedule
+
+    def should_execute(self):
+        """Determine if bot should run based on schedule and constraints"""
+        if not self.bot.is_active:
+            return False
+
+        # Check rate limiting
+        last_run = self.bot.last_execution
+        if last_run and (timezone.now() - last_run) < timedelta(minutes=self.bot.min_interval):
+            return False
+
+        # Check time window
+        current_hour = timezone.now().hour
+        if not (self.schedule.start_hour <= current_hour <= self.schedule.end_hour):
+            return False
+
+        return True
+
+    def execute(self):
+        """Execute bot task with error handling"""
+        try:
+            result = self.bot.run()
+            self.log_success(result)
+        except Exception as e:
+            self.log_error(e)
+            self.notify_admin(e)
+```
+
+### 3. Facebook API Integration
+- **Session management** with cookie persistence
+- **Request throttling** to respect rate limits
+- **Proxy support** for distributed execution
+- **CAPTCHA handling** and human-like delays
+
+### 4. Admin Interface
+```python
+from django.contrib import admin
+from .models import Bot, BotExecution, Schedule
+
+@admin.register(Bot)
+class BotAdmin(admin.ModelAdmin):
+    list_display = ['name', 'status', 'last_execution', 'success_rate', 'is_active']
+    list_filter = ['status', 'is_active', 'created_at']
+    search_fields = ['name', 'description']
+    readonly_fields = ['created_at', 'updated_at', 'last_execution']
+
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('name', 'description', 'is_active')
+        }),
+        ('Configuration', {
+            'fields': ('target_url', 'action_type', 'schedule', 'max_retries')
+        }),
+        ('Statistics', {
+            'fields': ('last_execution', 'total_executions', 'success_rate'),
+            'classes': ('collapse',)
+        }),
+    )
+
+    def success_rate(self, obj):
+        if obj.total_executions == 0:
+            return "N/A"
+        rate = (obj.successful_executions / obj.total_executions) * 100
+        return f"{rate:.1f}%"
+```
+
+## 📊 Technical Architecture
+
+### Models Structure
+```python
+from django.db import models
+from django.contrib.auth.models import User
+
+class Bot(models.Model):
+    STATUS_CHOICES = [
+        ('idle', 'Idle'),
+        ('running', 'Running'),
+        ('paused', 'Paused'),
+        ('error', 'Error'),
+    ]
+
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='idle')
+    is_active = models.BooleanField(default=True)
+
+    # Configuration
+    target_url = models.URLField()
+    action_type = models.CharField(max_length=50)
+    schedule = models.ForeignKey('Schedule', on_delete=models.SET_NULL, null=True)
+    max_retries = models.IntegerField(default=3)
+
+    # Statistics
+    last_execution = models.DateTimeField(null=True, blank=True)
+    total_executions = models.IntegerField(default=0)
+    successful_executions = models.IntegerField(default=0)
+
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.name
+
+class BotExecution(models.Model):
+    bot = models.ForeignKey(Bot, on_delete=models.CASCADE, related_name='executions')
+    started_at = models.DateTimeField(auto_now_add=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    success = models.BooleanField(default=False)
+    error_message = models.TextField(blank=True)
+    execution_data = models.JSONField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-started_at']
+
+class Schedule(models.Model):
+    name = models.CharField(max_length=100)
+    start_hour = models.IntegerField(default=9)
+    end_hour = models.IntegerField(default=17)
+    min_interval = models.IntegerField(default=30, help_text="Minutes between executions")
+    days_of_week = models.CharField(max_length=20, default="1,2,3,4,5")
+
+    def __str__(self):
+        return self.name
+```
+
+### RESTful API
+```python
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+
+class BotViewSet(viewsets.ModelViewSet):
+    queryset = Bot.objects.all()
+    serializer_class = BotSerializer
+
+    @action(detail=True, methods=['post'])
+    def start(self, request, pk=None):
+        """Start a bot manually"""
+        bot = self.get_object()
+        bot.status = 'running'
+        bot.save()
+
+        # Trigger bot execution
+        execute_bot_async.delay(bot.id)
+
+        return Response({'status': 'Bot started successfully'})
+
+    @action(detail=True, methods=['post'])
+    def stop(self, request, pk=None):
+        """Stop a running bot"""
+        bot = self.get_object()
+        bot.status = 'paused'
+        bot.save()
+
+        return Response({'status': 'Bot stopped successfully'})
+
+    @action(detail=True, methods=['get'])
+    def statistics(self, request, pk=None):
+        """Get detailed bot statistics"""
+        bot = self.get_object()
+        executions = bot.executions.all()[:100]
+
+        return Response({
+            'total_executions': bot.total_executions,
+            'success_rate': bot.successful_executions / bot.total_executions if bot.total_executions > 0 else 0,
+            'recent_executions': BotExecutionSerializer(executions, many=True).data
+        })
+```
+
+## 🛠️ Technologies Used
+
+### Backend
+- **Django 4.x** - Web framework
+- **Django REST Framework** - API development
+- **Celery** - Asynchronous task queue
+- **Redis** - Message broker and caching
+- **PostgreSQL** - Relational database
+
+### Facebook Automation
+- **Selenium** - Browser automation
+- **BeautifulSoup** - HTML parsing
+- **Requests** - HTTP client
+
+### Infrastructure
+- **Docker** - Containerization
+- **Nginx** - Reverse proxy
+- **Gunicorn** - WSGI server
+
+## 🔒 Security Features
+
+1. **Authentication & Authorization**
+   - Django's built-in user authentication
+   - Permission-based access control
+   - API token authentication
+
+2. **Rate Limiting**
+   - Request throttling to prevent API abuse
+   - Automatic backoff on rate limit errors
+
+3. **Secure Credentials**
+   - Encrypted storage of Facebook credentials
+   - Environment-based configuration
+   - No hardcoded secrets
+
+4. **Audit Trails**
+   - Complete logging of all bot actions
+   - User action tracking
+   - Error monitoring and alerting
+
+## 📈 Performance Optimizations
+
+- **Asynchronous execution** with Celery for non-blocking operations
+- **Database indexing** on frequently queried fields
+- **Query optimization** using select_related and prefetch_related
+- **Caching** with Redis for frequently accessed data
+- **Connection pooling** for database efficiency
+
+## 🧪 Testing
+
+```python
+from django.test import TestCase
+from django.utils import timezone
+from .models import Bot, Schedule
+
+class BotSchedulerTests(TestCase):
+    def setUp(self):
+        self.schedule = Schedule.objects.create(
+            name="Business Hours",
+            start_hour=9,
+            end_hour=17,
+            min_interval=30
+        )
+        self.bot = Bot.objects.create(
+            name="Test Bot",
+            schedule=self.schedule,
+            is_active=True
+        )
+
+    def test_should_not_execute_outside_hours(self):
+        """Bot should not execute outside scheduled hours"""
+        scheduler = BotScheduler(self.bot)
+
+        # Mock current time to 8 AM (before start_hour)
+        with mock.patch('django.utils.timezone.now') as mock_now:
+            mock_now.return_value = timezone.now().replace(hour=8)
+            self.assertFalse(scheduler.should_execute())
+
+    def test_respects_min_interval(self):
+        """Bot should respect minimum interval between executions"""
+        self.bot.last_execution = timezone.now()
+        self.bot.save()
+
+        scheduler = BotScheduler(self.bot)
+        self.assertFalse(scheduler.should_execute())
+```
+
+## 📚 What I Learned
+
+1. **Task Scheduling** - Implementing robust scheduling with time windows and rate limiting
+2. **API Integration** - Working with Facebook's API and handling rate limits
+3. **Async Processing** - Using Celery for background task execution
+4. **Error Handling** - Building resilient systems with retry logic and fallbacks
+5. **Monitoring** - Implementing comprehensive logging and alerting systems
+6. **Django Admin** - Customizing Django's admin interface for complex workflows
+
+## ⚠️ Ethical Considerations
+
+This project was developed for **educational purposes** to learn about:
+- Web automation frameworks
+- Task scheduling systems
+- Django application architecture
+- API integration patterns
+
+**Important**: Automation should always respect platform terms of service and be used responsibly.
+
+## 🔮 Future Enhancements
+
+1. **Machine Learning** - Intelligent timing based on engagement patterns
+2. **Multi-platform Support** - Extend to other social platforms
+3. **Advanced Analytics** - Detailed performance metrics and insights
+4. **Webhook Integration** - Real-time notifications and triggers
+5. **A/B Testing** - Test different automation strategies
+
+---
+
+**Tech Stack**: Python, Django, Celery, PostgreSQL, Redis, Docker
+
+**Domain**: Web Automation, Backend Development, System Design
+
+**Skills Demonstrated**: API Integration, Async Processing, Database Design, Testing
