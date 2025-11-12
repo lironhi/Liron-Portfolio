@@ -1,0 +1,312 @@
+---
+title: "KPI Generator - Sales Performance Dashboard"
+summary: "Python-based KPI generation tool that creates comprehensive sales performance reports with visualizations and analytics."
+year: 2024
+featured: false
+status: "completed"
+tags:
+  - id: "python"
+    name: "Python"
+    color: "#3776AB"
+  - id: "data-analysis"
+    name: "Data Analysis"
+    color: "#FF6B6B"
+  - id: "analytics"
+    name: "Analytics"
+    color: "#4ECDC4"
+  - id: "visualization"
+    name: "Visualization"
+    color: "#95E1D3"
+links:
+  - label: "GitHub Repository"
+    url: "https://github.com/lironhi/KPI-Generator"
+    type: "repo"
+highlights:
+  - "Automated KPI report generation for sales teams"
+  - "Visual dashboards with charts and performance metrics"
+  - "Customizable metrics and reporting periods"
+  - "Export capabilities for various formats"
+updatedAt: "2024-11-11"
+createdAt: "2024-08-01"
+---
+
+# KPI Generator - Sales Performance Dashboard
+
+A Python-based tool designed to automate the generation of Key Performance Indicator (KPI) reports for sales teams, providing comprehensive insights into sales performance with visual analytics.
+
+## 🎯 Problem & Solution
+
+**Problem**: Sales managers spend hours manually compiling sales data from various sources, calculating KPIs, and creating reports. This manual process is time-consuming, error-prone, and delays decision-making.
+
+**Solution**: An automated KPI generator that consolidates sales data, calculates relevant metrics, and produces professional reports with visualizations—reducing report generation time from hours to minutes.
+
+## 🔑 Key Features
+
+### 1. Automated Data Processing
+```python
+import pandas as pd
+from datetime import datetime, timedelta
+
+class SalesDataProcessor:
+    def __init__(self, data_source):
+        self.data = pd.read_csv(data_source)
+        self.processed_data = None
+
+    def clean_data(self):
+        """Clean and prepare sales data"""
+        # Remove duplicates
+        self.data.drop_duplicates(subset=['transaction_id'], inplace=True)
+
+        # Convert dates
+        self.data['date'] = pd.to_datetime(self.data['date'])
+
+        # Handle missing values
+        self.data['amount'].fillna(0, inplace=True)
+
+        return self
+
+    def calculate_metrics(self):
+        """Calculate key performance metrics"""
+        self.processed_data = {
+            'total_revenue': self.data['amount'].sum(),
+            'avg_transaction': self.data['amount'].mean(),
+            'transaction_count': len(self.data),
+            'top_products': self.get_top_products(),
+            'sales_by_region': self.get_regional_breakdown(),
+            'growth_rate': self.calculate_growth_rate()
+        }
+        return self.processed_data
+```
+
+### 2. KPI Calculations
+- **Revenue Metrics**: Total revenue, average order value, revenue growth
+- **Performance Indicators**: Conversion rates, customer acquisition cost
+- **Trend Analysis**: Month-over-month growth, year-over-year comparison
+- **Regional Breakdown**: Sales by territory, top-performing regions
+- **Product Performance**: Best-selling products, inventory turnover
+
+### 3. Visual Dashboards
+```python
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+class KPIVisualizer:
+    def __init__(self, metrics_data):
+        self.data = metrics_data
+        sns.set_style("whitegrid")
+
+    def create_revenue_chart(self):
+        """Generate revenue trend visualization"""
+        fig, ax = plt.subplots(figsize=(12, 6))
+
+        # Revenue over time
+        self.data.plot(x='month', y='revenue', kind='line',
+                      ax=ax, marker='o', linewidth=2)
+
+        ax.set_title('Monthly Revenue Trend', fontsize=16, fontweight='bold')
+        ax.set_xlabel('Month', fontsize=12)
+        ax.set_ylabel('Revenue ($)', fontsize=12)
+        ax.grid(True, alpha=0.3)
+
+        # Add trend line
+        z = np.polyfit(range(len(self.data)), self.data['revenue'], 1)
+        p = np.poly1d(z)
+        ax.plot(self.data['month'], p(range(len(self.data))),
+               "r--", alpha=0.8, label='Trend')
+
+        ax.legend()
+        return fig
+
+    def create_performance_dashboard(self):
+        """Create comprehensive dashboard with multiple charts"""
+        fig = plt.figure(figsize=(16, 10))
+        gs = fig.add_gridspec(3, 2, hspace=0.3, wspace=0.3)
+
+        # Revenue chart
+        ax1 = fig.add_subplot(gs[0, :])
+        self.plot_revenue_trend(ax1)
+
+        # Top products
+        ax2 = fig.add_subplot(gs[1, 0])
+        self.plot_top_products(ax2)
+
+        # Regional breakdown
+        ax3 = fig.add_subplot(gs[1, 1])
+        self.plot_regional_sales(ax3)
+
+        # Conversion funnel
+        ax4 = fig.add_subplot(gs[2, 0])
+        self.plot_conversion_funnel(ax4)
+
+        # Growth metrics
+        ax5 = fig.add_subplot(gs[2, 1])
+        self.plot_growth_metrics(ax5)
+
+        return fig
+```
+
+### 4. Report Generation
+```python
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table
+
+class ReportGenerator:
+    def __init__(self, kpi_data, output_path):
+        self.data = kpi_data
+        self.output_path = output_path
+        self.doc = SimpleDocTemplate(output_path, pagesize=letter)
+        self.story = []
+
+    def generate_executive_summary(self):
+        """Create executive summary section"""
+        summary = f"""
+        <b>Executive Summary</b><br/>
+        <br/>
+        Total Revenue: ${self.data['total_revenue']:,.2f}<br/>
+        Growth Rate: {self.data['growth_rate']:.1f}%<br/>
+        Transactions: {self.data['transaction_count']:,}<br/>
+        Average Order Value: ${self.data['avg_transaction']:.2f}<br/>
+        """
+        return Paragraph(summary)
+
+    def add_chart(self, chart_figure, title):
+        """Add chart to report"""
+        # Save chart as image
+        img_path = f"temp_chart_{title}.png"
+        chart_figure.savefig(img_path, dpi=300, bbox_inches='tight')
+
+        # Add to report
+        self.story.append(Spacer(1, 12))
+        self.story.append(Paragraph(f"<b>{title}</b>"))
+        self.story.append(Image(img_path, width=500, height=300))
+
+    def create_kpi_table(self):
+        """Create KPI summary table"""
+        data = [
+            ['KPI', 'Current', 'Previous', 'Change'],
+            ['Revenue', f"${self.data['revenue']:,.0f}",
+             f"${self.data['prev_revenue']:,.0f}",
+             f"{self.data['revenue_change']:+.1f}%"],
+            ['Customers', f"{self.data['customers']:,}",
+             f"{self.data['prev_customers']:,}",
+             f"{self.data['customer_change']:+.1f}%"],
+            ['Avg Order', f"${self.data['avg_order']:.2f}",
+             f"${self.data['prev_avg_order']:.2f}",
+             f"{self.data['order_change']:+.1f}%"],
+        ]
+
+        table = Table(data)
+        table.setStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), '#3b82f6'),
+            ('TEXTCOLOR', (0, 0), (-1, 0), 'white'),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('GRID', (0, 0), (-1, -1), 1, 'black')
+        ])
+
+        return table
+
+    def build_report(self):
+        """Compile and save the complete report"""
+        self.story.append(self.generate_executive_summary())
+        self.story.append(Spacer(1, 20))
+        self.story.append(self.create_kpi_table())
+
+        # Add charts
+        charts = self.generate_all_charts()
+        for title, chart in charts.items():
+            self.add_chart(chart, title)
+
+        # Build PDF
+        self.doc.build(self.story)
+```
+
+## 📊 Supported Metrics
+
+### Sales Performance
+- Total revenue and revenue by period
+- Average transaction value
+- Number of transactions
+- Revenue per customer
+
+### Customer Analytics
+- Customer acquisition rate
+- Customer retention rate
+- Lifetime value (LTV)
+- Churn rate
+
+### Product Performance
+- Best-selling products
+- Product category breakdown
+- Inventory turnover
+- Product profitability
+
+### Geographic Analysis
+- Sales by region/territory
+- Geographic growth trends
+- Regional performance comparison
+
+## 🛠️ Technical Stack
+
+- **Python 3.x** - Core programming language
+- **Pandas** - Data manipulation and analysis
+- **Matplotlib & Seaborn** - Data visualization
+- **ReportLab** - PDF report generation
+- **NumPy** - Numerical computations
+- **Openpyxl** - Excel file handling
+
+## 📈 Usage Example
+
+```python
+from kpi_generator import SalesDataProcessor, KPIVisualizer, ReportGenerator
+
+# Initialize processor
+processor = SalesDataProcessor('sales_data.csv')
+
+# Process data and calculate metrics
+processor.clean_data().calculate_metrics()
+kpi_data = processor.get_results()
+
+# Generate visualizations
+visualizer = KPIVisualizer(kpi_data)
+dashboard = visualizer.create_performance_dashboard()
+
+# Create report
+report = ReportGenerator(kpi_data, 'sales_report.pdf')
+report.build_report()
+
+print("KPI report generated successfully!")
+```
+
+## 🎯 Benefits
+
+1. **Time Savings**: Reduce report generation from hours to minutes
+2. **Accuracy**: Eliminate manual calculation errors
+3. **Consistency**: Standardized metrics across all reports
+4. **Insights**: Visual analytics reveal trends and patterns
+5. **Scalability**: Handle large datasets efficiently
+
+## 📚 What I Learned
+
+1. **Data Processing**: Cleaning and transforming raw sales data
+2. **Statistical Analysis**: Calculating meaningful business metrics
+3. **Data Visualization**: Creating clear, informative charts
+4. **Report Automation**: Building professional reports programmatically
+5. **Python Libraries**: Mastering pandas, matplotlib, and reportlab
+
+## 🔮 Future Enhancements
+
+1. **Real-time Dashboard** - Web-based live KPI monitoring
+2. **Predictive Analytics** - Forecast future sales trends
+3. **Integration APIs** - Connect to CRM and ERP systems
+4. **Custom Metrics** - User-defined KPI formulas
+5. **Automated Alerts** - Notifications for metric thresholds
+6. **Multi-language Reports** - Support for Hebrew and French
+
+---
+
+**Tech Stack**: Python, Pandas, Matplotlib, Seaborn, ReportLab, NumPy
+
+**Domain**: Business Analytics, Data Visualization, Reporting
+
+**Skills Demonstrated**: Data Analysis, Statistical Computing, Report Generation, Python Development
