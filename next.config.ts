@@ -1,4 +1,5 @@
-import { withContentlayer } from 'next-contentlayer';
+// Contentlayer disabled - using fsAdapter instead
+// import { withContentlayer } from 'next-contentlayer';
 
 import type { NextConfig } from 'next';
 
@@ -39,4 +40,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withContentlayer(nextConfig);
+export default nextConfig;
