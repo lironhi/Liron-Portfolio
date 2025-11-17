@@ -28,6 +28,16 @@ const imagesByProject: Record<string, ImageItemWithOrientation[]> = {
     { src: '/projects/eliana-beauty/msg.png', alt: 'Messages', label: 'Messaging', orientation: 'landscape' },
     { src: '/projects/eliana-beauty/main_mob.png', alt: 'Mobile', label: 'Mobile View', orientation: 'portrait' },
   ],
+  'aquarium-frame': [
+    { src: '/projects/aquarium-frame/Aquarium Frame.png', alt: 'Aquarium Frame', label: 'Aquarium Frame System', orientation: 'landscape' },
+  ],
+  'kpi-generator': [
+    { src: '/projects/kpi-generator/main_gui.png', alt: 'Main GUI', label: 'Main Interface', orientation: 'landscape' },
+    { src: '/projects/kpi-generator/kpi_Conversion_by_agent_team_Last_30_days_-_ES_IL_Team_Ashkelon_FTD___RETENTION_.png', alt: 'KPI Dashboard', label: 'KPI Dashboard - Conversion by Agent Team', orientation: 'landscape' },
+  ],
+  'post-tracking-system': [
+    { src: '/projects/post-tracking-system/tracking pack system.png', alt: 'Tracking System', label: 'Post Tracking System', orientation: 'landscape' },
+  ],
 };
 
 export function ProjectImageGallery({ projectSlug }: ProjectImageGalleryProps) {
@@ -148,21 +158,21 @@ export function ProjectImageGallery({ projectSlug }: ProjectImageGalleryProps) {
 
           {/* Image Container */}
           <div
-            className="relative max-w-7xl max-h-[85vh] w-full mx-4"
+            className="relative flex items-center justify-center max-w-[90vw] max-h-[85vh] mx-auto px-4"
             onClick={(e) => e.stopPropagation()}
           >
             <img
               src={images[selectedIndex].src}
               alt={images[selectedIndex].alt}
-              className="w-full h-full object-contain rounded-lg"
+              className="max-w-full max-h-[85vh] w-auto h-auto object-contain rounded-lg shadow-2xl"
             />
 
             {/* Image Label */}
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-6 rounded-b-lg">
-              <p className="text-white text-lg font-medium">
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4 md:p-6 rounded-b-lg">
+              <p className="text-white text-sm md:text-lg font-medium">
                 {images[selectedIndex].label}
               </p>
-              <p className="text-white/60 text-sm mt-1">
+              <p className="text-white/60 text-xs md:text-sm mt-1">
                 {selectedIndex + 1} / {images.length}
               </p>
             </div>
