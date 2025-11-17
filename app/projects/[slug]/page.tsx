@@ -6,6 +6,8 @@ import { Section } from '@/components/Section';
 import { Button } from '@/components/Button';
 import { Badge } from '@/components/Badge';
 import { ProjectCaseStudy } from '@/components/ProjectCaseStudy';
+import { MarkdownContent } from '@/components/MarkdownContent';
+import { ProjectImageGallery } from '@/components/ProjectImageGallery';
 import { data } from '@/lib/data';
 import { formatDate, generateOgImageUrl } from '@/lib/utils';
 
@@ -164,14 +166,13 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               </div>
             )}
 
+            {/* Image Gallery */}
+            <ProjectImageGallery projectSlug={slug} />
+
             {/* Case Study Details */}
             <ProjectCaseStudy project={project} />
 
-            {project.content && (
-              <div className="prose prose-lg max-w-none">
-                <div className="whitespace-pre-wrap text-muted-foreground">{project.content}</div>
-              </div>
-            )}
+            {project.content && <MarkdownContent content={project.content} />}
 
             {project.updatedAt && (
               <div className="border-t pt-6 text-sm text-muted-foreground">
