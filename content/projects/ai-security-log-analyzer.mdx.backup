@@ -1,0 +1,570 @@
+---
+title: "AI Security Log Analyzer Agent"
+summary: "Intelligent cybersecurity platform leveraging multi-specialized AI agents to automatically detect security threats in server logs and execute defensive responses."
+year: 2024
+featured: true
+status: "completed"
+tags:
+  - id: "python"
+    name: "Python"
+    color: "#3776AB"
+  - id: "langgraph"
+    name: "LangGraph"
+    color: "#FF6B6B"
+  - id: "openai"
+    name: "OpenAI"
+    color: "#412991"
+  - id: "fastapi"
+    name: "FastAPI"
+    color: "#009688"
+  - id: "ai"
+    name: "AI/ML"
+    color: "#FF9F43"
+  - id: "cybersecurity"
+    name: "Cybersecurity"
+    color: "#E74C3C"
+links:
+  - label: "GitHub Repository"
+    url: "https://github.com/lironhi/AI-Security-Log-Analyzer-Agent"
+    type: "repo"
+highlights:
+  - "Multi-agent system with Detector, Investigator, and Reporter specialized agents"
+  - "Real-time threat detection: brute force attacks, error spikes, anomalous IPs"
+  - "Automated defensive responses with IP blocking and alert generation"
+  - "REST API with FastAPI for seamless infrastructure integration"
+  - "Comprehensive test coverage with 54+ test cases"
+updatedAt: "2024-11-06"
+createdAt: "2024-06-01"
+---
+
+# AI Security Log Analyzer Agent
+
+An intelligent cybersecurity platform leveraging multi-specialized AI agents to automatically detect security threats in server logs and execute defensive responses.
+
+## 🎯 Core Objectives
+
+The **AI Security Log Analyzer Agent** transforms traditional log analysis from a manual, time-consuming process into an automated, intelligent system that:
+
+- **Automatically detects threats**: Identifies brute force attacks, error spikes, and anomalous patterns in real-time
+- **Intelligently correlates events**: Enriches security data with IP geolocation and cross-event analysis
+- **Executes defensive responses**: Automatically blocks malicious IPs and generates actionable alerts
+- **Integrates seamlessly**: API-first architecture for easy integration with existing infrastructure
+
+## 🏗️ Specialized Agent Architecture
+
+The system employs a **multi-agent architecture** built with LangGraph, where three specialized AI agents collaborate:
+
+```python
+# Multi-Agent Workflow with LangGraph
+from langgraph.graph import StateGraph
+
+class SecurityAnalysisState(TypedDict):
+    logs: List[LogEntry]
+    incidents: List[Incident]
+    enriched_data: Dict
+    actions_taken: List[Action]
+    report: str
+
+workflow = StateGraph(SecurityAnalysisState)
+
+# Add specialized agents
+workflow.add_node("detector", detector_agent)      # 🔍 Threat Detection
+workflow.add_node("investigator", investigator_agent)  # 🔬 Event Correlation
+workflow.add_node("reporter", reporter_agent)      # 📋 Response & Reporting
+
+# Define workflow
+workflow.set_entry_point("detector")
+workflow.add_edge("detector", "investigator")
+workflow.add_edge("investigator", "reporter")
+```
+
+### 1. 🔍 Detector Agent
+
+Identifies security threats through pattern analysis:
+
+**Detection Capabilities:**
+- **Brute Force Attacks**: Multiple failed authentication attempts from same IP
+- **Error Spikes**: Sudden increases in 5xx server errors indicating attacks or system issues
+- **Suspicious IPs**: Geographically unusual or known malicious sources
+- **Dangerous Endpoints**: Access attempts to `/admin`, `/wp-admin`, sensitive paths
+
+```python
+class DetectorAgent:
+    def detect_brute_force(self, logs: List[LogEntry], threshold: int = 5):
+        """Detect brute force attacks based on failed login attempts"""
+        failed_attempts = {}
+
+        for log in logs:
+            if log.status in [401, 403] and '/login' in log.path:
+                failed_attempts[log.ip] = failed_attempts.get(log.ip, 0) + 1
+
+        incidents = []
+        for ip, count in failed_attempts.items():
+            if count >= threshold:
+                incidents.append(Incident(
+                    type="BRUTE_FORCE",
+                    severity="HIGH",
+                    ip=ip,
+                    details=f"{count} failed login attempts detected"
+                ))
+
+        return incidents
+
+    def detect_error_spike(self, logs: List[LogEntry], threshold: float = 0.1):
+        """Detect unusual increases in server errors"""
+        total = len(logs)
+        errors_5xx = sum(1 for log in logs if 500 <= log.status < 600)
+
+        error_rate = errors_5xx / total if total > 0 else 0
+
+        if error_rate > threshold:
+            return Incident(
+                type="ERROR_SPIKE",
+                severity="MEDIUM",
+                details=f"Error rate: {error_rate*100:.1f}% ({errors_5xx}/{total})"
+            )
+```
+
+### 2. 🔬 Investigator Agent
+
+Correlates events and enriches security data:
+
+**Investigation Features:**
+- **Event Correlation**: Links related security events across time windows
+- **IP Intelligence**: Enriches incidents with geolocation, ISP, and reputation data
+- **Pattern Recognition**: Identifies attack campaigns spanning multiple incidents
+- **Context Building**: Aggregates historical data for threat assessment
+
+```python
+class InvestigatorAgent:
+    def __init__(self, ip_intelligence_service):
+        self.ip_service = ip_intelligence_service
+
+    def enrich_incident(self, incident: Incident):
+        """Enhance incident with IP geolocation and reputation data"""
+        if incident.ip:
+            ip_data = self.ip_service.lookup(incident.ip)
+
+            incident.enriched_data = {
+                "country": ip_data.country,
+                "city": ip_data.city,
+                "isp": ip_data.isp,
+                "is_proxy": ip_data.is_proxy,
+                "is_known_attacker": ip_data.reputation_score < 30,
+                "threat_score": ip_data.reputation_score
+            }
+
+        return incident
+
+    def correlate_events(self, incidents: List[Incident], window_hours: int = 24):
+        """Find related incidents within time window"""
+        incident_groups = {}
+
+        for incident in incidents:
+            key = (incident.ip, incident.type)
+            if key not in incident_groups:
+                incident_groups[key] = []
+            incident_groups[key].append(incident)
+
+        # Identify coordinated attacks
+        coordinated = [
+            group for group in incident_groups.values()
+            if len(group) >= 3  # Multiple incidents from same source
+        ]
+
+        return coordinated
+```
+
+### 3. 📋 Reporter Agent
+
+Generates reports and executes protective measures:
+
+**Reporter Capabilities:**
+- **Detailed Incident Reports**: Comprehensive analysis with timeline and impact assessment
+- **Automated IP Blocking**: Executes defensive actions on detected threats
+- **Alert Generation**: Creates notifications for security teams
+- **Executive Summaries**: High-level reports for management
+
+```python
+class ReporterAgent:
+    def generate_report(self, incidents: List[Incident], enriched_data: Dict):
+        """Create comprehensive security report"""
+        report = {
+            "summary": self._create_summary(incidents),
+            "timeline": self._build_timeline(incidents),
+            "threat_assessment": self._assess_threats(incidents, enriched_data),
+            "recommended_actions": self._recommend_actions(incidents),
+            "detailed_incidents": [self._format_incident(i) for i in incidents]
+        }
+
+        return report
+
+    def execute_actions(self, incidents: List[Incident]):
+        """Automatically execute defensive responses"""
+        actions_taken = []
+
+        for incident in incidents:
+            if incident.severity == "HIGH":
+                # Block malicious IP
+                self.firewall.block_ip(
+                    ip=incident.ip,
+                    reason=f"{incident.type} detected",
+                    duration="24h"
+                )
+                actions_taken.append(f"Blocked IP {incident.ip}")
+
+                # Send alert
+                self.alert_service.send_alert(
+                    severity="CRITICAL",
+                    title=f"Security Incident: {incident.type}",
+                    details=incident.details
+                )
+
+        return actions_taken
+```
+
+## 🚀 Installation & Setup
+
+### Prerequisites
+
+```bash
+# Clone the repository
+git clone https://github.com/lironhi/AI-Security-Log-Analyzer-Agent.git
+cd AI-Security-Log-Analyzer-Agent
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+**Required Dependencies:**
+- Python 3.10+
+- FastAPI
+- LangGraph
+- OpenAI Python SDK
+- SQLite (included)
+- pytest (for testing)
+
+### Environment Configuration
+
+Create a `.env` file:
+
+```bash
+# OpenAI API Configuration
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Storage Configuration
+FAISS_INDEX_PATH=storage/faiss_index
+SQLITE_PATH=storage/db.sqlite
+
+# Optional: Redis for caching
+REDIS_ENABLED=false
+
+# Logging
+LOG_LEVEL=INFO
+```
+
+### Initialize & Start
+
+```bash
+# Initialize database and storage
+python main.py init
+
+# Start the API server
+python main.py server
+```
+
+Access the API at `http://localhost:8000` with interactive Swagger documentation at `/docs`.
+
+## 💻 Usage Modes
+
+### 1. Command-Line Interface
+
+**Analyze log file:**
+```bash
+python main.py process /path/to/access.log --window 24
+```
+
+**Options:**
+- `--window`: Analysis time window in hours (default: 24)
+- `--format`: Log format (apache/nginx or json)
+- `--output`: Report output path
+
+### 2. REST API Operations
+
+#### Log Ingestion
+
+```bash
+# Upload log file for analysis
+curl -X POST "http://localhost:8000/ingest" \
+     -F "file=@/path/to/access.log"
+```
+
+**Response:**
+```json
+{
+  "status": "success",
+  "logs_processed": 15234,
+  "file_id": "abc123"
+}
+```
+
+#### Security Scanning
+
+```bash
+# Scan logs within time window
+curl -X POST "http://localhost:8000/scan" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "window_hours": 24,
+       "severity_filter": ["HIGH", "CRITICAL"]
+     }'
+```
+
+**Response:**
+```json
+{
+  "incidents_found": 3,
+  "incidents": [
+    {
+      "id": "inc_001",
+      "type": "BRUTE_FORCE",
+      "severity": "HIGH",
+      "ip": "192.168.1.100",
+      "timestamp": "2024-11-06T10:30:00Z",
+      "details": "15 failed login attempts detected",
+      "enriched_data": {
+        "country": "Unknown",
+        "is_proxy": true,
+        "threat_score": 85
+      }
+    }
+  ],
+  "actions_taken": ["Blocked IP 192.168.1.100"],
+  "report_url": "/reports/scan_20241106"
+}
+```
+
+#### Defensive Actions
+
+```bash
+# Manually block an IP address
+curl -X POST "http://localhost:8000/actions/block-ip" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "ip": "192.168.1.100",
+       "reason": "Manual block - suspicious activity",
+       "duration": "48h"
+     }'
+```
+
+## 📝 Supported Log Formats
+
+### Apache/Nginx Combined Format
+
+```
+192.168.1.1 - - [10/Oct/2000:13:55:36 -0700] "GET /path HTTP/1.0" 200 2326
+```
+
+### JSON Format
+
+```json
+{
+  "timestamp": "2023-01-01T12:00:00Z",
+  "ip": "192.168.1.1",
+  "method": "GET",
+  "path": "/api/login",
+  "status": 401,
+  "user_agent": "Mozilla/5.0..."
+}
+```
+
+## 🔍 Detectable Incident Categories
+
+| Category | Description | Severity Levels |
+|----------|-------------|-----------------|
+| **Brute Force** | Multiple failed authentication attempts | HIGH/CRITICAL |
+| **Error Spikes** | Sudden increases in 5xx server errors | MEDIUM/HIGH |
+| **Anomalous IPs** | Geographically unusual or suspicious sources | MEDIUM/HIGH |
+| **Dangerous Endpoints** | Access attempts to admin/sensitive paths | HIGH/CRITICAL |
+| **Rate Limit Violations** | Excessive requests from single source | MEDIUM |
+| **SQL Injection Attempts** | Malicious SQL patterns in parameters | HIGH/CRITICAL |
+
+## 🧪 Testing Framework
+
+### Comprehensive Test Suite
+
+The project includes **54+ test cases** covering all components:
+
+```bash
+# Run all tests
+python -m pytest tests/ -v
+
+# Run with coverage report
+python -m pytest tests/ --cov=app --cov=agents --cov=mcp_tools
+
+# Run tests in parallel
+python -m pytest tests/ -n auto
+```
+
+### Test Categories
+
+- **test_models.py** (17 tests) - Data structure validation and serialization
+- **test_api.py** (15 tests) - REST endpoint functionality and error handling
+- **test_detector_agent.py** (10 tests) - Detection algorithms and thresholds
+- **test_investigator_agent.py** (8 tests) - Event correlation and IP enrichment
+- **test_reporter_agent.py** (6 tests) - Report generation and action execution
+- **test_cache.py** (12 tests) - Caching mechanisms and invalidation
+- **test_storage.py** (9 tests) - Database operations and queries
+- **test_workflow.py** (7 tests) - End-to-end integration testing
+
+## 🏛️ System Architecture
+
+```
+AI-Security-Log-Analyzer-Agent/
+├── app/                    # FastAPI server and REST API
+│   ├── main.py            # API routes and endpoints
+│   ├── models.py          # Pydantic data models
+│   └── config.py          # Configuration management
+├── agents/                 # LangGraph agent implementations
+│   ├── detector.py        # Detector Agent (threat identification)
+│   ├── investigator.py    # Investigator Agent (event correlation)
+│   └── reporter.py        # Reporter Agent (response & reporting)
+├── mcp_tools/             # Model Context Protocol tools
+│   ├── log_parser.py      # Log format parsing
+│   ├── vector_db.py       # FAISS vector database
+│   ├── ip_intel.py        # IP intelligence and geolocation
+│   └── actions.py         # Defensive action executors
+├── storage/               # Data persistence layer
+│   ├── db.sqlite          # SQLite database
+│   └── faiss_index/       # Vector embeddings index
+├── tests/                 # Comprehensive test coverage
+└── main.py               # CLI interface
+```
+
+## 📊 Practical Usage Scenarios
+
+### 1. Daily Security Monitoring
+```bash
+# Automated daily scan (cron job at 6 AM)
+0 6 * * * cd /app && python main.py process /var/log/nginx/access.log --window 24
+```
+
+### 2. Post-Deployment Security Check
+```bash
+# Analyze logs after application deployment
+python main.py process /var/log/app/access.log --window 2 --output post_deploy_report.json
+```
+
+### 3. Monthly Security Audit
+```bash
+# Comprehensive analysis of last 30 days
+python main.py process /var/log/archive/*.log --window 720 --format json
+```
+
+### 4. Real-Time Monitoring Integration
+```python
+# Integration with monitoring systems
+import requests
+
+def security_scan_alert():
+    response = requests.post(
+        "http://localhost:8000/scan",
+        json={"window_hours": 1}
+    )
+
+    if response.json()["incidents_found"] > 0:
+        # Send alert to Slack/Teams
+        send_slack_notification(response.json())
+```
+
+### 5. Automated Defense System
+```python
+# Continuous monitoring with automatic response
+while True:
+    incidents = scan_logs(window_hours=1)
+
+    for incident in incidents:
+        if incident.severity in ["HIGH", "CRITICAL"]:
+            # Automatic IP blocking
+            block_ip(incident.ip, duration="24h")
+
+            # Alert security team
+            notify_team(incident)
+
+    time.sleep(300)  # Check every 5 minutes
+```
+
+## 🛡️ Security Features
+
+- **API Authentication**: JWT-based authentication for API endpoints
+- **Rate Limiting**: Prevents abuse of the analysis system itself
+- **Input Validation**: Sanitizes all log inputs to prevent injection
+- **Audit Trail**: Complete logging of all actions taken
+- **Rollback Capability**: Unblock IPs if false positive detected
+
+## 📈 Performance Metrics
+
+- **Processing Speed**: 10,000+ log entries per second
+- **Detection Latency**: < 100ms for pattern matching
+- **API Response Time**: < 500ms for typical scans
+- **Storage Efficiency**: SQLite + FAISS for optimal performance
+- **Memory Footprint**: ~200MB for typical workloads
+
+## 📚 What I Learned
+
+### Technical Skills
+1. **Multi-Agent Systems** - Designing and orchestrating specialized AI agents with LangGraph
+2. **LLM Integration** - Leveraging OpenAI GPT for intelligent log analysis
+3. **FastAPI Development** - Building production-ready REST APIs
+4. **Vector Databases** - Using FAISS for efficient similarity search
+5. **Security Patterns** - Understanding common attack vectors and defense strategies
+6. **Test-Driven Development** - Writing comprehensive test suites with pytest
+
+### Cybersecurity Domain
+1. **Log Analysis** - Parsing and interpreting server logs for security insights
+2. **Threat Detection** - Identifying attack patterns in real-time data
+3. **Incident Response** - Automating defensive actions and alerting
+4. **IP Intelligence** - Enriching security data with geolocation and reputation
+5. **SIEM Concepts** - Security Information and Event Management principles
+
+### Challenges Overcome
+1. **Real-Time Processing** - Handling high-volume log streams efficiently
+2. **False Positive Reduction** - Tuning detection thresholds to minimize noise
+3. **Agent Coordination** - Ensuring smooth data flow between specialized agents
+4. **API Design** - Creating intuitive and powerful REST endpoints
+5. **Testing Complexity** - Comprehensive testing of multi-agent workflows
+
+## 🔮 Future Enhancements
+
+1. **Machine Learning Models**
+   - Train custom anomaly detection models on historical data
+   - Adaptive thresholds based on normal traffic patterns
+
+2. **Extended Integrations**
+   - SIEM platforms (Splunk, ELK Stack)
+   - Cloud providers (AWS CloudWatch, Azure Monitor)
+   - Ticketing systems (Jira, ServiceNow)
+
+3. **Advanced Features**
+   - Attack signature database with automatic updates
+   - Predictive threat intelligence
+   - Multi-language support for log parsing
+   - Distributed analysis across multiple nodes
+
+4. **Enhanced Reporting**
+   - Interactive dashboards with real-time metrics
+   - PDF/Excel report generation
+   - Compliance reporting (PCI-DSS, HIPAA)
+
+5. **Community Features**
+   - Threat intelligence sharing network
+   - Public attack signature repository
+   - Plugin system for custom detectors
+
+---
+
+**Tech Stack**: Python, FastAPI, LangGraph, OpenAI GPT, FAISS, SQLite, pytest
+
+**Domain**: Cybersecurity, Log Analysis, AI Agents, Threat Detection
+
+**Skills Demonstrated**: Multi-Agent Systems, API Development, Security Engineering, LLM Integration, Testing

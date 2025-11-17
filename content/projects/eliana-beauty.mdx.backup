@@ -1,0 +1,668 @@
+---
+title: "Eliana Beauty - Booking & CRM System"
+summary: "Comprehensive mobile-first booking and CRM system for beauty salons with dual interfaces: client-facing booking platform and powerful admin dashboard."
+year: 2024
+featured: true
+status: "completed"
+tags:
+  - id: "typescript"
+    name: "TypeScript"
+    color: "#3178C6"
+  - id: "react"
+    name: "React"
+    color: "#61DAFB"
+  - id: "nestjs"
+    name: "NestJS"
+    color: "#E0234E"
+  - id: "postgresql"
+    name: "PostgreSQL"
+    color: "#336791"
+  - id: "prisma"
+    name: "Prisma"
+    color: "#2D3748"
+  - id: "tailwind"
+    name: "Tailwind CSS"
+    color: "#06B6D4"
+  - id: "fullstack"
+    name: "Full-Stack"
+    color: "#FF6B6B"
+links:
+  - label: "GitHub Repository"
+    url: "https://github.com/lironhi/eliana-beauty"
+    type: "repo"
+highlights:
+  - "Full-stack monorepo with NestJS backend and React frontend"
+  - "Intelligent booking system with color-coded availability and conflict detection"
+  - "Comprehensive admin CRM with analytics, scheduling, and client management"
+  - "Bilingual support (English/Hebrew) with RTL layout"
+  - "Type-safe architecture with Prisma ORM and PostgreSQL"
+updatedAt: "2025-11-12"
+createdAt: "2023-11-01"
+coverImage: "/projects/eliana-beauty/main.png"
+---
+
+# Eliana Beauty - Booking & CRM System
+
+A complete business management solution designed for beauty salons and independent beauty professionals, featuring a comprehensive booking system for clients and a powerful CRM dashboard for business owners.
+
+![Eliana Beauty Landing Page](/projects/eliana-beauty/main.png)
+
+## 🎯 Project Overview
+
+**Eliana Beauty** is a comprehensive, mobile-first booking and CRM system that provides dual interfaces:
+- **Client-facing platform**: Smart booking, service browsing, appointment management
+- **Admin dashboard**: Business analytics, scheduling, staff management, client CRM
+
+> *A production-ready solution that transforms how beauty salons operate—from first contact to repeat business.*
+
+## 🏗️ Architecture & Tech Stack
+
+### Backend Architecture
+```typescript
+// NestJS 10 with enterprise-grade patterns
+├── Authentication: JWT with refresh tokens
+├── ORM: Prisma 5 (type-safe database access)
+├── Database: PostgreSQL with optimized indexes
+├── Security: bcryptjs password hashing
+└── API: RESTful endpoints with role-based access
+```
+
+**Key Technologies:**
+- **NestJS 10** - Enterprise Node.js framework with dependency injection
+- **Prisma 5** - Type-safe ORM with migrations and seeding
+- **PostgreSQL** - Relational database with ACID compliance
+- **JWT Authentication** - Access tokens + refresh token rotation
+
+### Frontend Architecture
+```typescript
+// React 18 with TypeScript 5
+├── Build Tool: Vite 5 (lightning-fast HMR)
+├── Styling: Tailwind CSS 3 (utility-first)
+├── State: Zustand (minimal, performant)
+├── Routing: React Router 6
+├── Charts: Recharts (data visualization)
+└── i18n: English & Hebrew with RTL support
+```
+
+**Monorepo Management:**
+- **pnpm workspace** - Efficient package management
+- **Turborepo** - Build orchestration and caching
+
+## 🔑 Key Features
+
+### Client-Side Capabilities
+
+![Service Catalog](/projects/eliana-beauty/services.png)
+
+#### 1. Smart Booking System
+```typescript
+interface BookingIntelligence {
+  availability: {
+    colorCoded: 'Red (insufficient time) | Grey (booked) | Green (available)';
+    workingHoursOnly: boolean;
+    realTimeConflictDetection: boolean;
+  };
+  constraints: {
+    maxAdvanceBooking: '1 month';
+    preventPastDates: true;
+    durationAware: boolean; // Considers service duration
+  };
+}
+```
+
+**Features:**
+- Intelligent time slot generation based on staff availability
+- Visual color-coding for booking status
+- Real-time conflict detection with duration consideration
+- Staff member selection with service filtering
+- Automatic price calculation with individual adjustments
+
+![Booking Interface](/projects/eliana-beauty/booking.png)
+
+#### 2. Service Catalog
+- Browse services by category (Hair, Nails, Skin, Makeup, etc.)
+- Multilingual service descriptions (English/Hebrew)
+- Pricing with "From X" indicators for variable services
+- Service duration and staff assignment display
+- Beautiful service cards with images
+
+#### 3. Client Profile & Management
+- Personal dashboard with appointment statistics
+- Upcoming and past appointment history
+- Profile editing with contact information
+- Real-time booking and message counters
+- Gradient design with avatar initials
+
+![Client Profile](/projects/eliana-beauty/profil.png)
+
+#### 4. Messaging System
+- Automatic appointment reminders
+- Read/unread message organization
+- Collapsible message sections
+- Mobile-optimized interface
+
+![Messaging System](/projects/eliana-beauty/msg.png)
+
+### Admin CRM Features
+
+![Admin Dashboard](/projects/eliana-beauty/dashboard.png)
+
+#### 1. Dashboard Analytics
+```typescript
+interface DashboardMetrics {
+  today: {
+    appointments: number;
+    revenue: number;
+    clients: number;
+  };
+  trends: {
+    weeklyStats: Revenue & Appointments;
+    monthlyStats: Revenue & Appointments;
+  };
+  recentActivity: Appointment[];
+}
+```
+
+**Visualizations:**
+- Today's appointment overview with status breakdown
+- Weekly/monthly revenue tracking with trend charts
+- Client acquisition and retention metrics
+- Service popularity analytics
+
+#### 2. Appointment Management
+
+![Appointment Management](/projects/eliana-beauty/appointment.png)
+
+**Views:**
+- **Calendar View**: Visual weekly/monthly schedule
+- **Table View**: Detailed list with advanced filtering
+
+**Capabilities:**
+```typescript
+enum AppointmentStatus {
+  PENDING = 'Pending',
+  CONFIRMED = 'Confirmed',
+  COMPLETED = 'Completed',
+  CANCELLED = 'Cancelled'
+}
+
+interface AppointmentManagement {
+  actions: {
+    statusUpdate: AppointmentStatus[];
+    reschedule: boolean; // With conflict detection
+    individualPricing: boolean; // Override service prices
+    bulkActions: boolean;
+  };
+  export: ['CSV', 'PDF'];
+  filters: {
+    status: AppointmentStatus[];
+    dateRange: [Date, Date];
+    staff: string[];
+    service: string[];
+  };
+}
+```
+
+**Advanced Features:**
+- Rescheduling with automatic conflict detection
+- Individual price editing per appointment
+- Bulk status updates
+- CSV/PDF export for reporting
+- Advanced filtering and sorting
+- Search by client name, phone, or service
+
+#### 3. Service Management
+```typescript
+interface ServiceConfiguration {
+  multilingual: {
+    en: { name: string; description: string };
+    he: { name: string; description: string };
+  };
+  pricing: {
+    basePrice: number;
+    variablePrice: boolean; // "From X" indicator
+  };
+  duration: number; // in minutes
+  category: Category;
+  image?: string;
+  staffAssignment: Staff[];
+}
+```
+
+**Operations:**
+- Create/edit/delete services
+- Category organization and management
+- Multilingual content (English/Hebrew)
+- Service image uploads
+- Duration and pricing configuration
+- Staff assignment per service
+
+#### 4. Staff Management
+
+**Profile Management:**
+- Contact information (phone, email, address)
+- Service assignments (which services each staff provides)
+- Performance tracking and appointment history
+
+**Weekly Recurring Schedule:**
+```typescript
+interface WorkingHours {
+  dayOfWeek: 0 | 1 | 2 | 3 | 4 | 5 | 6; // Sunday = 0
+  startTime: string; // "09:00"
+  endTime: string;   // "17:00"
+  isActive: boolean;
+}
+
+interface TimeOff {
+  type: 'VACATION' | 'SICK' | 'OTHER';
+  startDate: Date;
+  endDate: Date;
+  reason?: string;
+}
+```
+
+**Features:**
+- Configure weekly recurring schedules per staff
+- Time-off management (vacation, sick leave, personal days)
+- Availability override for specific dates
+- Automatic exclusion from booking during time-off
+
+#### 5. Client Management
+- Comprehensive client database with search
+- Full appointment history per client
+- Contact information editing
+- Activity monitoring and engagement tracking
+- Client statistics (total appointments, revenue, last visit)
+
+## 🗄️ Database Schema
+
+### Core Models
+
+```prisma
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  role      Role     @default(CLIENT) // CLIENT | STAFF | ADMIN
+  firstName String
+  lastName  String
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime? // Soft deletes
+
+  appointments Appointment[]
+}
+
+model Service {
+  id          String   @id @default(uuid())
+  nameEn      String
+  nameHe      String
+  descriptionEn String?
+  descriptionHe String?
+  duration    Int      // minutes
+  price       Decimal
+  image       String?
+  categoryId  String
+  category    Category @relation(fields: [categoryId])
+  staff       Staff[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+}
+
+model Staff {
+  id          String         @id @default(uuid())
+  userId      String         @unique
+  user        User           @relation(fields: [userId])
+  services    Service[]
+  workingHours WorkingHours[]
+  timeOffs    TimeOff[]
+  appointments Appointment[]
+}
+
+model Appointment {
+  id        String            @id @default(uuid())
+  clientId  String
+  client    User              @relation(fields: [clientId])
+  staffId   String
+  staff     Staff             @relation(fields: [staffId])
+  serviceId String
+  service   Service           @relation(fields: [serviceId])
+  date      DateTime
+  startTime String
+  endTime   String
+  status    AppointmentStatus @default(PENDING)
+  price     Decimal           // Preserves price at booking time
+  notes     String?
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  @@index([date, staffId]) // Optimized for availability queries
+  @@index([clientId])      // Optimized for client history
+}
+
+model WorkingHours {
+  id         String  @id @default(uuid())
+  staffId    String
+  staff      Staff   @relation(fields: [staffId])
+  dayOfWeek  Int     // 0 = Sunday, 6 = Saturday
+  startTime  String  // "09:00"
+  endTime    String  // "17:00"
+  isActive   Boolean @default(true)
+}
+
+model TimeOff {
+  id        String      @id @default(uuid())
+  staffId   String
+  staff     Staff       @relation(fields: [staffId])
+  type      TimeOffType // VACATION | SICK | OTHER
+  startDate DateTime
+  endDate   DateTime
+  reason    String?
+  createdAt DateTime    @default(now())
+}
+```
+
+**Key Database Features:**
+- **Soft deletes**: Data integrity with `deletedAt` field
+- **Timestamp tracking**: Automatic `createdAt`/`updatedAt`
+- **Price preservation**: Appointment prices frozen at booking time
+- **Index optimization**: Strategic indexes for query performance
+- **Type safety**: Prisma ensures compile-time type checking
+
+## 🌐 Internationalization (i18n)
+
+### Bilingual Support
+
+```typescript
+// English and Hebrew with automatic RTL
+const translations = {
+  en: {
+    booking: {
+      title: "Book an Appointment",
+      selectService: "Select a Service",
+      selectStaff: "Choose Your Specialist",
+      selectDate: "Pick a Date"
+    }
+  },
+  he: {
+    booking: {
+      title: "קביעת תור",
+      selectService: "בחר שירות",
+      selectStaff: "בחר מומחה",
+      selectDate: "בחר תאריך"
+    }
+  }
+};
+```
+
+**Features:**
+- Complete UI translation (English/Hebrew)
+- Automatic RTL layout switching
+- Database-level multilingual content
+- Language persistence in user preferences
+
+## 📱 Responsive Design
+
+### Mobile-First Approach
+
+![Mobile Views](/projects/eliana-beauty/main_mob.png)
+
+**Mobile Optimizations:**
+- Touch-friendly interface with large tap targets
+- Bottom navigation for one-handed use
+- Optimized booking flow for small screens
+- Mobile-specific messaging interface
+- Streamlined forms with mobile keyboards
+
+## 🚀 Advanced Booking Intelligence
+
+### Availability Algorithm
+
+```typescript
+class AvailabilityEngine {
+  generateSlots(date: Date, serviceId: string, staffId: string) {
+    // 1. Get staff working hours for day
+    const workingHours = this.getWorkingHours(staffId, date);
+
+    // 2. Get existing appointments
+    const appointments = this.getAppointments(staffId, date);
+
+    // 3. Get time-offs
+    const timeOffs = this.getTimeOffs(staffId, date);
+
+    // 4. Get service duration
+    const duration = this.getServiceDuration(serviceId);
+
+    // 5. Generate available slots
+    const slots = this.calculateSlots(
+      workingHours,
+      appointments,
+      timeOffs,
+      duration
+    );
+
+    // 6. Color-code slots
+    return slots.map(slot => ({
+      time: slot,
+      status: this.getSlotStatus(slot, duration),
+      color: this.getColorCode(slot)
+    }));
+  }
+
+  getSlotStatus(slot: TimeSlot, duration: number): SlotStatus {
+    // Red: Insufficient time until end of day/next appointment
+    // Grey: Already booked or in time-off period
+    // Green: Available with sufficient time
+  }
+}
+```
+
+### Conflict Detection
+
+```typescript
+interface ConflictDetection {
+  checks: {
+    doubleBooking: boolean;    // Same staff, overlapping time
+    insufficientTime: boolean;  // Not enough time for service duration
+    outsideHours: boolean;      // Beyond working hours
+    duringTimeOff: boolean;     // Staff on vacation/sick leave
+    pastDate: boolean;          // Attempting to book in past
+    beyondMaxAdvance: boolean;  // More than 1 month ahead
+  };
+  resolution: 'Block booking' | 'Show warning' | 'Suggest alternative';
+}
+```
+
+## 📊 API Architecture
+
+### Public Endpoints (No Auth Required)
+
+```typescript
+GET  /health              // Health check
+GET  /api/services        // Service catalog
+GET  /api/staff           // Staff list with working hours
+POST /api/availability    // Generate available time slots
+```
+
+### Authentication Endpoints
+
+```typescript
+POST /api/auth/register   // User registration
+POST /api/auth/login      // Login (returns access + refresh tokens)
+POST /api/auth/logout     // Logout (invalidate refresh token)
+POST /api/auth/refresh    // Refresh access token
+GET  /api/auth/profile    // Get current user profile
+PUT  /api/auth/profile    // Update profile
+PUT  /api/auth/password   // Change password
+```
+
+### Client Endpoints (Authenticated)
+
+```typescript
+POST   /api/appointments           // Create appointment
+GET    /api/appointments/my        // Get user's appointments
+GET    /api/appointments/:id       // Get specific appointment
+DELETE /api/appointments/:id       // Cancel appointment (client only)
+```
+
+### Admin/Staff Endpoints (Protected)
+
+```typescript
+// Dashboard
+GET /api/admin/dashboard/stats     // Analytics and metrics
+
+// Appointments
+GET    /api/admin/appointments     // All appointments (filtered)
+PUT    /api/admin/appointments/:id // Update appointment (status, price, etc.)
+POST   /api/admin/appointments/:id/reschedule // Reschedule with conflict check
+DELETE /api/admin/appointments/:id // Delete appointment
+
+// Services
+POST   /api/admin/services         // Create service
+PUT    /api/admin/services/:id     // Update service
+DELETE /api/admin/services/:id     // Soft delete service
+
+// Staff
+POST   /api/admin/staff            // Create staff member
+PUT    /api/admin/staff/:id        // Update staff profile
+POST   /api/admin/staff/:id/working-hours // Set weekly schedule
+POST   /api/admin/staff/:id/time-off     // Add time-off period
+DELETE /api/admin/staff/:id/time-off/:id // Remove time-off
+
+// Clients
+GET /api/admin/clients             // Client database with stats
+PUT /api/admin/clients/:id         // Update client info
+```
+
+## 🎨 UI/UX Highlights
+
+### Design System
+
+```typescript
+// Tailwind CSS with custom configuration
+const theme = {
+  colors: {
+    primary: '#8B5CF6',    // Purple gradient
+    secondary: '#EC4899',  // Pink gradient
+    success: '#10B981',    // Green
+    warning: '#F59E0B',    // Orange
+    danger: '#EF4444',     // Red
+  },
+  gradients: {
+    primary: 'from-purple-500 to-pink-500',
+    dark: 'from-gray-800 to-gray-900',
+  }
+};
+```
+
+**Visual Features:**
+- Modern gradient designs
+- Glass-morphism effects
+- Smooth animations and transitions
+- Avatar with initial generation
+- Color-coded status indicators
+- Touch-optimized mobile interface
+
+## 📈 Performance Optimizations
+
+1. **Database Optimizations**
+   - Strategic indexes on frequently queried fields
+   - Efficient relation loading with Prisma
+   - Connection pooling for PostgreSQL
+
+2. **Frontend Optimizations**
+   - Vite for lightning-fast HMR
+   - Code splitting with React.lazy()
+   - Zustand for minimal re-renders
+   - Image lazy loading
+
+3. **Caching Strategy**
+   - Service catalog caching
+   - Staff availability caching
+   - JWT refresh token rotation
+
+## 🔒 Security Features
+
+```typescript
+interface SecurityMeasures {
+  authentication: {
+    passwordHashing: 'bcryptjs (10 rounds)';
+    jwtStrategy: 'Access token (15min) + Refresh token (7 days)';
+    tokenRotation: boolean;
+  };
+  authorization: {
+    roleBasedAccess: ['CLIENT', 'STAFF', 'ADMIN'];
+    routeGuards: boolean;
+    apiProtection: 'JWT Bearer tokens';
+  };
+  dataProtection: {
+    softDeletes: boolean;
+    auditTrails: boolean; // createdAt, updatedAt
+    inputValidation: 'class-validator + Zod';
+  };
+}
+```
+
+## 📚 What I Learned
+
+### Technical Skills
+1. **Full-Stack Architecture** - Building monorepo with NestJS + React
+2. **Type Safety** - End-to-end TypeScript with Prisma
+3. **State Management** - Zustand for performant React state
+4. **Database Design** - Complex relationships, soft deletes, indexing
+5. **Authentication** - JWT with refresh tokens, role-based access
+6. **Internationalization** - Bilingual support with RTL layouts
+7. **Monorepo Management** - Turborepo + pnpm workspaces
+
+### Business Domain
+1. **Booking Systems** - Availability algorithms, conflict detection
+2. **CRM Design** - Client management, analytics dashboards
+3. **Multi-role Applications** - Client vs Admin interfaces
+4. **Service Industry** - Understanding salon operations and workflows
+5. **User Experience** - Mobile-first design for non-technical users
+
+### Challenges Overcome
+1. **Complex Availability Logic** - Handling working hours, time-offs, service durations
+2. **Conflict Prevention** - Real-time booking validation with multiple constraints
+3. **Performance** - Optimizing queries for appointment filtering and searching
+4. **Internationalization** - Seamless language switching with RTL support
+5. **Price Preservation** - Maintaining booking prices even when service prices change
+
+## 🔮 Future Enhancements
+
+1. **Payment Integration**
+   - Online payment processing
+   - Deposit requirements
+   - Refund management
+
+2. **Advanced Features**
+   - SMS notifications via Twilio
+   - Email campaigns with SendGrid
+   - Loyalty program with points
+   - Gift card system
+
+3. **Analytics & Reporting**
+   - Revenue forecasting with ML
+   - Client retention analysis
+   - Staff performance metrics
+   - Service popularity trends
+
+4. **Mobile Apps**
+   - React Native iOS/Android apps
+   - Push notifications
+   - Offline mode support
+
+5. **Integrations**
+   - Google Calendar sync
+   - Social media booking widgets
+   - Accounting software integration
+
+---
+
+**Tech Stack**: React 18, TypeScript 5, NestJS 10, Prisma 5, PostgreSQL, Tailwind CSS 3, Vite 5, Zustand, Turborepo
+
+**Domain**: E-commerce, Booking Systems, CRM, Full-Stack Development
+
+**Skills Demonstrated**: Full-Stack Architecture, Database Design, Authentication, State Management, i18n, Responsive Design
