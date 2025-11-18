@@ -132,7 +132,7 @@ This design allows switching from files to database with minimal code changes.
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/lironhimbert/portfolio.git
+   git clone https://github.com/lironhi/Liron-Portfolio.git
    cd portfolio
    ```
 
@@ -355,8 +355,8 @@ If you have questions or need help:
 
 - **Issues**: Create an issue on GitHub
 - **Email**: liron.benharrouch@gmail.com
-- **LinkedIn**: [linkedin.com/in/lironhimbert](https://linkedin.com/in/lironhimbert)
+- **LinkedIn**: [linkedin.com/in/lironhi](https://linkedin.com/in/lironhi)
 
 ---
 
-Built by [Liron Himbert](https://lironhimbert.dev)
+Built by [Liron Himbert](https://liron-portfolio.vercel.app/)

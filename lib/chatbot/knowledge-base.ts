@@ -7,8 +7,8 @@
 export const personalInfo = {
   name: "Liron Himbert",
   location: "Israel",
-  email: "liron.himbert@gmail.com",
-  github: "https://github.com/lironhiml",
+  email: "lironbenharrouch@gmail.com",
+  github: "https://github.com/lironhi",
   linkedin: "https://www.linkedin.com/in/liron-himbert/",
 
   bio: `Software Engineer specialized in backend and full-stack development.

@@ -8,7 +8,7 @@ export function Footer() {
         <div className="flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0">
           <div className="flex items-center space-x-4">
             <Link
-              href="https://github.com/lironhimbert"
+              href="https://github.com/lironhi"
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-foreground transition-colors"
@@ -17,7 +17,7 @@ export function Footer() {
               <Github className="h-5 w-5" />
             </Link>
             <Link
-              href="https://linkedin.com/in/lironhimbert"
+              href="https://linkedin.com/in/lironhi"
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-foreground transition-colors"
@@ -26,7 +26,7 @@ export function Footer() {
               <Linkedin className="h-5 w-5" />
             </Link>
             <Link
-              href="mailto:liron.himbert@example.com"
+              href="mailto:lironbenharrouch@gmail.com"
               className="text-muted-foreground hover:text-foreground transition-colors"
               aria-label="Email"
             >
