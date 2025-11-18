@@ -68,11 +68,11 @@ export function HomePageClient({
           </FadeIn>
 
           {/* Two Column Layout: Text Left, Image Right */}
-          <div className="grid lg:grid-cols-[1.2fr,1fr] gap-16 items-center mb-16">
+          <div className="flex flex-row gap-4 lg:grid lg:grid-cols-[1.2fr,1fr] lg:gap-16 items-start lg:items-center mb-16">
             {/* Left Column - Text Content */}
-            <div className="space-y-8">
+            <div className="flex-1 space-y-4 lg:space-y-8">
               <FadeIn delay={0.2}>
-                <p className="text-xl leading-relaxed text-muted-foreground/90">
+                <p className="text-base sm:text-lg lg:text-xl leading-relaxed text-muted-foreground/90">
                   <span className="text-foreground font-semibold">I build systems that <span className="text-rainbow">think</span>.</span>
                   <br />
                   As a Software Engineer specialized in backend and full-stack development, I work at the intersection of AI and engineering, designing distributed, self-improving systems using LLM agents, automation pipelines, and cloud technologies.
@@ -80,40 +80,40 @@ export function HomePageClient({
               </FadeIn>
 
               <FadeIn delay={0.3}>
-                <p className="text-lg leading-relaxed text-muted-foreground">
+                <p className="text-sm sm:text-base lg:text-lg leading-relaxed text-muted-foreground">
                   My focus: <span className="text-foreground font-medium">turning complexity into clarity, and data into knowledge.</span>
                 </p>
               </FadeIn>
 
               <FadeIn delay={0.4}>
-                <div className="flex items-center gap-2 text-base text-muted-foreground pt-4">
+                <div className="flex items-center gap-2 text-sm lg:text-base text-muted-foreground pt-2 lg:pt-4">
                   <Image
                     src="/images/logos/tech-stack/location-svgrepo-com.svg"
                     alt="Location"
-                    width={20}
-                    height={20}
-                    className="flex-shrink-0"
+                    width={16}
+                    height={16}
+                    className="flex-shrink-0 lg:w-5 lg:h-5"
                   />
                   <span className="font-medium">{authorLocation}</span>
                 </div>
               </FadeIn>
 
               <StaggerContainer staggerDelay={0.1}>
-                <div className="grid gap-4 pt-2">
+                <div className="grid gap-2 lg:gap-4 pt-2">
                   <StaggerItem>
                     <div className="relative">
                       <button
                         onClick={() => setActiveAnecdote(activeAnecdote === 0 ? null : 0)}
-                        className="w-full flex items-start gap-3 p-4 rounded-xl bg-muted/40 border border-border/50 hover:bg-muted/60 hover:border-border transition-all cursor-pointer text-left hover-glow"
+                        className="w-full flex items-start gap-2 lg:gap-3 p-3 lg:p-4 rounded-lg lg:rounded-xl bg-muted/40 border border-border/50 hover:bg-muted/60 hover:border-border transition-all cursor-pointer text-left hover-glow"
                       >
                         <Image
                           src="/images/logos/tech-stack/information-svgrepo-com.svg"
                           alt="Information"
-                          width={24}
-                          height={24}
-                          className="flex-shrink-0 mt-0.5"
+                          width={20}
+                          height={20}
+                          className="flex-shrink-0 mt-0.5 lg:w-6 lg:h-6"
                         />
-                        <p className="text-base text-muted-foreground flex-1">
+                        <p className="text-sm lg:text-base text-muted-foreground flex-1">
                           Building modern web applications
                         </p>
                       </button>
@@ -134,16 +134,16 @@ export function HomePageClient({
                     <div className="relative">
                       <button
                         onClick={() => setActiveAnecdote(activeAnecdote === 1 ? null : 1)}
-                        className="w-full flex items-start gap-3 p-4 rounded-xl bg-muted/40 border border-border/50 hover:bg-muted/60 hover:border-border transition-all cursor-pointer text-left hover-glow"
+                        className="w-full flex items-start gap-2 lg:gap-3 p-3 lg:p-4 rounded-lg lg:rounded-xl bg-muted/40 border border-border/50 hover:bg-muted/60 hover:border-border transition-all cursor-pointer text-left hover-glow"
                       >
                         <Image
                           src="/images/logos/tech-stack/inspiration-svgrepo-com.svg"
                           alt="Inspiration"
-                          width={24}
-                          height={24}
-                          className="flex-shrink-0 mt-0.5"
+                          width={20}
+                          height={20}
+                          className="flex-shrink-0 mt-0.5 lg:w-6 lg:h-6"
                         />
-                        <p className="text-base text-muted-foreground flex-1">
+                        <p className="text-sm lg:text-base text-muted-foreground flex-1">
                           Passionate about clean code and user experience
                         </p>
                       </button>
@@ -164,16 +164,16 @@ export function HomePageClient({
                     <div className="relative">
                       <button
                         onClick={() => setActiveAnecdote(activeAnecdote === 2 ? null : 2)}
-                        className="w-full flex items-start gap-3 p-4 rounded-xl bg-muted/40 border border-border/50 hover:bg-muted/60 hover:border-border transition-all cursor-pointer text-left hover-glow"
+                        className="w-full flex items-start gap-2 lg:gap-3 p-3 lg:p-4 rounded-lg lg:rounded-xl bg-muted/40 border border-border/50 hover:bg-muted/60 hover:border-border transition-all cursor-pointer text-left hover-glow"
                       >
                         <Image
                           src="/images/logos/tech-stack/target-svgrepo-com.svg"
                           alt="Target"
-                          width={24}
-                          height={24}
-                          className="flex-shrink-0 mt-0.5"
+                          width={20}
+                          height={20}
+                          className="flex-shrink-0 mt-0.5 lg:w-6 lg:h-6"
                         />
-                        <p className="text-base text-muted-foreground flex-1">
+                        <p className="text-sm lg:text-base text-muted-foreground flex-1">
                           Always learning and exploring new technologies
                         </p>
                       </button>
@@ -195,7 +195,7 @@ export function HomePageClient({
             </div>
 
             {/* Right Column - Hero Banner Image with Parallax */}
-            <FadeIn delay={0.4}>
+            <FadeIn delay={0.4} className="w-32 sm:w-40 lg:w-full flex-shrink-0">
               <ParallaxImage
                 src="/images/profile/hero-banner.png"
                 alt="Hero Banner"

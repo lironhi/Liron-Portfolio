@@ -296,22 +296,6 @@ export function CurrentlySection({ data }: CurrentlySectionProps) {
           </div>
         </FadeIn>
       )}
-
-      {/* Last Updated */}
-      <FadeIn delay={0.4}>
-        <div className="lg:col-span-3 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted/50 border border-border/50">
-            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-            <p className="text-xs text-muted-foreground">
-              Last updated: {new Date(data.lastUpdated).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}
-            </p>
-          </div>
-        </div>
-      </FadeIn>
       </div>
     </div>
   );
