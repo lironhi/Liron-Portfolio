@@ -182,6 +182,8 @@ summary: "Brief description of the project"
 year: 2024
 featured: true
 status: "completed"
+image: "/projects/my-project/main.png"  # Optional: Project thumbnail
+video: "/projects/my-project/preview.mp4"  # Optional: Project video
 tags:
   - id: "react"
     name: "React"
@@ -205,6 +207,30 @@ highlights:
 
 Your project content in MDX format...
 ```
+
+#### Adding Project Media
+
+Projects support both images and videos for the card preview:
+
+**Images**: Place project images in `public/projects/[project-slug]/`:
+- `main.png` - Primary thumbnail (auto-detected)
+- `cover.png` - Alternative thumbnail name
+- Or specify custom path with `image: "/path/to/image.png"` in frontmatter
+
+**Videos**: Add videos for dynamic project previews:
+1. Place video in `public/projects/[project-slug]/preview.mp4`
+2. Or specify custom path with `video: "/projects/[slug]/preview.mp4"` in frontmatter
+3. Videos are optimized with lazy loading and metadata preloading
+4. **Fallback**: If no project-specific media exists, the default video at `public/videos/project-default.mp4` is used
+
+**Media Priority**: Image > Video > Default Video > Placeholder Icon
+
+**Video Optimization Tips**:
+- Format: MP4 with H.264 codec
+- Resolution: 1280x720 or 854x480
+- Bitrate: 1-2 Mbps
+- Duration: 5-10 seconds (loops automatically)
+- Keep file size under 5MB for fast loading
 
 ### Updating Experience
 

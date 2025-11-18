@@ -4,7 +4,8 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { Container } from '@/components/Container';
 import { Section } from '@/components/Section';
-import { FadeIn } from '@/components/animations';
+import { AnimatedTitle } from '@/components/AnimatedTitle';
+import { FadeIn, TabContent } from '@/components/animations';
 import { Code2, Sparkles, Heart, Rocket, User, Briefcase, Globe } from 'lucide-react';
 
 export default function AboutPage() {
@@ -45,9 +46,11 @@ export default function AboutPage() {
               </div>
 
               <div className="relative space-y-4 text-center pr-0 sm:pr-44">
-                <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-                  About Me
-                </h1>
+                <AnimatedTitle
+                  text="About Me"
+                  as="h1"
+                  className="text-4xl font-bold tracking-tight sm:text-5xl"
+                />
                 <p className="text-xl leading-8 text-muted-foreground max-w-2xl mx-auto">
                   A passionate software engineer building intelligent systems at the intersection of AI and engineering.
                 </p>
@@ -80,7 +83,7 @@ export default function AboutPage() {
           <div className="min-h-[500px]">
             {/* My Journey Tab */}
             {activeTab === 'journey' && (
-              <FadeIn key="journey">
+              <TabContent key="journey">
                 <div className="space-y-8">
                   <div className="flex items-center gap-3">
                     <Code2 className="h-6 w-6 text-primary" />
@@ -122,12 +125,12 @@ export default function AboutPage() {
                     ))}
                   </div>
                 </div>
-              </FadeIn>
+              </TabContent>
             )}
 
             {/* What I Do Tab */}
             {activeTab === 'work' && (
-              <FadeIn key="work">
+              <TabContent key="work">
                 <div className="space-y-8">
                   <div className="flex items-center gap-3">
                     <Sparkles className="h-6 w-6 text-primary" />
@@ -187,12 +190,12 @@ export default function AboutPage() {
                     </div>
                   </div>
                 </div>
-              </FadeIn>
+              </TabContent>
             )}
 
             {/* Beyond Code Tab */}
             {activeTab === 'beyond' && (
-              <FadeIn key="beyond">
+              <TabContent key="beyond">
                 <div className="space-y-8">
                   <div className="flex items-center gap-3">
                     <Heart className="h-6 w-6 text-primary" />
@@ -232,12 +235,12 @@ export default function AboutPage() {
                     </div>
                   </div>
                 </div>
-              </FadeIn>
+              </TabContent>
             )}
 
             {/* Quick Info Tab */}
             {activeTab === 'info' && (
-              <FadeIn key="info">
+              <TabContent key="info">
                 <div className="space-y-8">
                   <div className="flex items-center gap-3">
                     <Globe className="h-6 w-6 text-primary" />
@@ -305,7 +308,7 @@ export default function AboutPage() {
                     </div>
                   </div>
                 </div>
-              </FadeIn>
+              </TabContent>
             )}
           </div>
         </div>

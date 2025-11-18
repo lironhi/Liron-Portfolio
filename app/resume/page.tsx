@@ -4,6 +4,7 @@ import { Container } from '@/components/Container';
 import { Section } from '@/components/Section';
 import { Button } from '@/components/Button';
 import { Badge } from '@/components/Badge';
+import { AnimatedTitle } from '@/components/AnimatedTitle';
 import { TimelineItem } from '@/components/TimelineItem';
 import { data } from '@/lib/data';
 import { formatDateRange } from '@/lib/utils';
@@ -42,9 +43,11 @@ export default async function ResumePage() {
           {/* Header */}
           <div className="text-center space-y-6">
             <div className="space-y-4">
-              <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                {author.name}
-              </h1>
+              <AnimatedTitle
+                text={author.name}
+                as="h1"
+                className="text-3xl font-bold tracking-tight sm:text-4xl"
+              />
               <p className="text-lg text-muted-foreground">{author.bio}</p>
               <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                 <span>📍 {author.location}</span>

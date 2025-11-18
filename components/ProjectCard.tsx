@@ -22,13 +22,16 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const getProjectImage = () => {
     if (project.image) return project.image;
     if (project.coverImage) return project.coverImage;
-    // Try common image names for the project
-    const possibleImages = [
-      `/projects/${project.slug}/main.png`,
-      `/projects/${project.slug}/cover.png`,
-      `/projects/${project.slug}/thumbnail.png`,
-    ];
-    return possibleImages[0]; // We'll use the first one and handle errors
+    // Only try default paths if no explicit video is set
+    if (!project.video) {
+      const possibleImages = [
+        `/projects/${project.slug}/main.png`,
+        `/projects/${project.slug}/cover.png`,
+        `/projects/${project.slug}/thumbnail.png`,
+      ];
+      return possibleImages[0]; // We'll use the first one and handle errors
+    }
+    return null;
   };
 
   // Try to get project video - first from metadata, then use default fallback video
@@ -55,6 +58,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
               loop
               muted
               playsInline
+              preload="metadata"
+              loading="lazy"
             />
             {/* Overlay gradient on hover */}
             <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

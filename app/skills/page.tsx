@@ -7,7 +7,7 @@ import { Section } from '@/components/Section';
 import { Badge } from '@/components/Badge';
 import { CertificateCard } from '@/components/CertificateCard';
 import { AnimatedTitle } from '@/components/AnimatedTitle';
-import { FadeIn, StaggerContainer, StaggerItem } from '@/components/animations';
+import { FadeIn, StaggerContainer, StaggerItem, TabContent } from '@/components/animations';
 import { Award, Code2, ShieldCheck } from 'lucide-react';
 import { capitalizeFirst } from '@/lib/utils';
 import type { Skill, Certificate } from '@/lib/data';
@@ -219,7 +219,7 @@ export default function SkillsPage() {
           <div className="min-h-[500px]">
             {/* Skills Tab */}
             {activeTab === 'skills' && (
-              <FadeIn key="skills">
+              <TabContent key="skills">
                 <div className="space-y-12">
                   {allSkills.length === 0 ? (
                     <div className="text-center py-12">
@@ -237,12 +237,12 @@ export default function SkillsPage() {
                     ))
                   )}
                 </div>
-              </FadeIn>
+              </TabContent>
             )}
 
             {/* Certifications Tab */}
             {activeTab === 'certifications' && (
-              <FadeIn key="certifications">
+              <TabContent key="certifications">
                 <div className="space-y-8">
                   {/* Stats */}
                   <div className="grid gap-4 sm:grid-cols-3">
@@ -291,7 +291,7 @@ export default function SkillsPage() {
                     </p>
                   </div>
                 </div>
-              </FadeIn>
+              </TabContent>
             )}
           </div>
         </div>

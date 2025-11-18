@@ -26,7 +26,7 @@ export function ScaleIn({
         opacity: 1,
         scale: 1,
       }}
-      viewport={{ once: true, margin: '-50px' }}
+      viewport={{ once: true, amount: 0.1 }}
       transition={{
         duration,
         delay,

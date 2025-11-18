@@ -2,6 +2,7 @@ import { Github, Linkedin, Mail, MapPin } from 'lucide-react';
 import { Container } from '@/components/Container';
 import { Section } from '@/components/Section';
 import { ContactForm } from '@/components/ContactForm';
+import { AnimatedTitle } from '@/components/AnimatedTitle';
 import { FadeIn } from '@/components/animations';
 import { data } from '@/lib/data';
 
@@ -20,9 +21,11 @@ export default async function ContactPage() {
         <div className="mx-auto max-w-3xl space-y-12">
           <FadeIn>
             <div className="text-center space-y-4">
-              <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                Get In Touch
-              </h1>
+              <AnimatedTitle
+                text="Get In Touch"
+                as="h1"
+                className="text-3xl font-bold tracking-tight sm:text-4xl"
+              />
               <p className="text-lg text-muted-foreground">
                 I'm always interested in new opportunities and collaborations.
                 Let's discuss how we can work together!
