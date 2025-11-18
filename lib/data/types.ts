@@ -32,6 +32,7 @@ export interface Project {
   highlights: string[];
   content?: string;
   coverImage?: string;
+  image?: string; // Alias for coverImage
   featured?: boolean;
   status?: 'completed' | 'in-progress' | 'planning';
   updatedAt?: string;

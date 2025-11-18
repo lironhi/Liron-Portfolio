@@ -9,6 +9,15 @@ import { Section } from '@/components/Section';
 import { Button } from '@/components/Button';
 import { ProjectCard } from '@/components/ProjectCard';
 import { CurrentlySection } from '@/components/CurrentlySection';
+import { AnimatedHeroTitle } from '@/components/AnimatedHeroTitle';
+import { StatsSection } from '@/components/StatsSection';
+import { TechStackSection } from '@/components/TechStackSection';
+import { ParallaxImage } from '@/components/ParallaxImage';
+import { FloatingParticles } from '@/components/FloatingParticles';
+import { QuoteSection } from '@/components/QuoteSection';
+import { ScrollToTop } from '@/components/ScrollToTop';
+import { MobileOptimizations } from '@/components/MobileOptimizations';
+import { BackgroundPattern } from '@/components/BackgroundPattern';
 import { FadeIn, StaggerContainer, StaggerItem } from '@/components/animations';
 import { ScrollReveal } from '@/components/animations/ScrollReveal';
 import type { Project, Currently } from '@/lib/data/types';
@@ -46,15 +55,16 @@ export function HomePageClient({
     <>
       {/* Hero Section with Banner */}
       <Section className="py-20 sm:py-32 relative overflow-hidden">
+        {/* Floating particles background */}
+        <FloatingParticles />
+
         {/* Subtle background gradient */}
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-background to-background" />
 
         <Container>
-          {/* Heading - Centered at top */}
+          {/* Heading - Centered at top with animation */}
           <FadeIn delay={0.1}>
-            <h1 className="text-5xl font-bold tracking-tight text-foreground sm:text-7xl text-center mb-16 bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground to-primary">
-              {authorName}
-            </h1>
+            <AnimatedHeroTitle name={authorName} />
           </FadeIn>
 
           {/* Two Column Layout: Text Left, Image Right */}
@@ -184,18 +194,12 @@ export function HomePageClient({
               </StaggerContainer>
             </div>
 
-            {/* Right Column - Hero Banner Image */}
+            {/* Right Column - Hero Banner Image with Parallax */}
             <FadeIn delay={0.4}>
-              <div className="relative aspect-square lg:aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl ring-1 ring-border/50 group">
-                <Image
-                  src="/images/profile/hero-banner.png"
-                  alt="Hero Banner"
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  priority
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/20 via-transparent to-transparent" />
-              </div>
+              <ParallaxImage
+                src="/images/profile/hero-banner.png"
+                alt="Hero Banner"
+              />
             </FadeIn>
           </div>
 
@@ -246,17 +250,62 @@ export function HomePageClient({
           {/* Buttons - Centered at bottom */}
           <FadeIn delay={0.7}>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button asChild size="lg" className="min-w-[180px]">
-                <Link href="/projects">View Projects</Link>
+              <Button asChild size="lg" className="min-w-[180px] relative overflow-hidden group">
+                <Link href="/projects">
+                  <span className="relative z-10">View Projects</span>
+                  <div className="absolute inset-0 shimmer" />
+                </Link>
               </Button>
-              <Button variant="outline" asChild size="lg" className="min-w-[180px]">
+              <Button variant="outline" asChild size="lg" className="min-w-[180px] group hover:scale-105 transition-transform">
                 <a href="/cv/Liron-Himbert.pdf" download className="inline-flex items-center justify-center gap-2">
-                  <Download className="h-4 w-4" />
+                  <Download className="h-4 w-4 group-hover:animate-bounce" />
                   Download CV
                 </a>
               </Button>
             </div>
           </FadeIn>
+        </Container>
+      </Section>
+
+      {/* Stats Section */}
+      <Section className="py-16 bg-muted/30 relative overflow-hidden">
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-float" />
+          <div className="absolute top-1/2 right-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }} />
+        </div>
+
+        <Container>
+          <ScrollReveal direction="up">
+            <StatsSection
+              stats={[
+                { value: featuredProjects.length, label: 'Featured Projects', suffix: '+' },
+                { value: 3, label: 'Years Experience', suffix: '+' },
+                { value: 15, label: 'Technologies', suffix: '+' },
+                { value: 100, label: 'Commits This Month', suffix: '+' },
+              ]}
+            />
+          </ScrollReveal>
+        </Container>
+      </Section>
+
+      {/* Tech Stack Section */}
+      <Section className="py-20 sm:py-32 relative overflow-hidden">
+        <BackgroundPattern variant="dots" />
+        <Container>
+          <ScrollReveal direction="up">
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-4">
+                Tech Stack
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Technologies and tools I work with to bring ideas to life
+              </p>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal direction="up" delay={0.2}>
+            <TechStackSection />
+          </ScrollReveal>
         </Container>
       </Section>
 
@@ -307,10 +356,24 @@ export function HomePageClient({
         </Section>
       )}
 
+      {/* Inspirational Quote Section */}
+      <Section className="py-20 sm:py-32 relative overflow-hidden">
+        <BackgroundPattern variant="grid" />
+        <Container>
+          <ScrollReveal direction="up">
+            <QuoteSection
+              quote="The best way to predict the future is to build it"
+              author="Liron Himbert"
+            />
+          </ScrollReveal>
+        </Container>
+      </Section>
+
       {/* Currently Section */}
       <Section className="py-20 sm:py-32 relative">
         {/* Subtle gradient background */}
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/3 via-transparent to-background" />
+        <BackgroundPattern variant="waves" />
 
         <Container>
           {/* Section Header */}
@@ -333,6 +396,12 @@ export function HomePageClient({
           </ScrollReveal>
         </Container>
       </Section>
+
+      {/* Mobile Optimizations */}
+      <MobileOptimizations />
+
+      {/* Scroll to Top Button */}
+      <ScrollToTop />
     </>
   );
 }

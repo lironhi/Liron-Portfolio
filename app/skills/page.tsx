@@ -6,6 +6,7 @@ import { Container } from '@/components/Container';
 import { Section } from '@/components/Section';
 import { Badge } from '@/components/Badge';
 import { CertificateCard } from '@/components/CertificateCard';
+import { AnimatedTitle } from '@/components/AnimatedTitle';
 import { FadeIn, StaggerContainer, StaggerItem } from '@/components/animations';
 import { Award, Code2, ShieldCheck } from 'lucide-react';
 import { capitalizeFirst } from '@/lib/utils';
@@ -181,9 +182,11 @@ export default function SkillsPage() {
             <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/10 via-primary/5 to-background p-12 border border-border/50">
               <div className="absolute inset-0 bg-grid-white/5 [mask-image:radial-gradient(white,transparent_85%)]" />
               <div className="relative space-y-4 text-center">
-                <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-                  Skills & Certifications
-                </h1>
+                <AnimatedTitle
+                  text="Skills & Certifications"
+                  as="h1"
+                  className="text-4xl font-bold tracking-tight sm:text-5xl"
+                />
                 <p className="text-xl leading-8 text-muted-foreground max-w-2xl mx-auto">
                   Technical expertise and professional certifications showcasing continuous learning and growth
                 </p>
