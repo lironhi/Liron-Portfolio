@@ -31,11 +31,36 @@ export function ProjectCard({ project }: ProjectCardProps) {
     return possibleImages[0]; // We'll use the first one and handle errors
   };
 
+  // Try to get project video - first from metadata, then use default fallback video
+  const getProjectVideo = () => {
+    if (project.video) return project.video;
+    // Use a single default video for all projects without images
+    return `/videos/project-default.mp4`;
+  };
+
   const projectImage = getProjectImage();
+  const projectVideo = getProjectVideo();
+  const hasMedia = projectImage || projectVideo;
 
   return (
     <HoverCard className="h-full" scale={1.03} lift={true} glow={true}>
       <div className="group relative overflow-hidden rounded-lg border bg-card h-full flex flex-col shadow-md transition-all duration-300 hover:shadow-xl hover:border-primary/50">
+        {/* Project Video (priority over image if no image or image error) */}
+        {projectVideo && (!projectImage || imageError) && (
+          <div className="relative w-full aspect-video overflow-hidden bg-muted">
+            <video
+              src={projectVideo}
+              className="w-full h-full object-cover"
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
+            {/* Overlay gradient on hover */}
+            <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          </div>
+        )}
+
         {/* Project Image */}
         {projectImage && !imageError && (
           <div className="relative w-full aspect-video overflow-hidden bg-muted">
@@ -51,8 +76,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </div>
         )}
 
-        {/* Fallback icon if no image */}
-        {(!projectImage || imageError) && (
+        {/* Fallback icon if no image and no video */}
+        {!hasMedia && (
           <div className="relative w-full aspect-video bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
             <ImageIcon className="w-12 h-12 text-muted-foreground/30" />
           </div>

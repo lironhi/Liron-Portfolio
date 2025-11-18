@@ -33,6 +33,7 @@ export interface Project {
   content?: string;
   coverImage?: string;
   image?: string; // Alias for coverImage
+  video?: string; // Path to video file (e.g., /projects/slug/demo.mp4)
   featured?: boolean;
   status?: 'completed' | 'in-progress' | 'planning';
   updatedAt?: string;

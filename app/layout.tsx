@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 import { SearchProvider } from '@/components/SearchProvider';
 import { ProgressBar } from '@/components/ProgressBar';
 import { ChatBot } from '@/components/ChatBot';
+import { PageLoader } from '@/components/PageLoader';
 import { data } from '@/lib/data';
 import { generateOgImageUrl } from '@/lib/utils';
 import './globals.css';
@@ -101,6 +102,7 @@ export default async function RootLayout({
             certificates={certificates}
             experiences={experiences}
           >
+            <PageLoader />
             <ProgressBar />
             <div className="relative flex min-h-screen flex-col">
               <Nav />
