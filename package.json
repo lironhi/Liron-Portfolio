@@ -40,7 +40,7 @@
     "rehype-pretty-code": "^0.13.2",
     "rehype-raw": "^7.0.0",
     "remark": "^15.0.1",
-    "remark-gfm": "^4.0.1",
+    "remark-gfm": "^4.0.0",
     "remark-html": "^16.0.1",
     "shiki": "^1.10.1",
     "tailwind-merge": "^2.4.0",
