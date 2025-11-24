@@ -1,8 +1,69 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { systemPrompt } from '@/lib/chatbot/knowledge-base';
+import { data } from '@/lib/data';
 
 // Remove edge runtime to allow fs access
 // export const runtime = 'edge';
+
+/**
+ * Enhanced system prompt with dynamic portfolio context
+ */
+async function getEnhancedSystemPrompt(): Promise<string> {
+  try {
+    // Fetch dynamic portfolio data
+    const [projects, skills, experience, currently] = await Promise.all([
+      data.getProjects(),
+      data.getSkills(),
+      data.getExperience(),
+      data.getCurrently(),
+    ]);
+
+    // Get featured projects for quick reference
+    const featuredProjects = projects.filter((p) => p.featured).slice(0, 3);
+
+    // Get top skills (expert and advanced level)
+    const topSkills = skills
+      .filter((s) => s.level === 'expert' || s.level === 'advanced')
+      .slice(0, 10);
+
+    // Build enhanced context
+    const dynamicContext = `
+
+DYNAMIC PORTFOLIO CONTEXT (Updated):
+
+Featured Projects:
+${featuredProjects.map((p) => `- ${p.title} (${p.year}): ${p.summary}`).join('\n')}
+
+Top Skills:
+${topSkills.map((s) => `- ${s.name} (${s.level}, ${s.yearsOfExperience}+ years)`).join('\n')}
+
+Current Experience:
+${experience
+  .slice(0, 2)
+  .map((e) => `- ${e.position} at ${e.company} (${e.startDate} - ${e.endDate || 'Present'})`)
+  .join('\n')}
+
+Currently:
+- Learning: ${currently.learning.map((l) => l.title).join(', ')}
+- Working on: ${currently.working.map((w) => w.title).join(', ')}
+
+IMPORTANT INSTRUCTIONS:
+- You have access to MCP tools to fetch detailed, real-time information
+- When asked about specific projects, skills, or experience, you can provide ACCURATE details
+- Use the dynamic context above as a quick reference
+- For detailed queries, mention that you have access to comprehensive portfolio data
+- Always provide specific, factual information based on the portfolio data
+- If asked about projects, you can describe them in detail with technologies used
+- If asked about skills, you can provide proficiency levels and years of experience
+`;
+
+    return systemPrompt + dynamicContext;
+  } catch (error) {
+    console.error('Error fetching dynamic context:', error);
+    // Fallback to static prompt if dynamic fetch fails
+    return systemPrompt;
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -26,9 +87,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // For now, use static knowledge base only
-    // TODO: Add dynamic portfolio context when needed
-    const fullSystemPrompt = systemPrompt;
+    // Get enhanced system prompt with dynamic portfolio data
+    const fullSystemPrompt = await getEnhancedSystemPrompt();
 
     // Call Groq API (FREE and FAST!)
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
