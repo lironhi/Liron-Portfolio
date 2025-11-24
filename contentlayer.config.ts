@@ -1,6 +1,5 @@
 import { defineDocumentType, makeSource } from 'contentlayer/source-files';
 import rehypePrettyCode from 'rehype-pretty-code';
-import remarkGfm from 'remark-gfm';
 
 export const Project = defineDocumentType(() => ({
   name: 'Project',
@@ -96,7 +95,7 @@ export default makeSource({
   contentDirPath: 'content',
   documentTypes: [Project],
   mdx: {
-    remarkPlugins: [remarkGfm],
+    remarkPlugins: [],
     rehypePlugins: [[rehypePrettyCode as any, rehypePrettyCodeOptions]],
   },
 });
