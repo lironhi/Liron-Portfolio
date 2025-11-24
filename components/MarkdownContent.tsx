@@ -3,17 +3,21 @@
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
+import type { PluggableList } from 'react-markdown';
 
 interface MarkdownContentProps {
   content: string;
 }
 
 export function MarkdownContent({ content }: MarkdownContentProps) {
+  const remarkPlugins: PluggableList = [remarkGfm as any];
+  const rehypePlugins: PluggableList = [rehypeRaw as any];
+
   return (
     <div className="prose prose-lg prose-slate dark:prose-invert max-w-none">
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeRaw]}
+        remarkPlugins={remarkPlugins}
+        rehypePlugins={rehypePlugins}
         components={{
           h1: ({ node, ...props }) => (
             <h1 className="mt-2 scroll-m-20 text-4xl font-bold tracking-tight" {...props} />
