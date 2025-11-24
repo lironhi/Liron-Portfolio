@@ -35,6 +35,14 @@ export const Project = defineDocumentType(() => ({
       type: 'string',
       required: false,
     },
+    image: {
+      type: 'string',
+      required: false,
+    },
+    video: {
+      type: 'string',
+      required: false,
+    },
     featured: {
       type: 'boolean',
       default: false,
