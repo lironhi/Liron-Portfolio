@@ -3,15 +3,15 @@
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
-import type { PluggableList } from 'react-markdown';
 
 interface MarkdownContentProps {
   content: string;
 }
 
 export function MarkdownContent({ content }: MarkdownContentProps) {
-  const remarkPlugins: PluggableList = [remarkGfm as any];
-  const rehypePlugins: PluggableList = [rehypeRaw as any];
+  // Type assertion to bypass vfile version incompatibility between react-markdown and contentlayer
+  const remarkPlugins = [remarkGfm] as any;
+  const rehypePlugins = [rehypeRaw] as any;
 
   return (
     <div className="prose prose-lg prose-slate dark:prose-invert max-w-none">
