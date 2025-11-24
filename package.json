@@ -63,6 +63,7 @@
   "overrides": {
     "micromark-extension-gfm": "^2.0.3",
     "mdast-util-gfm": "^2.0.2",
-    "mdast-util-gfm-table": "^1.0.7"
+    "mdast-util-gfm-table": "^1.0.7",
+    "zod": "3.23.8"
   }
 }
