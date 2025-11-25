@@ -2,21 +2,18 @@
 
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
-import remarkGfm from 'remark-gfm';
 
 interface MarkdownContentProps {
   content: string;
 }
 
 export function MarkdownContent({ content }: MarkdownContentProps) {
-  // Type assertion to bypass vfile version incompatibility between react-markdown and contentlayer
-  const remarkPlugins = [remarkGfm] as any;
+  // Note: remark-gfm removed due to micromark compatibility issues causing "getData is not a function" error
   const rehypePlugins = [rehypeRaw] as any;
 
   return (
     <div className="prose prose-lg prose-slate dark:prose-invert max-w-none">
       <ReactMarkdown
-        remarkPlugins={remarkPlugins}
         rehypePlugins={rehypePlugins}
         components={{
           h1: ({ node, ...props }) => (
