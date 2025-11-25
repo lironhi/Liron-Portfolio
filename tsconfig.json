@@ -25,16 +25,14 @@
       "@/lib/*": ["./lib/*"],
       "@/app/*": ["./app/*"],
       "@/data/*": ["./data/*"],
-      "@/content/*": ["./content/*"],
-      "contentlayer/generated": ["./.contentlayer/generated"]
+      "@/content/*": ["./content/*"]
     }
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts",
-    "contentlayer/generated"
+    ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }
