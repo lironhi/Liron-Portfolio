@@ -17,12 +17,16 @@ interface ProjectPageProps {
   }>;
 }
 
-export async function generateStaticParams() {
-  const projects = await data.getProjects();
-  return projects.map((project) => ({
-    slug: project.slug,
-  }));
-}
+// Force dynamic rendering to avoid MDX parsing issues during build
+export const dynamic = 'force-dynamic';
+
+// Commented out to prevent static generation errors
+// export async function generateStaticParams() {
+//   const projects = await data.getProjects();
+//   return projects.map((project) => ({
+//     slug: project.slug,
+//   }));
+// }
 
 export async function generateMetadata({ params }: ProjectPageProps) {
   const { slug } = await params;

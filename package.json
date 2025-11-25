@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "contentlayer build && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "biome lint .",
     "format": "biome format --write .",
@@ -44,7 +44,7 @@
     "remark-html": "^16.0.1",
     "shiki": "^1.10.1",
     "tailwind-merge": "^2.4.0",
-    "zod": "3.23.8"
+    "zod": "^3.25.1"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
