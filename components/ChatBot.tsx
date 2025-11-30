@@ -102,13 +102,27 @@ export function ChatBot() {
 
   if (!isOpen) {
     return (
-      <button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:scale-110 transition-transform duration-200 hover:shadow-xl"
-        aria-label="Open chat"
-      >
-        <MessageCircle className="w-6 h-6" />
-      </button>
+      <div className="fixed bottom-6 right-6 z-50">
+        {/* Pulsing glow effect */}
+        <div className="absolute inset-0 rounded-full bg-primary/30 animate-ping" />
+
+        {/* Main button */}
+        <button
+          onClick={() => setIsOpen(true)}
+          className="relative flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-2xl hover:scale-110 transition-all duration-300 hover:shadow-primary/50"
+          aria-label="Open chat"
+        >
+          {/* Glowing ring */}
+          <div className="absolute inset-0 rounded-full bg-primary/20 blur-md animate-pulse" />
+
+          <MessageCircle className="w-7 h-7 relative z-10" />
+
+          {/* Notification badge */}
+          <div className="absolute -top-1 -right-1 flex items-center justify-center w-6 h-6 rounded-full bg-red-500 text-white text-xs font-bold shadow-lg animate-bounce">
+            !
+          </div>
+        </button>
+      </div>
     );
   }
 

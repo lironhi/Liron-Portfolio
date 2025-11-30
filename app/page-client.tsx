@@ -54,7 +54,7 @@ export function HomePageClient({
   return (
     <>
       {/* Hero Section with Banner */}
-      <Section className="py-20 sm:py-32 relative overflow-hidden">
+      <Section className="py-12 sm:py-20 relative overflow-hidden">
         {/* Floating particles background */}
         <FloatingParticles />
 
@@ -208,7 +208,7 @@ export function HomePageClient({
             <div className="flex items-center justify-center gap-6 mb-8">
               <a
                 href={`mailto:${authorEmail}`}
-                className="flex items-center justify-center w-12 h-12 rounded-full bg-muted/60 text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all hover:scale-110 shadow-md"
+                className="flex items-center justify-center w-12 h-12 rounded-full bg-muted/60 text-muted-foreground hover:bg-red-500 hover:text-white transition-all hover:scale-110 shadow-md"
                 aria-label="Email"
               >
                 <Mail className="h-5 w-5" />
@@ -227,7 +227,7 @@ export function HomePageClient({
                   href={authorGithub}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center w-12 h-12 rounded-full bg-muted/60 text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all hover:scale-110 shadow-md"
+                  className="flex items-center justify-center w-12 h-12 rounded-full bg-muted/60 text-muted-foreground hover:bg-gray-800 dark:hover:bg-white hover:text-white dark:hover:text-gray-900 transition-all hover:scale-110 shadow-md"
                   aria-label="GitHub"
                 >
                   <GitBranch className="h-5 w-5" />
@@ -267,29 +267,8 @@ export function HomePageClient({
         </Container>
       </Section>
 
-      {/* Stats Section */}
-      <Section className="py-16 bg-muted/30 relative overflow-hidden">
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-float" />
-          <div className="absolute top-1/2 right-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }} />
-        </div>
-
-        <Container>
-          <ScrollReveal direction="up">
-            <StatsSection
-              stats={[
-                { value: featuredProjects.length, label: 'Featured Projects', suffix: '+' },
-                { value: 3, label: 'Years Experience', suffix: '+' },
-                { value: 15, label: 'Technologies', suffix: '+' },
-                { value: 100, label: 'Commits This Month', suffix: '+' },
-              ]}
-            />
-          </ScrollReveal>
-        </Container>
-      </Section>
-
       {/* Tech Stack Section */}
-      <Section className="py-20 sm:py-32 relative overflow-hidden">
+      <Section className="py-12 sm:py-20 relative overflow-hidden">
         <BackgroundPattern variant="dots" />
         <Container>
           <ScrollReveal direction="up">
@@ -310,7 +289,7 @@ export function HomePageClient({
       </Section>
 
       {featuredProjects.length > 0 && (
-        <Section className="py-20 sm:py-32 relative overflow-hidden bg-gradient-to-b from-background via-muted/20 to-background">
+        <Section className="py-12 sm:py-20 relative overflow-hidden bg-gradient-to-b from-background via-muted/20 to-background">
           {/* Decorative elements */}
           <div className="absolute inset-0 -z-10">
             <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
@@ -357,7 +336,7 @@ export function HomePageClient({
       )}
 
       {/* Inspirational Quote Section */}
-      <Section className="py-20 sm:py-32 relative overflow-hidden">
+      <Section className="py-12 sm:py-20 relative overflow-hidden">
         <BackgroundPattern variant="grid" />
         <Container>
           <ScrollReveal direction="up">
@@ -370,7 +349,7 @@ export function HomePageClient({
       </Section>
 
       {/* Currently Section */}
-      <Section className="py-20 sm:py-32 relative">
+      <Section className="py-12 sm:py-20 relative">
         {/* Subtle gradient background */}
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/3 via-transparent to-background" />
         <BackgroundPattern variant="waves" />

@@ -1,17 +1,14 @@
 'use client';
 
-import { useState, lazy, Suspense } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Search } from 'lucide-react';
+import { Menu, X, Phone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from './ThemeToggle';
 import { Button } from './Button';
 import { NavLinkAnimation } from './animations/NavLinkAnimation';
-
-// Dynamic import for SearchDialog to reduce initial bundle size
-const SearchDialog = lazy(() => import('./SearchDialog').then(mod => ({ default: mod.SearchDialog })));
 
 const navigation = [
   { name: 'Home', href: '/' },
@@ -67,14 +64,14 @@ export function Nav() {
             })}
           </div>
 
-          <div className="flex items-center gap-x-4">
-            <Suspense fallback={
-              <Button variant="ghost" size="icon" disabled>
-                <Search className="h-5 w-5" />
-              </Button>
-            }>
-              <SearchDialog />
-            </Suspense>
+          <div className="flex items-center gap-x-4 ml-8">
+            <Button asChild variant="default" size="sm" className="group relative overflow-hidden">
+              <a href="tel:+972586860673" className="inline-flex items-center gap-2">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <Phone className="h-4 w-4 relative z-10 group-hover:animate-bounce" />
+                <span className="hidden sm:inline relative z-10 font-semibold">Call Me</span>
+              </a>
+            </Button>
             <ThemeToggle />
             <div className="md:hidden">
               <Button
