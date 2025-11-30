@@ -3,6 +3,7 @@ import { Section } from '@/components/Section';
 import { Badge } from '@/components/Badge';
 import { data } from '@/lib/data';
 import { formatDateRange } from '@/lib/utils';
+import { FloatingOrbs } from '@/components/effects/FloatingOrbs';
 
 export const metadata = {
   title: 'Education',
@@ -28,10 +29,15 @@ export default async function EducationPage() {
   });
 
   return (
-    <Section
-      title="Education"
-      description="My educational background, qualifications, and professional certifications"
-    >
+    <div className="relative min-h-screen">
+      {/* Background Effect */}
+      <FloatingOrbs />
+
+      <Section
+        title="Education"
+        description="My educational background, qualifications, and professional certifications"
+        className="relative z-10"
+      >
       <Container>
         <div className="space-y-16">
           {/* Education Section */}
@@ -175,6 +181,7 @@ export default async function EducationPage() {
           </div>
         </div>
       </Container>
-    </Section>
+      </Section>
+    </div>
   );
 }

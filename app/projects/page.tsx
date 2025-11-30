@@ -2,6 +2,7 @@ import { Container } from '@/components/Container';
 import { Section } from '@/components/Section';
 import { ProjectsClient } from './ProjectsClient';
 import { data } from '@/lib/data';
+import { TwinklingStars } from '@/components/effects/TwinklingStars';
 
 export const metadata = {
   title: 'Projects',
@@ -15,13 +16,19 @@ export default async function ProjectsPage() {
   ]);
 
   return (
-    <Section
-      title="Projects"
-      description="A collection of projects I've worked on, from web applications to open-source contributions"
-    >
-      <Container>
-        <ProjectsClient projects={projects} tags={tags} />
-      </Container>
-    </Section>
+    <div className="relative min-h-screen">
+      {/* Background Effect */}
+      <TwinklingStars />
+
+      <Section
+        title="Projects"
+        description="A collection of projects I've worked on, from web applications to open-source contributions"
+        className="relative z-10"
+      >
+        <Container>
+          <ProjectsClient projects={projects} tags={tags} />
+        </Container>
+      </Section>
+    </div>
   );
 }

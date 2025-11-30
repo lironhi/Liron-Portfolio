@@ -5,6 +5,7 @@ import { ContactForm } from '@/components/ContactForm';
 import { AnimatedTitle } from '@/components/AnimatedTitle';
 import { FadeIn } from '@/components/animations';
 import { data } from '@/lib/data';
+import { NeuroNetwork } from '@/components/effects/NeuroNetwork';
 
 export const metadata = {
   title: 'Contact',
@@ -16,7 +17,11 @@ export default async function ContactPage() {
   const { author } = siteInfo;
 
   return (
-    <Section>
+    <div className="relative min-h-screen">
+      {/* Background Effect */}
+      <NeuroNetwork />
+
+      <Section className="relative z-10">
       <Container>
         <div className="mx-auto max-w-3xl space-y-12">
           <FadeIn>
@@ -135,5 +140,6 @@ export default async function ContactPage() {
         </div>
       </Container>
     </Section>
+    </div>
   );
 }

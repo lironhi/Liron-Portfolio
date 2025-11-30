@@ -11,6 +11,7 @@ import { FadeIn, StaggerContainer, StaggerItem, TabContent } from '@/components/
 import { Award, Code2, ShieldCheck } from 'lucide-react';
 import { capitalizeFirst } from '@/lib/utils';
 import type { Skill, Certificate } from '@/lib/data';
+import { FloatingOrbs } from '@/components/effects/FloatingOrbs';
 
 const skillLevelColors = {
   beginner: 'bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-900/20 dark:text-yellow-300 dark:border-yellow-800',
@@ -174,8 +175,12 @@ export default function SkillsPage() {
   ];
 
   return (
-    <Section>
-      <Container>
+    <div className="relative min-h-screen">
+      {/* Background Effect */}
+      <FloatingOrbs />
+
+      <Section className="relative z-10">
+        <Container>
         <div className="mx-auto max-w-6xl space-y-8">
           {/* Header */}
           <FadeIn>
@@ -297,5 +302,6 @@ export default function SkillsPage() {
         </div>
       </Container>
     </Section>
+    </div>
   );
 }

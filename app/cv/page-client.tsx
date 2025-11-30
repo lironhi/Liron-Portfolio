@@ -7,6 +7,7 @@ import { Section } from '@/components/Section';
 import { Button } from '@/components/Button';
 import { FadeIn, StaggerContainer, StaggerItem } from '@/components/animations';
 import type { CVData } from '@/lib/data/types';
+import { FloatingOrbs } from '@/components/effects/FloatingOrbs';
 
 // Dynamically import PDFViewer to avoid SSR issues with react-pdf
 const PDFViewer = dynamic(() => import('@/components/PDFViewer').then(mod => ({ default: mod.PDFViewer })), {
@@ -26,7 +27,11 @@ export function CVPageClient({ cvData }: CVPageClientProps) {
   const defaultCV = cvData.files.find(f => f.language === cvData.defaultLanguage) || cvData.files[0];
 
   return (
-    <Section>
+    <div className="relative min-h-screen">
+      {/* Background Effect */}
+      <FloatingOrbs />
+
+      <Section className="relative z-10">
       <Container>
         <div className="space-y-12">
           {/* Header */}
@@ -129,5 +134,6 @@ export function CVPageClient({ cvData }: CVPageClientProps) {
         </div>
       </Container>
     </Section>
+    </div>
   );
 }

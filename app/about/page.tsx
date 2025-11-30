@@ -7,6 +7,7 @@ import { Section } from '@/components/Section';
 import { AnimatedTitle } from '@/components/AnimatedTitle';
 import { FadeIn, TabContent } from '@/components/animations';
 import { Code2, Sparkles, Heart, Rocket, User, Briefcase, Globe } from 'lucide-react';
+import { DNAHelix } from '@/components/effects/DNAHelix';
 
 export default function AboutPage() {
   const [activeTab, setActiveTab] = useState('journey');
@@ -26,7 +27,11 @@ export default function AboutPage() {
   ];
 
   return (
-    <Section>
+    <div className="relative min-h-screen">
+      {/* Background Effect */}
+      <DNAHelix />
+
+      <Section className="relative z-10">
       <Container>
         <div className="mx-auto max-w-4xl space-y-8">
           {/* Header */}
@@ -314,5 +319,6 @@ export default function AboutPage() {
         </div>
       </Container>
     </Section>
+    </div>
   );
 }

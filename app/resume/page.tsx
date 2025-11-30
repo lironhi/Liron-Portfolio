@@ -8,6 +8,7 @@ import { AnimatedTitle } from '@/components/AnimatedTitle';
 import { TimelineItem } from '@/components/TimelineItem';
 import { data } from '@/lib/data';
 import { formatDateRange } from '@/lib/utils';
+import { FloatingOrbs } from '@/components/effects/FloatingOrbs';
 
 export const metadata = {
   title: 'Resume',
@@ -37,7 +38,11 @@ export default async function ResumePage() {
     .slice(0, 12);
 
   return (
-    <Section>
+    <div className="relative min-h-screen">
+      {/* Background Effect */}
+      <FloatingOrbs />
+
+      <Section className="relative z-10">
       <Container>
         <div className="space-y-12">
           {/* Header */}
@@ -63,7 +68,7 @@ export default async function ResumePage() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild>
-                <a href="/cv/Liron-Himbert.pdf" download>
+                <a href="/cv/Liron-Himbert.pdf" download className="inline-flex items-center">
                   <Download className="mr-2 h-4 w-4" />
                   Download PDF
                 </a>
@@ -175,6 +180,7 @@ export default async function ResumePage() {
           </div>
         </div>
       </Container>
-    </Section>
+      </Section>
+    </div>
   );
 }

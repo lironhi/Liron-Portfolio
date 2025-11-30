@@ -2,6 +2,7 @@ import { Container } from '@/components/Container';
 import { Section } from '@/components/Section';
 import { TimelineItem } from '@/components/TimelineItem';
 import { data } from '@/lib/data';
+import { FloatingOrbs } from '@/components/effects/FloatingOrbs';
 
 export const metadata = {
   title: 'Experience',
@@ -18,10 +19,15 @@ export default async function ExperiencePage() {
   });
 
   return (
-    <Section
-      title="Experience"
-      description="My professional journey in software development and technology"
-    >
+    <div className="relative min-h-screen">
+      {/* Background Effect */}
+      <FloatingOrbs />
+
+      <Section
+        title="Experience"
+        description="My professional journey in software development and technology"
+        className="relative z-10"
+      >
       <Container>
         <div className="space-y-8">
           {sortedExperiences.length === 0 ? (
@@ -43,6 +49,7 @@ export default async function ExperiencePage() {
           )}
         </div>
       </Container>
-    </Section>
+      </Section>
+    </div>
   );
 }

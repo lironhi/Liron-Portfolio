@@ -1,4 +1,5 @@
 import { Inter } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/react';
 import { Nav } from '@/components/Nav';
 import { Footer } from '@/components/Footer';
 import { ThemeProvider } from '@/components/ThemeProvider';
@@ -112,6 +113,7 @@ export default async function RootLayout({
             <ChatBot />
           </SearchProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
