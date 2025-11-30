@@ -18,19 +18,11 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const demoLink = project.links.find((link) => link.type === 'demo');
   const [imageError, setImageError] = useState(false);
 
-  // Try to get project image - first from metadata, then try default paths
+  // Try to get project image - only from metadata
   const getProjectImage = () => {
     if (project.image) return project.image;
     if (project.coverImage) return project.coverImage;
-    // Only try default paths if no explicit video is set
-    if (!project.video) {
-      const possibleImages = [
-        `/projects/${project.slug}/main.png`,
-        `/projects/${project.slug}/cover.png`,
-        `/projects/${project.slug}/thumbnail.png`,
-      ];
-      return possibleImages[0]; // We'll use the first one and handle errors
-    }
+    // Don't try default paths - let it fallback to video instead
     return null;
   };
 

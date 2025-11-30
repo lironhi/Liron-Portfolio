@@ -170,6 +170,31 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               </div>
             )}
 
+            {/* Project Video */}
+            {project.video && (
+              <div className="rounded-lg border bg-card overflow-hidden">
+                <video
+                  src={project.video}
+                  className="w-full aspect-video object-cover"
+                  controls
+                  preload="metadata"
+                >
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            )}
+
+            {/* Project Image */}
+            {project.image && !project.video && (
+              <div className="rounded-lg border bg-card overflow-hidden">
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className="w-full aspect-video object-cover"
+                />
+              </div>
+            )}
+
             {/* Image Gallery */}
             <ProjectImageGallery projectSlug={slug} />
 
