@@ -9,22 +9,16 @@ export function BackgroundPattern({ variant = 'dots', className }: BackgroundPat
   const patterns = {
     dots: (
       <div
-        className={cn(
-          'absolute inset-0 -z-10 opacity-[0.015] dark:opacity-[0.03]',
-          className
-        )}
+        className={cn('absolute inset-0 -z-10 opacity-[0.015] dark:opacity-[0.03]', className)}
         style={{
-          backgroundImage: `radial-gradient(circle, currentColor 1px, transparent 1px)`,
+          backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)',
           backgroundSize: '24px 24px',
         }}
       />
     ),
     grid: (
       <div
-        className={cn(
-          'absolute inset-0 -z-10 opacity-[0.02] dark:opacity-[0.04]',
-          className
-        )}
+        className={cn('absolute inset-0 -z-10 opacity-[0.02] dark:opacity-[0.04]', className)}
         style={{
           backgroundImage: `
             linear-gradient(currentColor 1px, transparent 1px),

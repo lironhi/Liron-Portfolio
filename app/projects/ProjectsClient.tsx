@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { StaggerGrid } from '@/components/animations/StaggerGrid';
 import { ProjectCard } from '@/components/ProjectCard';
 import { TagFilter } from '@/components/TagFilter';
-import { StaggerGrid } from '@/components/animations/StaggerGrid';
 import type { Project, Tag } from '@/lib/data';
 
 interface ProjectsClientProps {
@@ -38,7 +38,11 @@ export function ProjectsClient({ projects, tags }: ProjectsClientProps) {
         </div>
       ) : (
         <>
-          <StaggerGrid className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" staggerDelay={0.1} initialDelay={0.1}>
+          <StaggerGrid
+            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            staggerDelay={0.1}
+            initialDelay={0.1}
+          >
             {filteredProjects.map((project) => (
               <ProjectCard key={project.slug} project={project} />
             ))}

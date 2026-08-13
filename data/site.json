@@ -1,13 +1,13 @@
 {
   "name": "Liron Himbert Portfolio",
-  "title": "Liron Himbert - Software Engineer | AI & Backend Specialist",
-  "description": "Software Engineer specialized in backend, full-stack, and AI-driven systems. Expert in LangGraph, MCP, and LLM agentic development with strong focus on cybersecurity and distributed architectures.",
+  "title": "Liron Himbert - Full-Stack Engineer | AI & Agent Systems",
+  "description": "Full-stack engineer with 3+ years building production systems, focused on AI integration and agent-based architectures. LangGraph, MCP and multi-agent workflows, on top of React, Node.js and Python.",
   "url": "https://liron-portfolio.vercel.app/",
   "author": {
     "name": "Liron Himbert",
     "email": "lironbenharrouch@gmail.com",
-    "bio": "Software Engineer specialized in backend, full-stack, and AI-driven systems, with hands-on experience in designing distributed architectures, microservices, and automation pipelines. Skilled in LangGraph, MCP, and LLM agentic development, with a strong foundation in Python, Node.js, and cloud-native technologies. Passionate about leveraging AI Agents to enhance cybersecurity, optimize processes, and build scalable, intelligent systems.",
-    "location": "Ashkelon, Israel",
+    "bio": "Full-stack developer with 3+ years of experience building production systems, with a growing focus on AI integration and agent-based architectures. I lead a 6-person IT team across six international branches, where I ship full-stack products and multi-agent automation built on LangGraph and MCP. I work fast, dig deep, and see things through — looking for a full-stack role where shipping smart, AI-driven products is the norm.",
+    "location": "Israel",
     "avatar": "/images/avatar.jpg",
     "social": {
       "github": "https://github.com/lironhi",
@@ -19,31 +19,31 @@
   "navigation": [
     { "label": "Home", "href": "/" },
     { "label": "Projects", "href": "/projects" },
-    { "label": "Experience", "href": "/experience" },
     { "label": "Skills", "href": "/skills" },
-    { "label": "Certifications", "href": "/certifications" },
-    { "label": "CV", "href": "/cv" },
-    { "label": "Education", "href": "/education" },
     { "label": "About", "href": "/about" },
-    { "label": "Contact", "href": "/contact" }
+    { "label": "Contact", "href": "/contact" },
+    { "label": "CV (experience, education, certifications)", "href": "/resume" }
   ],
   "seo": {
     "keywords": [
-      "software engineer",
-      "AI engineer",
-      "backend developer",
       "full stack developer",
+      "AI engineer",
+      "software engineer",
       "LangGraph",
       "LangChain",
       "MCP",
       "AI agents",
-      "LLM development",
-      "python developer",
-      "cybersecurity",
-      "distributed systems",
-      "microservices",
+      "multi-agent systems",
+      "RAG",
+      "LLM integration",
+      "React",
+      "Next.js",
       "node.js",
-      "typescript"
+      "typescript",
+      "python developer",
+      "NestJS",
+      "microservices",
+      "REST API"
     ],
     "ogImage": "/images/og-image.jpg"
   }

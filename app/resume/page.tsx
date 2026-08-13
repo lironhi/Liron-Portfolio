@@ -1,14 +1,14 @@
+import { Download } from 'lucide-react';
 import Link from 'next/link';
-import { Download, ExternalLink } from 'lucide-react';
-import { Container } from '@/components/Container';
-import { Section } from '@/components/Section';
-import { Button } from '@/components/Button';
-import { Badge } from '@/components/Badge';
 import { AnimatedTitle } from '@/components/AnimatedTitle';
+import { Badge } from '@/components/Badge';
+import { Button } from '@/components/Button';
+import { Container } from '@/components/Container';
+import { FloatingOrbs } from '@/components/effects/FloatingOrbs';
+import { Section } from '@/components/Section';
 import { TimelineItem } from '@/components/TimelineItem';
 import { data } from '@/lib/data';
 import { formatDateRange } from '@/lib/utils';
-import { FloatingOrbs } from '@/components/effects/FloatingOrbs';
 
 export const metadata = {
   title: 'Resume',
@@ -16,11 +16,12 @@ export const metadata = {
 };
 
 export default async function ResumePage() {
-  const [siteInfo, experiences, education, skills] = await Promise.all([
+  const [siteInfo, experiences, education, skills, certificates] = await Promise.all([
     data.getSiteInfo(),
     data.getExperience(),
     data.getEducation(),
     data.getSkills(),
+    data.getCertificates(),
   ]);
 
   const { author } = siteInfo;
@@ -43,143 +44,155 @@ export default async function ResumePage() {
       <FloatingOrbs />
 
       <Section className="relative z-10">
-      <Container>
-        <div className="space-y-12">
-          {/* Header */}
-          <div className="text-center space-y-6">
-            <div className="space-y-4">
-              <AnimatedTitle
-                text={author.name}
-                as="h1"
-                className="text-3xl font-bold tracking-tight sm:text-4xl"
-              />
-              <p className="text-lg text-muted-foreground">{author.bio}</p>
-              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-                <span>📍 {author.location}</span>
-                <span>•</span>
-                <a
-                  href={`mailto:${author.social.email}`}
-                  className="hover:text-primary transition-colors"
-                >
-                  {author.social.email}
-                </a>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild>
-                <a href="/cv/Liron-Himbert.pdf" download className="inline-flex items-center">
-                  <Download className="mr-2 h-4 w-4" />
-                  Download PDF
-                </a>
-              </Button>
-              <Button variant="outline" asChild>
-                <Link href="/contact">
-                  Contact Me
-                </Link>
-              </Button>
-            </div>
-          </div>
-
-          {/* Skills Summary */}
-          {topSkills.length > 0 && (
-            <div className="space-y-6">
-              <h2 className="text-2xl font-semibold text-foreground">Core Skills</h2>
-              <div className="flex flex-wrap gap-2">
-                {topSkills.map((skill) => (
-                  <Badge key={skill.id} variant="secondary">
-                    {skill.name}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Experience */}
-          {sortedExperiences.length > 0 && (
-            <div className="space-y-8">
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-semibold text-foreground">Professional Experience</h2>
-                <Button variant="ghost" size="sm" asChild>
-                  <Link href="/experience">
-                    View All <ExternalLink className="ml-1 h-3 w-3" />
-                  </Link>
-                </Button>
-              </div>
-              
-              <div className="space-y-8">
-                {sortedExperiences.map((experience, index) => (
-                  <TimelineItem
-                    key={experience.id}
-                    experience={experience}
-                    isLast={index === sortedExperiences.length - 1}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Education */}
-          {sortedEducation.length > 0 && (
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-semibold text-foreground">Education</h2>
-                <Button variant="ghost" size="sm" asChild>
-                  <Link href="/education">
-                    View All <ExternalLink className="ml-1 h-3 w-3" />
-                  </Link>
-                </Button>
-              </div>
-              
+        <Container>
+          <div className="space-y-12">
+            {/* Header */}
+            <div className="text-center space-y-6">
               <div className="space-y-4">
-                {sortedEducation.map((edu) => (
-                  <div
-                    key={edu.id}
-                    className="rounded-lg border bg-card p-4"
+                <AnimatedTitle
+                  text={author.name}
+                  as="h1"
+                  className="text-3xl font-bold tracking-tight sm:text-4xl"
+                />
+                <p className="text-lg text-muted-foreground">{author.bio}</p>
+                <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                  <span>📍 {author.location}</span>
+                  <span>•</span>
+                  <a
+                    href={`mailto:${author.social.email}`}
+                    className="hover:text-primary transition-colors"
                   >
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h3 className="font-semibold text-foreground">
-                          {edu.degree} in {edu.field}
-                        </h3>
-                        <p className="text-primary font-medium">{edu.institution}</p>
-                        {edu.gpa && (
-                          <p className="text-sm text-muted-foreground">GPA: {edu.gpa}</p>
-                        )}
-                      </div>
-                      <div className="text-right text-sm text-muted-foreground">
-                        <div>{formatDateRange(edu.startDate, edu.endDate)}</div>
-                        <div>{edu.location}</div>
+                    {author.social.email}
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button asChild>
+                  <a href="/cv/Liron-Himbert.pdf" download className="inline-flex items-center">
+                    <Download className="mr-2 h-4 w-4" />
+                    Download PDF
+                  </a>
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link href="/contact">Contact Me</Link>
+                </Button>
+              </div>
+            </div>
+
+            {/* Skills Summary */}
+            {topSkills.length > 0 && (
+              <div className="space-y-6">
+                <h2 className="text-2xl font-semibold text-foreground">Core Skills</h2>
+                <div className="flex flex-wrap gap-2">
+                  {topSkills.map((skill) => (
+                    <Badge key={skill.id} variant="secondary">
+                      {skill.name}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Experience */}
+            {sortedExperiences.length > 0 && (
+              <div className="space-y-8">
+                {/* No "View All" link: /experience now redirects back here. */}
+                <h2 className="text-2xl font-semibold text-foreground">Professional Experience</h2>
+
+                <div className="space-y-8">
+                  {sortedExperiences.map((experience, index) => (
+                    <TimelineItem
+                      key={experience.id}
+                      experience={experience}
+                      isLast={index === sortedExperiences.length - 1}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Education */}
+            {sortedEducation.length > 0 && (
+              <div className="space-y-6">
+                <h2 className="text-2xl font-semibold text-foreground">Education</h2>
+
+                <div className="space-y-4">
+                  {sortedEducation.map((edu) => (
+                    <div key={edu.id} className="rounded-lg border bg-card p-4">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h3 className="font-semibold text-foreground">
+                            {edu.degree} in {edu.field}
+                          </h3>
+                          <p className="text-primary font-medium">{edu.institution}</p>
+                          {edu.gpa && (
+                            <p className="text-sm text-muted-foreground">GPA: {edu.gpa}</p>
+                          )}
+                        </div>
+                        <div className="text-right text-sm text-muted-foreground">
+                          <div>{formatDateRange(edu.startDate, edu.endDate)}</div>
+                          <div>{edu.location}</div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Footer */}
-          <div className="border-t pt-8 text-center">
-            <div className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                This resume is always up-to-date. Last updated: {new Date().toLocaleDateString()}
-              </p>
-              <div className="flex items-center justify-center gap-4">
-                <Button variant="ghost" size="sm" asChild>
-                  <Link href="/projects">
-                    View Projects
-                  </Link>
-                </Button>
-                <Button variant="ghost" size="sm" asChild>
-                  <Link href="/skills">
-                    View All Skills
-                  </Link>
-                </Button>
+            {/* Courses & certifications - folded in from the old /certifications page */}
+            {certificates.length > 0 && (
+              <div className="space-y-6">
+                <h2 className="text-2xl font-semibold text-foreground">Courses & Certifications</h2>
+                <div className="space-y-4">
+                  {certificates.map((cert) => (
+                    <div key={cert.id} className="rounded-lg border bg-card p-4">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="min-w-0">
+                          <h3 className="font-semibold text-foreground">{cert.name}</h3>
+                          <p className="font-medium text-primary">{cert.issuer}</p>
+                          {cert.description && (
+                            <p className="mt-1 text-sm text-muted-foreground">{cert.description}</p>
+                          )}
+                        </div>
+                        <div className="shrink-0 text-right text-sm text-muted-foreground">
+                          {new Date(cert.issueDate).getFullYear()}
+                        </div>
+                      </div>
+                      {cert.skills && cert.skills.length > 0 && (
+                        <div className="mt-3 flex flex-wrap gap-1">
+                          {cert.skills.map((skill) => (
+                            <Badge key={skill} variant="secondary" className="text-xs">
+                              {skill}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Footer */}
+            <div className="border-t pt-8 text-center">
+              <div className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  This resume is always up-to-date. Last updated: {new Date().toLocaleDateString()}
+                </p>
+                <div className="flex items-center justify-center gap-4">
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link href="/projects">View Projects</Link>
+                  </Button>
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link href="/skills">View All Skills</Link>
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </Container>
+        </Container>
       </Section>
     </div>
   );

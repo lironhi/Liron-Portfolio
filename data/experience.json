@@ -1,81 +1,104 @@
 [
   {
+    "id": "freelance-fullstack",
+    "company": "Independent",
+    "position": "Freelance Full-Stack Developer",
+    "startDate": "2025-01-01",
+    "endDate": null,
+    "location": "Remote",
+    "type": "work",
+    "description": "Designing and shipping production web platforms end to end for clients, from data model and API to the interface non-technical users work in every day.",
+    "achievements": [
+      "Built Eliana Beauty, a complete mobile-first booking and CRM platform for beauty salons, combining a client app and an admin back office in one product",
+      "Client side: real-time availability booking, service browsing by category, staff selection, appointment history with live status tracking, in-app chat and seamless English/Hebrew RTL switching",
+      "Admin side: financial dashboard with revenue tracking and analytics, staff management with sick leave and vacation blocking, automatic conflict handling, advanced search filters and automated database backup",
+      "Engineered an intelligent availability engine handling working hours, time-off, service durations and real-time conflict detection with colour-coded time slots",
+      "Designed the whole interface for non-technical users, responsive across every screen size"
+    ],
+    "technologies": [
+      "React",
+      "Next.js",
+      "TypeScript",
+      "Node.js",
+      "REST APIs",
+      "Tailwind CSS",
+      "RTL / i18n",
+      "Responsive Design"
+    ]
+  },
+  {
     "id": "it-team-leader-callisto",
     "company": "Callisto",
-    "position": "IT & Software Solutions Developer / Team Leader IT",
+    "position": "Full-Stack Engineer & IT Team Lead",
     "startDate": "2024-08-01",
     "endDate": null,
-    "location": "Ashkelon, Israel",
+    "location": "Israel",
     "type": "work",
-    "description": "Leading the IT team, managing infrastructure and software development across six international call centers. Designing and implementing automation pipelines and backend services while experimenting with cutting-edge AI agent technologies.",
+    "description": "Leading a 6-person IT team and owning technical decisions and full-stack delivery across six international branches, with a growing share of the work going into AI agent automation.",
     "achievements": [
-      "Led IT team managing infrastructure across 6 international call centers",
-      "Designed and implemented automation pipelines using Python, SQL, and Google Sheets for data extraction and reporting",
-      "Built and maintained backend services integrating with APIs and distributed databases",
-      "Experimented with LangGraph and MCP for LLM-based agent prototypes to automate data management and customer support tasks",
-      "Oversaw system performance, servers, and databases, ensuring high availability and security"
+      "Led a 6-person IT team, owning technical decisions and full-stack delivery across 6 international branches",
+      "Built a Python tool (pandas, matplotlib) auto-generating per-vendor and per-branch sales KPI reports as PNG exports, cutting report generation from 2 hours to under 2 seconds for the management team",
+      "Built a multi-agent automation system (LangGraph, MCP) for internal use, handling automated responses, database management, file analysis and report generation, with sequential chaining between agents for multi-step workflows",
+      "Architected REST APIs integrating 10+ third-party services across distributed environments",
+      "Managed IT operations across all branches: user provisioning, permissions, and GSuite/Azure administration for internal teams"
     ],
     "technologies": [
       "Python",
-      "SQL",
       "LangGraph",
       "MCP",
-      "Google Sheets API",
-      "Distributed Databases",
-      "Backend Development",
-      "System Administration"
+      "Multi-Agent Workflows",
+      "pandas",
+      "matplotlib",
+      "REST APIs",
+      "SQL",
+      "GSuite / Azure Admin"
     ]
   },
   {
     "id": "instructor-codii",
     "company": "Codii E-Programming School",
-    "position": "Programmer Instructor",
+    "position": "Full-Stack Developer & Instructor",
     "startDate": "2022-09-01",
     "endDate": "2024-08-31",
     "location": "Netanya, Israel",
     "type": "work",
-    "description": "Developed and delivered comprehensive programming lessons to over 100 students while building a full-stack CRM system. Established strategic partnerships with town halls to support French new immigrants.",
+    "description": "Taught programming to over 100 students while building the school's full-stack management platform in parallel with teaching and studies.",
     "achievements": [
-      "Developed and delivered lessons in C, C++, Java, and Python to over 100 students",
-      "Built a comprehensive CRM system using Node.js (backend) and React (frontend) with Docker for containerization",
-      "Implemented security measures against injection attacks, improving system security by 30%",
-      "Established partnerships with various town halls for French new immigrants, enhancing community outreach",
-      "Created custom teaching materials and exercises adapted to different skill levels"
+      "Taught Python, Java and C/C++ to 100+ students, emphasising software design, system architecture and problem-solving",
+      "Built the Codii CRM, a full-stack management platform for the school, delivered in 4 months alongside teaching and studies",
+      "Stack: Node.js, React, MySQL and Docker, with 3 role types (Admin, Instructor, Student)",
+      "Course calendar with attendance tracking and Zoom API integration for auto-generated meeting links",
+      "Group messaging built with secure coding practices - input validation, XSS sanitisation and parameterised queries - reducing injection vulnerabilities by 30%",
+      "Full RBAC (JWT + bcrypt) with 5 security layers, hardened against the OWASP Top 10 from day one",
+      "Replaced 3 legacy tools (Excel, WhatsApp, paper) for 100+ daily users, deployed via Docker Compose"
     ],
     "technologies": [
       "Node.js",
       "React",
-      "Docker",
-      "C",
-      "C++",
-      "Java",
-      "Python",
       "MySQL",
-      "Security Best Practices",
-      "Git"
+      "Docker",
+      "Docker Compose",
+      "JWT / bcrypt",
+      "Zoom API",
+      "Python",
+      "Java",
+      "C / C++"
     ]
   },
   {
     "id": "military-service-kfir",
-    "company": "Kfir Brigade, Nahshon Battalion",
-    "position": "Fighter & Team Leader",
+    "company": "Kfir Brigade, Nachshon Battalion",
+    "position": "Infantry Soldier & Team Leader",
     "startDate": "2013-12-01",
     "endDate": "2016-06-30",
     "location": "Israel",
     "type": "volunteer",
-    "description": "Served as a combat soldier and team leader in the Kfir Brigade. Successfully completed the Medics Course and demonstrated strong leadership skills under high-pressure situations.",
+    "description": "Combat service in the Kfir Brigade, leading a team under sustained pressure.",
     "achievements": [
-      "Successfully completed the Medics Course and demonstrated proficiency in managing stressful situations",
-      "Led a team of 8 soldiers with responsibility for their training and welfare",
-      "Received certificates of excellence from Brigade and Battalion Generals",
-      "Developed strong leadership, teamwork, and decision-making skills in challenging environments"
+      "Led a team of 8 soldiers, responsible for their training and welfare",
+      "First-aid certified",
+      "Received brigade and battalion commendations"
     ],
-    "technologies": [
-      "Leadership",
-      "Team Management",
-      "Crisis Management",
-      "Medical Training",
-      "Tactical Operations"
-    ]
+    "technologies": ["Leadership", "Team Management", "Crisis Management", "First Aid"]
   }
 ]

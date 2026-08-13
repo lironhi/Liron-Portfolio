@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface ScaleInProps {
   children: ReactNode;
@@ -10,12 +10,7 @@ interface ScaleInProps {
   className?: string;
 }
 
-export function ScaleIn({
-  children,
-  delay = 0,
-  duration = 0.5,
-  className,
-}: ScaleInProps) {
+export function ScaleIn({ children, delay = 0, duration = 0.5, className }: ScaleInProps) {
   return (
     <motion.div
       initial={{

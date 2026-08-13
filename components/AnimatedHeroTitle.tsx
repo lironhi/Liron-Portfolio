@@ -6,6 +6,11 @@ interface AnimatedHeroTitleProps {
   name: string;
 }
 
+/**
+ * The name is a kicker, not the headline. A recruiter scans for what you do
+ * before who you are, so the value proposition carries the h1 - which also
+ * makes the h1 descriptive for search engines.
+ */
 export function AnimatedHeroTitle({ name }: AnimatedHeroTitleProps) {
   const [displayedText, setDisplayedText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -14,28 +19,22 @@ export function AnimatedHeroTitle({ name }: AnimatedHeroTitleProps) {
   useEffect(() => {
     if (currentIndex < name.length) {
       const timeout = setTimeout(() => {
-        setDisplayedText(prev => prev + name[currentIndex]);
-        setCurrentIndex(prev => prev + 1);
-      }, 100);
+        setDisplayedText((prev) => prev + name[currentIndex]);
+        setCurrentIndex((prev) => prev + 1);
+      }, 70);
       return () => clearTimeout(timeout);
-    } else {
-      setIsComplete(true);
     }
+    setIsComplete(true);
   }, [currentIndex, name]);
 
   return (
-    <h1 className="text-5xl font-bold tracking-tight sm:text-7xl text-center mb-16 relative">
-      <span className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-foreground via-primary to-foreground animate-gradient-x">
-        {displayedText}
-        {!isComplete && (
-          <span className="inline-block w-1 h-[0.9em] bg-primary ml-1 animate-blink" />
-        )}
-      </span>
-
-      {/* Glow effect */}
-      <span className="absolute inset-0 blur-2xl opacity-30 bg-gradient-to-r from-primary/50 via-primary/30 to-primary/50 -z-10" aria-hidden="true">
+    <p className="text-2xl sm:text-3xl font-bold tracking-tight">
+      <span className="inline-block bg-clip-text text-transparent bg-linear-to-r from-foreground via-primary to-foreground animate-gradient-x">
         {displayedText}
       </span>
-    </h1>
+      {!isComplete && (
+        <span className="inline-block w-0.5 h-[0.9em] bg-primary ml-1 animate-blink" />
+      )}
+    </p>
   );
 }

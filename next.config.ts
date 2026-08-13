@@ -28,11 +28,12 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   async redirects() {
     return [
-      {
-        source: '/cv',
-        destination: '/resume',
-        permanent: true,
-      },
+      { source: '/cv', destination: '/resume', permanent: true },
+      // Experience, education and certifications were three thin pages for four,
+      // one and two entries. They all live on /resume now.
+      { source: '/experience', destination: '/resume', permanent: true },
+      { source: '/education', destination: '/resume', permanent: true },
+      { source: '/certifications', destination: '/resume', permanent: true },
     ];
   },
   experimental: {

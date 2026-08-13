@@ -1,5 +1,5 @@
 import FlexSearch from 'flexsearch';
-import type { Project, Skill, Certificate, Experience } from './data/types';
+import type { Certificate, Experience, Project, Skill } from './data/types';
 
 export interface SearchResult {
   id: string;
@@ -45,11 +45,9 @@ export function indexProjects(projects: Project[]) {
   projects.forEach((project) => {
     projectsStore.set(project.slug, project);
 
-    const searchText = [
-      project.title,
-      project.summary,
-      ...project.tags.map((t) => t.name),
-    ].join(' ');
+    const searchText = [project.title, project.summary, ...project.tags.map((t) => t.name)].join(
+      ' '
+    );
 
     console.log('Adding project to index:', project.slug, searchText);
     projectIndex.add(project.slug, searchText);
@@ -65,11 +63,7 @@ export function indexSkills(skills: Skill[]) {
   skills.forEach((skill) => {
     skillsStore.set(skill.id, skill);
 
-    const searchText = [
-      skill.name,
-      skill.description || '',
-      skill.category,
-    ].join(' ');
+    const searchText = [skill.name, skill.description || '', skill.category].join(' ');
 
     skillIndex.add(skill.id, searchText);
   });

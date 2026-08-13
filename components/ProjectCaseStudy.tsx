@@ -1,4 +1,4 @@
-import { BarChart3, Target, Lightbulb, Users, Clock, TrendingUp, Code2 } from 'lucide-react';
+import { BarChart3, Clock, Code2, Lightbulb, Target, TrendingUp, Users } from 'lucide-react';
 import type { Project } from '@/lib/data/types';
 import { Badge } from './Badge';
 
@@ -124,7 +124,7 @@ export function ProjectCaseStudy({ project }: ProjectCaseStudyProps) {
             {project.metrics!.map((metric, index) => (
               <div
                 key={index}
-                className="rounded-lg border bg-gradient-to-br from-primary/5 to-primary/10 p-6 space-y-2"
+                className="rounded-lg border bg-linear-to-br from-primary/5 to-primary/10 p-6 space-y-2"
               >
                 <p className="text-3xl font-bold text-primary">{metric.value}</p>
                 <p className="text-sm font-medium text-foreground">{metric.label}</p>
@@ -159,10 +159,7 @@ export function ProjectCaseStudy({ project }: ProjectCaseStudyProps) {
           </h2>
           <div className="space-y-6">
             {project.challenges!.map((challenge, index) => (
-              <div
-                key={index}
-                className="rounded-lg border bg-card p-6 space-y-4"
-              >
+              <div key={index} className="rounded-lg border bg-card p-6 space-y-4">
                 <h3 className="text-lg font-semibold text-foreground">
                   {index + 1}. {challenge.title}
                 </h3>
@@ -171,17 +168,13 @@ export function ProjectCaseStudy({ project }: ProjectCaseStudyProps) {
                     <p className="text-sm font-medium text-orange-600 dark:text-orange-400 mb-2">
                       Challenge
                     </p>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {challenge.description}
-                    </p>
+                    <p className="text-muted-foreground leading-relaxed">{challenge.description}</p>
                   </div>
                   <div>
                     <p className="text-sm font-medium text-green-600 dark:text-green-400 mb-2">
                       Solution
                     </p>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {challenge.solution}
-                    </p>
+                    <p className="text-muted-foreground leading-relaxed">{challenge.solution}</p>
                   </div>
                 </div>
               </div>

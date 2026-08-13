@@ -99,7 +99,13 @@ export function FloatingBubbles() {
 
         // Add shine effect
         ctx.beginPath();
-        ctx.arc(bubble.x - bubble.size * 0.3, bubble.y - bubble.size * 0.3, bubble.size * 0.2, 0, Math.PI * 2);
+        ctx.arc(
+          bubble.x - bubble.size * 0.3,
+          bubble.y - bubble.size * 0.3,
+          bubble.size * 0.2,
+          0,
+          Math.PI * 2
+        );
         ctx.fillStyle = `rgba(255, 255, 255, ${bubble.opacity * 0.5})`;
         ctx.fill();
       });
@@ -115,10 +121,5 @@ export function FloatingBubbles() {
     };
   }, [isDark]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 pointer-events-none"
-    />
-  );
+  return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" />;
 }

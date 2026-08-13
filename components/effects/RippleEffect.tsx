@@ -47,7 +47,7 @@ export function RippleEffect() {
         maxRadius: Math.random() * 150 + 100,
         opacity: 1,
         speed: Math.random() * 1.5 + 1,
-        color: colors[Math.floor(Math.random() * colors.length)]
+        color: colors[Math.floor(Math.random() * colors.length)],
       });
     };
 
@@ -65,7 +65,7 @@ export function RippleEffect() {
         const ripple = ripples[i];
 
         ripple.radius += ripple.speed;
-        ripple.opacity = 1 - (ripple.radius / ripple.maxRadius);
+        ripple.opacity = 1 - ripple.radius / ripple.maxRadius;
 
         if (ripple.opacity <= 0) {
           ripples.splice(i, 1);
@@ -104,14 +104,14 @@ export function RippleEffect() {
         ? ['rgba(139, 92, 246, 0.4)', 'rgba(59, 130, 246, 0.4)', 'rgba(236, 72, 153, 0.4)']
         : ['rgba(139, 92, 246, 0.5)', 'rgba(59, 130, 246, 0.5)', 'rgba(236, 72, 153, 0.5)'];
 
-      ripples.forEach(ripple => {
+      ripples.forEach((ripple) => {
         ripple.color = newColors[Math.floor(Math.random() * newColors.length)];
       });
     });
 
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ['class']
+      attributeFilter: ['class'],
     });
 
     return () => {

@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import type { Tag } from '@/lib/data';
+import { getReadableTextColor } from '@/lib/utils';
 import { Badge } from './Badge';
 import { Button } from './Button';
-import type { Tag } from '@/lib/data';
 
 interface TagFilterProps {
   tags: Tag[];
@@ -38,13 +38,14 @@ export function TagFilter({ tags, selectedTags, onTagsChange }: TagFilterProps) 
           </Button>
         )}
       </div>
-      
+
       <div className="flex flex-wrap gap-2">
         {tags.map((tag) => {
           const isSelected = selectedTags.includes(tag.id);
           return (
             <button
               key={tag.id}
+              type="button"
               onClick={() => toggleTag(tag.id)}
               className="transition-all duration-200 hover:scale-105"
               aria-pressed={isSelected}
@@ -53,7 +54,11 @@ export function TagFilter({ tags, selectedTags, onTagsChange }: TagFilterProps) 
               <Badge
                 variant={isSelected ? 'default' : 'outline'}
                 className="cursor-pointer"
-                style={tag.color ? { backgroundColor: tag.color } : undefined}
+                style={
+                  tag.color
+                    ? { backgroundColor: tag.color, color: getReadableTextColor(tag.color) }
+                    : undefined
+                }
               >
                 {tag.name}
               </Badge>

@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import { useEffect, useRef, useState } from 'react';
 
 interface ParallaxImageProps {
   src: string;
@@ -51,7 +51,7 @@ export function ParallaxImage({ src, alt, className = '' }: ParallaxImageProps) 
   return (
     <div
       ref={containerRef}
-      className={`relative aspect-square lg:aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl ring-1 ring-border/50 group ${className}`}
+      className={`relative aspect-square lg:aspect-4/5 rounded-3xl overflow-hidden shadow-2xl ring-1 ring-border/50 group ${className}`}
     >
       <div
         className="absolute inset-0 transition-transform duration-300 ease-out"
@@ -59,20 +59,14 @@ export function ParallaxImage({ src, alt, className = '' }: ParallaxImageProps) 
           transform: `translate(${offset.x}px, ${offset.y}px) scale(1.1)`,
         }}
       >
-        <Image
-          src={src}
-          alt={alt}
-          fill
-          className="object-cover"
-          priority
-        />
+        <Image src={src} alt={alt} fill className="object-cover" priority />
       </div>
 
       {/* Overlay gradient */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background/20 via-transparent to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-linear-to-t from-background/20 via-transparent to-transparent pointer-events-none" />
 
       {/* Glow effect on hover */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/0 via-primary/0 to-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+      <div className="absolute inset-0 bg-linear-to-br from-primary/0 via-primary/0 to-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
     </div>
   );
 }

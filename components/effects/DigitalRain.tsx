@@ -32,7 +32,8 @@ export function DigitalRain() {
     const isDarkMode = () => document.documentElement.classList.contains('dark');
 
     // Create character set (binary, hex, and symbols)
-    const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF#$%&@';
+    const chars =
+      '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF#$%&@';
 
     const drops: Drop[] = [];
     const fontSize = 16;
@@ -45,7 +46,7 @@ export function DigitalRain() {
         y: Math.random() * -500,
         speed: Math.random() * 3 + 1,
         chars: chars.split(''),
-        charIndex: Math.floor(Math.random() * chars.length)
+        charIndex: Math.floor(Math.random() * chars.length),
       });
     }
 
@@ -57,7 +58,7 @@ export function DigitalRain() {
 
       ctx.font = `${fontSize}px monospace`;
 
-      drops.forEach(drop => {
+      drops.forEach((drop) => {
         // Change character occasionally
         if (Math.random() < 0.05) {
           drop.charIndex = Math.floor(Math.random() * drop.chars.length);

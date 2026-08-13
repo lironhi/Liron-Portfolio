@@ -1,5 +1,7 @@
+import { Mail } from 'lucide-react';
 import Link from 'next/link';
-import { Github, Linkedin, Mail } from 'lucide-react';
+import { AskAiLink } from '@/components/AskAiLink';
+import { Github, Linkedin } from '@/components/icons/BrandIcons';
 
 export function Footer() {
   return (
@@ -33,8 +35,9 @@ export function Footer() {
               <Mail className="h-5 w-5" />
             </Link>
           </div>
-          
+
           <div className="flex items-center space-x-6 text-sm text-muted-foreground">
+            <AskAiLink />
             <Link href="/resume" className="hover:text-foreground transition-colors">
               Resume
             </Link>

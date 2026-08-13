@@ -34,7 +34,7 @@ export function QuoteSection({ quote, author }: QuoteSectionProps) {
       ref={ref}
       className={`
         relative max-w-4xl mx-auto p-12 rounded-3xl
-        bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5
+        bg-linear-to-br from-primary/5 via-primary/10 to-primary/5
         border border-primary/20
         transition-all duration-1000
         ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}

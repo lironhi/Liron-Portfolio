@@ -46,7 +46,7 @@ export function NeuroNetwork() {
         vy: (Math.random() - 0.5) * 0.3,
         radius: Math.random() * 3 + 2,
         active: false,
-        pulsePhase: Math.random() * Math.PI * 2
+        pulsePhase: Math.random() * Math.PI * 2,
       });
     }
 
@@ -69,7 +69,9 @@ export function NeuroNetwork() {
 
       const primaryColor = isDarkMode() ? 'rgba(139, 92, 246, 0.6)' : 'rgba(139, 92, 246, 0.8)';
       const activeColor = isDarkMode() ? 'rgba(236, 72, 153, 0.8)' : 'rgba(236, 72, 153, 1)';
-      const connectionColor = isDarkMode() ? 'rgba(100, 100, 255, 0.15)' : 'rgba(100, 100, 255, 0.2)';
+      const connectionColor = isDarkMode()
+        ? 'rgba(100, 100, 255, 0.15)'
+        : 'rgba(100, 100, 255, 0.2)';
 
       // Update and draw neurons
       neurons.forEach((neuron, i) => {
@@ -98,7 +100,9 @@ export function NeuroNetwork() {
             ctx.lineTo(otherNeuron.x, otherNeuron.y);
 
             if (neuron.active || otherNeuron.active) {
-              ctx.strokeStyle = activeColor.replace('0.8)', `${opacity})`).replace('1)', `${opacity})`);
+              ctx.strokeStyle = activeColor
+                .replace('0.8)', `${opacity})`)
+                .replace('1)', `${opacity})`);
               ctx.lineWidth = 2;
             } else {
               ctx.strokeStyle = connectionColor;
@@ -110,13 +114,22 @@ export function NeuroNetwork() {
         });
 
         // Draw neuron
-        const pulseSize = neuron.active ? Math.sin(neuron.pulsePhase) * 2 + neuron.radius : neuron.radius;
+        const pulseSize = neuron.active
+          ? Math.sin(neuron.pulsePhase) * 2 + neuron.radius
+          : neuron.radius;
 
         ctx.beginPath();
         ctx.arc(neuron.x, neuron.y, pulseSize, 0, Math.PI * 2);
 
         if (neuron.active) {
-          const gradient = ctx.createRadialGradient(neuron.x, neuron.y, 0, neuron.x, neuron.y, pulseSize * 2);
+          const gradient = ctx.createRadialGradient(
+            neuron.x,
+            neuron.y,
+            0,
+            neuron.x,
+            neuron.y,
+            pulseSize * 2
+          );
           gradient.addColorStop(0, activeColor);
           gradient.addColorStop(1, 'rgba(236, 72, 153, 0)');
           ctx.fillStyle = gradient;
@@ -144,7 +157,7 @@ export function NeuroNetwork() {
 
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ['class']
+      attributeFilter: ['class'],
     });
 
     return () => {

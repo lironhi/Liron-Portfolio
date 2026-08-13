@@ -1,28 +1,29 @@
 'use client';
 
 import { useState } from 'react';
+import {
+  BackgroundPill,
+  BorderExpand,
+  DotIndicator,
+  GlowEffect,
+  GradientShift,
+  LiquidMorph,
+  Particles,
+  RotateIn,
+  ScaleBounce,
+  SlideFromLeft,
+  UnderlineSlide,
+  WaveEffect,
+} from '@/components/animations/NavAnimations';
 import { Container } from '@/components/Container';
 import { Section } from '@/components/Section';
-import {
-  UnderlineSlide,
-  BackgroundPill,
-  ScaleBounce,
-  GlowEffect,
-  SlideFromLeft,
-  GradientShift,
-  RotateIn,
-  BorderExpand,
-  LiquidMorph,
-  DotIndicator,
-  WaveEffect,
-  Particles,
-} from '@/components/animations/NavAnimations';
 
 const animations = [
   {
     id: 1,
     name: 'Underline Slide',
-    description: 'Ligne élégante qui glisse sous le lien actif - Style minimaliste et professionnel',
+    description:
+      'Ligne élégante qui glisse sous le lien actif - Style minimaliste et professionnel',
     component: UnderlineSlide,
     recommended: true,
   },
@@ -66,7 +67,7 @@ const animations = [
   {
     id: 8,
     name: 'Border Expand',
-    description: 'Bordure qui s\'étend autour du lien - Net et structuré',
+    description: "Bordure qui s'étend autour du lien - Net et structuré",
     component: BorderExpand,
   },
   {
@@ -100,9 +101,7 @@ export default function NavAnimationsDemoPage() {
   const [activeIds, setActiveIds] = useState<number[]>([]);
 
   const toggleActive = (id: number) => {
-    setActiveIds((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-    );
+    setActiveIds((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]));
   };
 
   return (
@@ -111,11 +110,10 @@ export default function NavAnimationsDemoPage() {
         <div className="space-y-8">
           {/* Header */}
           <div className="text-center space-y-4">
-            <h1 className="text-4xl font-bold tracking-tight">
-              Animations de Navigation
-            </h1>
+            <h1 className="text-4xl font-bold tracking-tight">Animations de Navigation</h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Cliquez sur chaque exemple pour voir l'animation en action. Les animations recommandées sont marquées d'une étoile ⭐
+              Cliquez sur chaque exemple pour voir l'animation en action. Les animations
+              recommandées sont marquées d'une étoile ⭐
             </p>
           </div>
 
@@ -135,30 +133,26 @@ export default function NavAnimationsDemoPage() {
                   <div className="flex items-start justify-between">
                     <h3 className="text-lg font-semibold">
                       {anim.name}
-                      {anim.recommended && (
-                        <span className="ml-2 text-yellow-500">⭐</span>
-                      )}
+                      {anim.recommended && <span className="ml-2 text-yellow-500">⭐</span>}
                     </h3>
                   </div>
 
                   {/* Description */}
-                  <p className="text-sm text-muted-foreground">
-                    {anim.description}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{anim.description}</p>
 
                   {/* Demo */}
                   <div className="flex items-center justify-center min-h-[80px] bg-muted/30 rounded-md p-4">
                     <AnimComponent isActive={isActive}>
-                      <span className="text-sm font-medium">
-                        Menu Item
-                      </span>
+                      <span className="text-sm font-medium">Menu Item</span>
                     </AnimComponent>
                   </div>
 
                   {/* Status */}
                   <div className="text-center">
                     <span className="text-xs text-muted-foreground">
-                      {isActive ? '✅ Actif - Cliquez pour désactiver' : '⚪ Inactif - Cliquez pour activer'}
+                      {isActive
+                        ? '✅ Actif - Cliquez pour désactiver'
+                        : '⚪ Inactif - Cliquez pour activer'}
                     </span>
                   </div>
                 </div>
@@ -168,12 +162,11 @@ export default function NavAnimationsDemoPage() {
 
           {/* Instructions */}
           <div className="mt-12 rounded-lg border bg-blue-50 dark:bg-blue-950/30 p-6 space-y-2">
-            <h3 className="font-semibold text-blue-900 dark:text-blue-100">
-              📝 Comment choisir ?
-            </h3>
+            <h3 className="font-semibold text-blue-900 dark:text-blue-100">📝 Comment choisir ?</h3>
             <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1 list-disc list-inside">
               <li>
-                <strong>Professionnel / Corporate:</strong> Underline Slide, Background Pill, Border Expand
+                <strong>Professionnel / Corporate:</strong> Underline Slide, Background Pill, Border
+                Expand
               </li>
               <li>
                 <strong>Moderne / Tech:</strong> Glow Effect, Gradient Shift, Particles
@@ -192,10 +185,7 @@ export default function NavAnimationsDemoPage() {
 
           {/* Navigation to home */}
           <div className="text-center">
-            <a
-              href="/"
-              className="inline-block text-sm text-primary hover:underline"
-            >
+            <a href="/" className="inline-block text-sm text-primary hover:underline">
               ← Retour à l'accueil
             </a>
           </div>

@@ -14,7 +14,7 @@ export function GradientText({ children, className = '', animate = true }: Gradi
   return (
     <motion.span
       className={cn(
-        'bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent bg-[length:200%_auto]',
+        'bg-linear-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent bg-size-[200%_auto]',
         className
       )}
       animate={

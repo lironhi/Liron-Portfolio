@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'edge';
 
@@ -26,14 +26,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('API Route - Submitting to Web3Forms with key:', accessKey.substring(0, 5) + '...');
+    console.log('API Route - Submitting to Web3Forms with key:', `${accessKey.substring(0, 5)}...`);
 
     // Submit to Web3Forms
     const web3formsResponse = await fetch('https://api.web3forms.com/submit', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        Accept: 'application/json',
       },
       body: JSON.stringify({
         access_key: accessKey,
@@ -62,9 +62,6 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     console.error('API Route Error:', error);
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
   }
 }

@@ -208,7 +208,7 @@ export function LiquidMorph({ isActive, children }: { isActive: boolean; childre
   return (
     <div className="relative">
       <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-primary/20 via-purple-500/20 to-pink-500/20 -z-10"
+        className="absolute inset-0 bg-linear-to-r from-primary/20 via-purple-500/20 to-pink-500/20 -z-10"
         initial={{ borderRadius: '50%', scale: 0 }}
         animate={{
           borderRadius: isActive ? ['50%', '30%', '40%', '35%'] : '50%',
@@ -269,7 +269,7 @@ export function WaveEffect({ isActive, children }: { isActive: boolean; children
   return (
     <div className="relative overflow-hidden">
       <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/30 to-transparent -z-10"
+        className="absolute inset-0 bg-linear-to-r from-transparent via-primary/30 to-transparent -z-10"
         initial={{ x: '-100%' }}
         animate={{
           x: isActive ? '100%' : '-100%',
@@ -290,34 +290,31 @@ export function WaveEffect({ isActive, children }: { isActive: boolean; children
 export function Particles({ isActive, children }: { isActive: boolean; children: ReactNode }) {
   return (
     <div className="relative">
-      {isActive && (
-        <>
-          {[...Array(5)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-1 h-1 bg-primary rounded-full"
-              initial={{
-                scale: 0,
-                x: 0,
-                y: 0,
-                opacity: 0
-              }}
-              animate={{
-                scale: [0, 1, 0],
-                x: [0, (i - 2) * 15],
-                y: [0, -20],
-                opacity: [0, 1, 0],
-              }}
-              transition={{
-                duration: 1.2,
-                delay: i * 0.1,
-                repeat: Number.POSITIVE_INFINITY,
-                repeatDelay: 0.5,
-              }}
-            />
-          ))}
-        </>
-      )}
+      {isActive &&
+        [...Array(5)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 bg-primary rounded-full"
+            initial={{
+              scale: 0,
+              x: 0,
+              y: 0,
+              opacity: 0,
+            }}
+            animate={{
+              scale: [0, 1, 0],
+              x: [0, (i - 2) * 15],
+              y: [0, -20],
+              opacity: [0, 1, 0],
+            }}
+            transition={{
+              duration: 1.2,
+              delay: i * 0.1,
+              repeat: Number.POSITIVE_INFINITY,
+              repeatDelay: 0.5,
+            }}
+          />
+        ))}
       {children}
     </div>
   );

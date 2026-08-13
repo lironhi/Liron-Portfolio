@@ -4,8 +4,8 @@
  */
 
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { registerPortfolioTools } from './tools/portfolio-tools';
 import { registerActionTools } from './tools/action-tools';
+import { registerPortfolioTools } from './tools/portfolio-tools';
 
 /**
  * Register all MCP tools with the server
@@ -19,4 +19,4 @@ export function registerAllTools(server: McpServer) {
 }
 
 // Re-export tool registration functions for selective use
-export { registerPortfolioTools, registerActionTools };
+export { registerActionTools, registerPortfolioTools };

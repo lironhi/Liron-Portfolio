@@ -14,7 +14,7 @@ export function StaggerGrid({
   children,
   className = '',
   staggerDelay = 0.1,
-  initialDelay = 0.2
+  initialDelay = 0.2,
 }: StaggerGridProps) {
   const container = {
     hidden: { opacity: 0 },
@@ -31,7 +31,7 @@ export function StaggerGrid({
     hidden: {
       opacity: 0,
       y: 20,
-      scale: 0.95
+      scale: 0.95,
     },
     show: {
       opacity: 1,
@@ -41,17 +41,12 @@ export function StaggerGrid({
         type: 'spring' as const,
         stiffness: 100,
         damping: 15,
-      }
+      },
     },
   };
 
   return (
-    <motion.div
-      variants={container}
-      initial="hidden"
-      animate="show"
-      className={className}
-    >
+    <motion.div variants={container} initial="hidden" animate="show" className={className}>
       {Array.isArray(children) ? (
         children.map((child, index) => (
           <motion.div key={index} variants={item}>

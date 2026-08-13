@@ -3,8 +3,8 @@
  * Provides dynamic access to projects, skills, and experience data
  */
 
-import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { z } from 'zod';
 import { data } from '@/lib/data';
 
 /**
@@ -23,7 +23,10 @@ export function registerPortfolioTools(server: McpServer) {
     'Retrieve all portfolio projects with optional filtering by featured status or tags',
     {
       featured: z.boolean().optional().describe('Filter for featured projects only'),
-      tag: z.string().optional().describe('Filter projects by tag name (e.g., "React", "Python", "AI")'),
+      tag: z
+        .string()
+        .optional()
+        .describe('Filter projects by tag name (e.g., "React", "Python", "AI")'),
       limit: z.number().optional().describe('Limit number of results'),
     },
     async ({ featured, tag, limit }) => {
@@ -186,9 +189,7 @@ export function registerPortfolioTools(server: McpServer) {
 
         // Search by name
         if (search) {
-          skills = skills.filter((s) =>
-            s.name.toLowerCase().includes(search.toLowerCase())
-          );
+          skills = skills.filter((s) => s.name.toLowerCase().includes(search.toLowerCase()));
         }
 
         const skillSummaries = skills.map((s) => ({

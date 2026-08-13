@@ -1,6 +1,6 @@
-import { Badge } from './Badge';
-import { formatDateRange } from '@/lib/utils';
 import type { Experience } from '@/lib/data';
+import { formatDateRange } from '@/lib/utils';
+import { Badge } from './Badge';
 
 interface TimelineItemProps {
   experience: Experience;
@@ -11,14 +11,14 @@ export function TimelineItem({ experience, isLast = false }: TimelineItemProps) 
   return (
     <div className="relative pb-8">
       {!isLast && <div className="absolute left-4 top-4 -ml-px h-full w-0.5 bg-border" />}
-      
+
       <div className="relative flex items-start space-x-3">
         <div className="relative">
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary ring-8 ring-background">
             <div className="h-2 w-2 rounded-full bg-primary-foreground" />
           </div>
         </div>
-        
+
         <div className="min-w-0 flex-1 space-y-3">
           <div className="space-y-1">
             <div className="flex items-start justify-between">
@@ -30,7 +30,7 @@ export function TimelineItem({ experience, isLast = false }: TimelineItemProps) 
                 {experience.type}
               </Badge>
             </div>
-            
+
             <div className="flex flex-col sm:flex-row sm:items-center gap-1 text-sm text-muted-foreground">
               <span>{formatDateRange(experience.startDate, experience.endDate)}</span>
               <span className="hidden sm:inline">•</span>

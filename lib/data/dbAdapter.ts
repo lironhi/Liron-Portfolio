@@ -1,3 +1,4 @@
+import type { DataProvider } from './provider';
 import type {
   Certificate,
   Currently,
@@ -10,14 +11,13 @@ import type {
   Skill,
   Tag,
 } from './types';
-import type { DataProvider } from './provider';
 
 export class DatabaseAdapter implements DataProvider {
   async getProjects(): Promise<Project[]> {
     throw new Error('Database adapter not implemented yet');
   }
 
-  async getProjectBySlug(slug: string): Promise<Project | null> {
+  async getProjectBySlug(_slug: string): Promise<Project | null> {
     throw new Error('Database adapter not implemented yet');
   }
 
@@ -25,7 +25,7 @@ export class DatabaseAdapter implements DataProvider {
     throw new Error('Database adapter not implemented yet');
   }
 
-  async getProjectsByTag(tagId: string): Promise<Project[]> {
+  async getProjectsByTag(_tagId: string): Promise<Project[]> {
     throw new Error('Database adapter not implemented yet');
   }
 
@@ -37,7 +37,7 @@ export class DatabaseAdapter implements DataProvider {
     throw new Error('Database adapter not implemented yet');
   }
 
-  async getExperienceByType(type: Experience['type']): Promise<Experience[]> {
+  async getExperienceByType(_type: Experience['type']): Promise<Experience[]> {
     throw new Error('Database adapter not implemented yet');
   }
 
@@ -45,7 +45,7 @@ export class DatabaseAdapter implements DataProvider {
     throw new Error('Database adapter not implemented yet');
   }
 
-  async getSkillsByCategory(category: Skill['category']): Promise<Skill[]> {
+  async getSkillsByCategory(_category: Skill['category']): Promise<Skill[]> {
     throw new Error('Database adapter not implemented yet');
   }
 
@@ -65,7 +65,7 @@ export class DatabaseAdapter implements DataProvider {
     throw new Error('Database adapter not implemented yet');
   }
 
-  async getPageBySlug(slug: string): Promise<Page | null> {
+  async getPageBySlug(_slug: string): Promise<Page | null> {
     throw new Error('Database adapter not implemented yet');
   }
 

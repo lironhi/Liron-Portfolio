@@ -40,8 +40,18 @@ export function GeometricShapes() {
     const shapes: Shape[] = [];
     const shapeCount = 15;
     const colors = isDarkMode()
-      ? ['rgba(139, 92, 246, 0.3)', 'rgba(59, 130, 246, 0.3)', 'rgba(236, 72, 153, 0.3)', 'rgba(34, 211, 238, 0.3)']
-      : ['rgba(139, 92, 246, 0.4)', 'rgba(59, 130, 246, 0.4)', 'rgba(236, 72, 153, 0.4)', 'rgba(34, 211, 238, 0.4)'];
+      ? [
+          'rgba(139, 92, 246, 0.3)',
+          'rgba(59, 130, 246, 0.3)',
+          'rgba(236, 72, 153, 0.3)',
+          'rgba(34, 211, 238, 0.3)',
+        ]
+      : [
+          'rgba(139, 92, 246, 0.4)',
+          'rgba(59, 130, 246, 0.4)',
+          'rgba(236, 72, 153, 0.4)',
+          'rgba(34, 211, 238, 0.4)',
+        ];
 
     const types: Shape['type'][] = ['triangle', 'square', 'hexagon', 'circle'];
 
@@ -56,7 +66,7 @@ export function GeometricShapes() {
         velocityY: (Math.random() - 0.5) * 0.5,
         type: types[Math.floor(Math.random() * types.length)],
         color: colors[Math.floor(Math.random() * colors.length)],
-        opacity: Math.random() * 0.3 + 0.2
+        opacity: Math.random() * 0.3 + 0.2,
       });
     }
 
@@ -79,8 +89,8 @@ export function GeometricShapes() {
       ctx.beginPath();
       for (let i = 0; i < 6; i++) {
         const angle = (Math.PI / 3) * i;
-        const px = x + size / 2 * Math.cos(angle);
-        const py = y + size / 2 * Math.sin(angle);
+        const px = x + (size / 2) * Math.cos(angle);
+        const py = y + (size / 2) * Math.sin(angle);
         if (i === 0) ctx.moveTo(px, py);
         else ctx.lineTo(px, py);
       }
@@ -97,7 +107,7 @@ export function GeometricShapes() {
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      shapes.forEach(shape => {
+      shapes.forEach((shape) => {
         // Update position
         shape.x += shape.velocityX;
         shape.y += shape.velocityY;
@@ -143,17 +153,27 @@ export function GeometricShapes() {
     // Dark mode observer
     const observer = new MutationObserver(() => {
       const newColors = isDarkMode()
-        ? ['rgba(139, 92, 246, 0.3)', 'rgba(59, 130, 246, 0.3)', 'rgba(236, 72, 153, 0.3)', 'rgba(34, 211, 238, 0.3)']
-        : ['rgba(139, 92, 246, 0.4)', 'rgba(59, 130, 246, 0.4)', 'rgba(236, 72, 153, 0.4)', 'rgba(34, 211, 238, 0.4)'];
+        ? [
+            'rgba(139, 92, 246, 0.3)',
+            'rgba(59, 130, 246, 0.3)',
+            'rgba(236, 72, 153, 0.3)',
+            'rgba(34, 211, 238, 0.3)',
+          ]
+        : [
+            'rgba(139, 92, 246, 0.4)',
+            'rgba(59, 130, 246, 0.4)',
+            'rgba(236, 72, 153, 0.4)',
+            'rgba(34, 211, 238, 0.4)',
+          ];
 
-      shapes.forEach(shape => {
+      shapes.forEach((shape) => {
         shape.color = newColors[Math.floor(Math.random() * newColors.length)];
       });
     });
 
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ['class']
+      attributeFilter: ['class'],
     });
 
     return () => {

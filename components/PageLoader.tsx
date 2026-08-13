@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 export function PageLoader() {
   const [isLoading, setIsLoading] = useState(true);
@@ -26,7 +26,7 @@ export function PageLoader() {
           className="fixed inset-0 z-50 flex items-center justify-center bg-background"
         >
           {/* Animated background gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-primary/5 animate-pulse" />
+          <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-background to-primary/5 animate-pulse" />
 
           {/* Logo container with animations */}
           <div className="relative z-10 flex flex-col items-center gap-8">
@@ -39,12 +39,12 @@ export function PageLoader() {
               }}
               transition={{
                 duration: 1,
-                ease: "easeOut",
+                ease: 'easeOut',
                 scale: {
-                  type: "spring",
+                  type: 'spring',
                   damping: 10,
                   stiffness: 100,
-                }
+                },
               }}
               className="relative"
             >
@@ -57,7 +57,7 @@ export function PageLoader() {
                 transition={{
                   duration: 2,
                   repeat: Infinity,
-                  ease: "easeInOut",
+                  ease: 'easeInOut',
                 }}
                 className="absolute inset-0 blur-2xl bg-primary/30 rounded-full"
               />
@@ -70,7 +70,7 @@ export function PageLoader() {
                 transition={{
                   duration: 2,
                   repeat: Infinity,
-                  ease: "easeInOut",
+                  ease: 'easeInOut',
                 }}
                 className="relative w-24 h-24 sm:w-32 sm:h-32"
               >
@@ -91,9 +91,7 @@ export function PageLoader() {
               transition={{ delay: 0.5, duration: 0.5 }}
               className="flex flex-col items-center gap-4"
             >
-              <p className="text-lg font-medium text-foreground/80">
-                Loading...
-              </p>
+              <p className="text-lg font-medium text-foreground/80">Loading...</p>
 
               {/* Animated dots */}
               <div className="flex gap-2">
@@ -108,7 +106,7 @@ export function PageLoader() {
                       duration: 1.5,
                       repeat: Infinity,
                       delay: i * 0.2,
-                      ease: "easeInOut",
+                      ease: 'easeInOut',
                     }}
                     className="w-2 h-2 rounded-full bg-primary"
                   />
@@ -121,7 +119,7 @@ export function PageLoader() {
               initial={{ width: 0 }}
               animate={{ width: '200px' }}
               transition={{ duration: 2, ease: 'easeInOut' }}
-              className="h-1 bg-gradient-to-r from-primary/50 via-primary to-primary/50 rounded-full overflow-hidden"
+              className="h-1 bg-linear-to-r from-primary/50 via-primary to-primary/50 rounded-full overflow-hidden"
             >
               <motion.div
                 animate={{
@@ -132,7 +130,7 @@ export function PageLoader() {
                   repeat: Infinity,
                   ease: 'linear',
                 }}
-                className="h-full w-1/2 bg-gradient-to-r from-transparent via-white/50 to-transparent"
+                className="h-full w-1/2 bg-linear-to-r from-transparent via-white/50 to-transparent"
               />
             </motion.div>
           </div>

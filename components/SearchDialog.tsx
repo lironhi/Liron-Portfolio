@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { Award, Briefcase, Code, FileText, Search, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { Search, X, FileText, Award, Briefcase, Code } from 'lucide-react';
-import { search, type SearchResult } from '@/lib/search';
+import { useCallback, useEffect, useState } from 'react';
+import { type SearchResult, search } from '@/lib/search';
 import { Button } from './Button';
 
 export function SearchDialog() {
@@ -50,12 +50,15 @@ export function SearchDialog() {
   }, []);
 
   // Handle result selection
-  const selectResult = useCallback((result: SearchResult) => {
-    router.push(result.url);
-    setIsOpen(false);
-    setQuery('');
-    setResults([]);
-  }, [router]);
+  const selectResult = useCallback(
+    (result: SearchResult) => {
+      router.push(result.url);
+      setIsOpen(false);
+      setQuery('');
+      setResults([]);
+    },
+    [router]
+  );
 
   // Keyboard navigation
   useEffect(() => {
@@ -104,9 +107,7 @@ export function SearchDialog() {
     };
 
     return (
-      <span className={`px-2 py-0.5 rounded text-xs font-medium ${colors[type]}`}>
-        {type}
-      </span>
+      <span className={`px-2 py-0.5 rounded text-xs font-medium ${colors[type]}`}>{type}</span>
     );
   };
 
@@ -146,7 +147,7 @@ export function SearchDialog() {
               placeholder="Search projects, skills, certifications..."
               value={query}
               onChange={(e) => handleSearch(e.target.value)}
-              className="flex-1 bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground"
+              className="flex-1 bg-transparent border-none outline-hidden text-foreground placeholder:text-muted-foreground"
               autoFocus
             />
             {query && (
@@ -166,9 +167,7 @@ export function SearchDialog() {
           {/* Results */}
           <div className="max-h-[400px] overflow-y-auto">
             {isSearching ? (
-              <div className="px-4 py-8 text-center text-muted-foreground">
-                Searching...
-              </div>
+              <div className="px-4 py-8 text-center text-muted-foreground">Searching...</div>
             ) : results.length > 0 ? (
               <div className="py-2">
                 {results.map((result, index) => (
@@ -179,14 +178,10 @@ export function SearchDialog() {
                       index === selectedIndex ? 'bg-accent' : ''
                     }`}
                   >
-                    <div className="mt-0.5 text-muted-foreground">
-                      {getIcon(result.type)}
-                    </div>
+                    <div className="mt-0.5 text-muted-foreground">{getIcon(result.type)}</div>
                     <div className="flex-1 text-left">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="font-medium text-foreground">
-                          {result.title}
-                        </span>
+                        <span className="font-medium text-foreground">{result.title}</span>
                         {getTypeBadge(result.type)}
                       </div>
                       <p className="text-sm text-muted-foreground line-clamp-1">

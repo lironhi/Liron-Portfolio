@@ -1,8 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState } from 'react';
 import type { ReactNode } from 'react';
+import { useState } from 'react';
 
 interface NavLinkAnimationProps {
   isActive: boolean;
@@ -40,38 +40,36 @@ export function NavLinkAnimation({ isActive, children }: NavLinkAnimationProps) 
 
       {/* Particles - Apparaissent au survol (sauf si actif) */}
       <div className="relative">
-        {isHovered && !isActive && (
-          <>
-            {[...Array(5)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-1 h-1 bg-primary/60 rounded-full pointer-events-none"
-                style={{
-                  left: '50%',
-                  top: '50%',
-                }}
-                initial={{
-                  scale: 0,
-                  x: 0,
-                  y: 0,
-                  opacity: 0,
-                }}
-                animate={{
-                  scale: [0, 1, 0],
-                  x: [0, (i - 2) * 15],
-                  y: [0, -20],
-                  opacity: [0, 1, 0],
-                }}
-                transition={{
-                  duration: 1.2,
-                  delay: i * 0.1,
-                  repeat: Infinity,
-                  repeatDelay: 0.5,
-                }}
-              />
-            ))}
-          </>
-        )}
+        {isHovered &&
+          !isActive &&
+          [...Array(5)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-1 h-1 bg-primary/60 rounded-full pointer-events-none"
+              style={{
+                left: '50%',
+                top: '50%',
+              }}
+              initial={{
+                scale: 0,
+                x: 0,
+                y: 0,
+                opacity: 0,
+              }}
+              animate={{
+                scale: [0, 1, 0],
+                x: [0, (i - 2) * 15],
+                y: [0, -20],
+                opacity: [0, 1, 0],
+              }}
+              transition={{
+                duration: 1.2,
+                delay: i * 0.1,
+                repeat: Infinity,
+                repeatDelay: 0.5,
+              }}
+            />
+          ))}
 
         {/* Text with hover effect */}
         <motion.div

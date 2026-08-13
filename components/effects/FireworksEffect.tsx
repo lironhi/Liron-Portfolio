@@ -56,7 +56,7 @@ export function FireworksEffect() {
         targetY: Math.random() * (canvas.height * 0.4) + 50,
         velocityY: -8,
         color: colors[Math.floor(Math.random() * colors.length)],
-        exploded: false
+        exploded: false,
       });
     };
 
@@ -77,7 +77,7 @@ export function FireworksEffect() {
           color: firework.color,
           gravity: 0.1,
           life: 0,
-          maxLife: Math.random() * 80 + 60
+          maxLife: Math.random() * 80 + 60,
         });
       }
     };
@@ -123,7 +123,7 @@ export function FireworksEffect() {
         particle.y += particle.velocityY;
         particle.velocityY += particle.gravity;
         particle.life++;
-        particle.opacity = 1 - (particle.life / particle.maxLife);
+        particle.opacity = 1 - particle.life / particle.maxLife;
 
         if (particle.life >= particle.maxLife) {
           particles.splice(i, 1);

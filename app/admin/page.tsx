@@ -1,28 +1,25 @@
 'use client';
 
-import { useState } from 'react';
-import { Container } from '@/components/Container';
-import { Section } from '@/components/Section';
-import { Button } from '@/components/Button';
-import { Badge } from '@/components/Badge';
 import {
-  Settings,
-  FileText,
-  Briefcase,
   Award,
+  Briefcase,
   Code,
-  User,
-  Mail,
-  Github,
-  Linkedin,
+  Database,
+  Download,
   Eye,
   EyeOff,
+  FileText,
   RefreshCw,
-  Download,
+  Settings,
   Upload,
-  Database,
-  Zap
+  User,
+  Zap,
 } from 'lucide-react';
+import { useState } from 'react';
+import { Badge } from '@/components/Badge';
+import { Button } from '@/components/Button';
+import { Container } from '@/components/Container';
+import { Github, Linkedin } from '@/components/icons/BrandIcons';
 
 type Tab = 'overview' | 'content' | 'settings' | 'analytics';
 
@@ -43,8 +40,8 @@ export default function AdminPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-muted/20 to-background">
-        <div className="w-full max-w-md p-8 rounded-2xl border bg-card/50 backdrop-blur-sm shadow-2xl">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-background via-muted/20 to-background">
+        <div className="w-full max-w-md p-8 rounded-2xl border bg-card/50 backdrop-blur-xs shadow-2xl">
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
               <Settings className="h-8 w-8 text-primary" />
@@ -55,14 +52,12 @@ export default function AdminPage() {
 
           <form onSubmit={handleAuth} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Mot de passe
-              </label>
+              <label className="block text-sm font-medium text-foreground mb-2">Mot de passe</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 rounded-lg border bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent outline-hidden transition-all"
                 placeholder="Entrez le mot de passe"
                 autoFocus
               />
@@ -77,7 +72,7 @@ export default function AdminPage() {
   }
 
   const tabs = [
-    { id: 'overview', label: 'Vue d\'ensemble', icon: Eye },
+    { id: 'overview', label: "Vue d'ensemble", icon: Eye },
     { id: 'content', label: 'Contenu', icon: FileText },
     { id: 'settings', label: 'Paramètres', icon: Settings },
     { id: 'analytics', label: 'Analytiques', icon: Zap },
@@ -97,7 +92,7 @@ export default function AdminPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-background py-12">
+    <div className="min-h-screen bg-linear-to-br from-background via-muted/10 to-background py-12">
       <Container>
         {/* Header */}
         <div className="mb-8">
@@ -148,7 +143,7 @@ export default function AdminPage() {
                   return (
                     <div
                       key={stat.label}
-                      className="relative overflow-hidden rounded-2xl border bg-card/50 backdrop-blur-sm p-6 hover:shadow-lg transition-all duration-300 group"
+                      className="relative overflow-hidden rounded-2xl border bg-card/50 backdrop-blur-xs p-6 hover:shadow-lg transition-all duration-300 group"
                     >
                       <div className="flex items-center justify-between mb-4">
                         <div className={`p-3 rounded-lg bg-muted/50 ${stat.color}`}>
@@ -168,7 +163,7 @@ export default function AdminPage() {
               </div>
 
               {/* Recent Activity */}
-              <div className="rounded-2xl border bg-card/50 backdrop-blur-sm p-6">
+              <div className="rounded-2xl border bg-card/50 backdrop-blur-xs p-6">
                 <h2 className="text-xl font-bold text-foreground mb-4">Activité Récente</h2>
                 <div className="space-y-4">
                   {recentActivity.map((activity, index) => (
@@ -187,7 +182,7 @@ export default function AdminPage() {
               </div>
 
               {/* Quick Actions */}
-              <div className="rounded-2xl border bg-card/50 backdrop-blur-sm p-6">
+              <div className="rounded-2xl border bg-card/50 backdrop-blur-xs p-6">
                 <h2 className="text-xl font-bold text-foreground mb-4">Actions Rapides</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <Button variant="outline" className="h-24 flex-col">
@@ -214,7 +209,7 @@ export default function AdminPage() {
           {activeTab === 'content' && (
             <div className="grid gap-6">
               {/* Projects Management */}
-              <div className="rounded-2xl border bg-card/50 backdrop-blur-sm p-6">
+              <div className="rounded-2xl border bg-card/50 backdrop-blur-xs p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
                     <Briefcase className="h-5 w-5" />
@@ -223,12 +218,13 @@ export default function AdminPage() {
                   <Button size="sm">Ajouter un projet</Button>
                 </div>
                 <p className="text-muted-foreground">
-                  Gérez vos projets, ajoutez de nouvelles réalisations, modifiez les descriptions et les technologies utilisées.
+                  Gérez vos projets, ajoutez de nouvelles réalisations, modifiez les descriptions et
+                  les technologies utilisées.
                 </p>
               </div>
 
               {/* Skills Management */}
-              <div className="rounded-2xl border bg-card/50 backdrop-blur-sm p-6">
+              <div className="rounded-2xl border bg-card/50 backdrop-blur-xs p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
                     <Code className="h-5 w-5" />
@@ -237,12 +233,13 @@ export default function AdminPage() {
                   <Button size="sm">Ajouter une compétence</Button>
                 </div>
                 <p className="text-muted-foreground">
-                  Mettez à jour vos compétences techniques, ajoutez de nouvelles technologies et modifiez les niveaux d'expertise.
+                  Mettez à jour vos compétences techniques, ajoutez de nouvelles technologies et
+                  modifiez les niveaux d'expertise.
                 </p>
               </div>
 
               {/* Certifications Management */}
-              <div className="rounded-2xl border bg-card/50 backdrop-blur-sm p-6">
+              <div className="rounded-2xl border bg-card/50 backdrop-blur-xs p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
                     <Award className="h-5 w-5" />
@@ -251,7 +248,8 @@ export default function AdminPage() {
                   <Button size="sm">Ajouter une certification</Button>
                 </div>
                 <p className="text-muted-foreground">
-                  Ajoutez vos nouvelles certifications, mettez à jour les dates d'expiration et gérez les badges.
+                  Ajoutez vos nouvelles certifications, mettez à jour les dates d'expiration et
+                  gérez les badges.
                 </p>
               </div>
             </div>
@@ -260,7 +258,7 @@ export default function AdminPage() {
           {activeTab === 'settings' && (
             <div className="grid gap-6">
               {/* Profile Settings */}
-              <div className="rounded-2xl border bg-card/50 backdrop-blur-sm p-6">
+              <div className="rounded-2xl border bg-card/50 backdrop-blur-xs p-6">
                 <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                   <User className="h-5 w-5" />
                   Informations du Profil
@@ -274,7 +272,7 @@ export default function AdminPage() {
                       <input
                         type="text"
                         defaultValue="Liron Himbert"
-                        className="w-full px-4 py-2 rounded-lg border bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                        className="w-full px-4 py-2 rounded-lg border bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent outline-hidden"
                       />
                     </div>
                     <div>
@@ -284,7 +282,7 @@ export default function AdminPage() {
                       <input
                         type="email"
                         defaultValue="contact@example.com"
-                        className="w-full px-4 py-2 rounded-lg border bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                        className="w-full px-4 py-2 rounded-lg border bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent outline-hidden"
                       />
                     </div>
                   </div>
@@ -293,7 +291,7 @@ export default function AdminPage() {
               </div>
 
               {/* Social Links */}
-              <div className="rounded-2xl border bg-card/50 backdrop-blur-sm p-6">
+              <div className="rounded-2xl border bg-card/50 backdrop-blur-xs p-6">
                 <h2 className="text-xl font-bold text-foreground mb-4">Réseaux Sociaux</h2>
                 <div className="space-y-4">
                   <div>
@@ -304,7 +302,7 @@ export default function AdminPage() {
                     <input
                       type="url"
                       defaultValue="https://github.com/username"
-                      className="w-full px-4 py-2 rounded-lg border bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                      className="w-full px-4 py-2 rounded-lg border bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent outline-hidden"
                     />
                   </div>
                   <div>
@@ -315,7 +313,7 @@ export default function AdminPage() {
                     <input
                       type="url"
                       defaultValue="https://linkedin.com/in/username"
-                      className="w-full px-4 py-2 rounded-lg border bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                      className="w-full px-4 py-2 rounded-lg border bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent outline-hidden"
                     />
                   </div>
                   <Button>Sauvegarder les liens</Button>
@@ -323,27 +321,31 @@ export default function AdminPage() {
               </div>
 
               {/* Site Settings */}
-              <div className="rounded-2xl border bg-card/50 backdrop-blur-sm p-6">
+              <div className="rounded-2xl border bg-card/50 backdrop-blur-xs p-6">
                 <h2 className="text-xl font-bold text-foreground mb-4">Paramètres du Site</h2>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30">
                     <div>
                       <p className="font-medium text-foreground">Mode sombre</p>
-                      <p className="text-sm text-muted-foreground">Activer le thème sombre par défaut</p>
+                      <p className="text-sm text-muted-foreground">
+                        Activer le thème sombre par défaut
+                      </p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" className="sr-only peer" />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-hidden peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                     </label>
                   </div>
                   <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30">
                     <div>
                       <p className="font-medium text-foreground">Maintenance</p>
-                      <p className="text-sm text-muted-foreground">Mettre le site en mode maintenance</p>
+                      <p className="text-sm text-muted-foreground">
+                        Mettre le site en mode maintenance
+                      </p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" className="sr-only peer" />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-hidden peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                     </label>
                   </div>
                 </div>
@@ -354,7 +356,7 @@ export default function AdminPage() {
           {activeTab === 'analytics' && (
             <div className="grid gap-6">
               {/* Analytics Overview */}
-              <div className="rounded-2xl border bg-card/50 backdrop-blur-sm p-6">
+              <div className="rounded-2xl border bg-card/50 backdrop-blur-xs p-6">
                 <h2 className="text-xl font-bold text-foreground mb-4">Statistiques de Visites</h2>
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div className="p-4 rounded-xl bg-muted/30">
@@ -373,7 +375,7 @@ export default function AdminPage() {
               </div>
 
               {/* Popular Pages */}
-              <div className="rounded-2xl border bg-card/50 backdrop-blur-sm p-6">
+              <div className="rounded-2xl border bg-card/50 backdrop-blur-xs p-6">
                 <h2 className="text-xl font-bold text-foreground mb-4">Pages Populaires</h2>
                 <div className="space-y-3">
                   {[

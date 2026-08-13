@@ -43,6 +43,10 @@ yarn-error.log*
 *.swp
 *.swo
 
+# Claude Code (local settings, memory, session files)
+.claude/
+CLAUDE.local.md
+
 # OS
 Thumbs.db
 

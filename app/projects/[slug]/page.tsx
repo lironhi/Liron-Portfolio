@@ -1,13 +1,13 @@
-import { notFound } from 'next/navigation';
-import Link from 'next/link';
 import { ArrowLeft, ExternalLink, GitBranch } from 'lucide-react';
-import { Container } from '@/components/Container';
-import { Section } from '@/components/Section';
-import { Button } from '@/components/Button';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { Badge } from '@/components/Badge';
-import { ProjectCaseStudy } from '@/components/ProjectCaseStudy';
+import { Button } from '@/components/Button';
+import { Container } from '@/components/Container';
 import { MarkdownContent } from '@/components/MarkdownContent';
+import { ProjectCaseStudy } from '@/components/ProjectCaseStudy';
 import { ProjectImageGallery } from '@/components/ProjectImageGallery';
+import { Section } from '@/components/Section';
 import { data } from '@/lib/data';
 import { formatDate, generateOgImageUrl } from '@/lib/utils';
 

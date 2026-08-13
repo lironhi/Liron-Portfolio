@@ -94,18 +94,17 @@ export function FloatingOrbs() {
         const currentRadius = orb.radius + pulse * 20;
 
         // Create radial gradient
-        const gradient = ctx.createRadialGradient(
-          orb.x,
-          orb.y,
-          0,
-          orb.x,
-          orb.y,
-          currentRadius
-        );
+        const gradient = ctx.createRadialGradient(orb.x, orb.y, 0, orb.x, orb.y, currentRadius);
 
         const opacity = isDark ? 0.3 : 0.2;
-        gradient.addColorStop(0, `rgba(${orb.color.r}, ${orb.color.g}, ${orb.color.b}, ${opacity})`);
-        gradient.addColorStop(0.5, `rgba(${orb.color.r}, ${orb.color.g}, ${orb.color.b}, ${opacity * 0.5})`);
+        gradient.addColorStop(
+          0,
+          `rgba(${orb.color.r}, ${orb.color.g}, ${orb.color.b}, ${opacity})`
+        );
+        gradient.addColorStop(
+          0.5,
+          `rgba(${orb.color.r}, ${orb.color.g}, ${orb.color.b}, ${opacity * 0.5})`
+        );
         gradient.addColorStop(1, `rgba(${orb.color.r}, ${orb.color.g}, ${orb.color.b}, 0)`);
 
         // Draw orb

@@ -1,6 +1,7 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import matter from 'gray-matter';
+import type { DataProvider } from './provider';
 import type {
   Certificate,
   Currently,
@@ -13,7 +14,6 @@ import type {
   Skill,
   Tag,
 } from './types';
-import type { DataProvider } from './provider';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 const CONTENT_DIR = path.join(process.cwd(), 'content');

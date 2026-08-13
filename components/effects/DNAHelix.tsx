@@ -2,14 +2,6 @@
 
 import { useEffect, useRef } from 'react';
 
-interface Point {
-  x: number;
-  y: number;
-  angle: number;
-  radius: number;
-  speed: number;
-}
-
 export function DNAHelix() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -52,7 +44,7 @@ export function DNAHelix() {
         const points: { x: number; y: number }[] = [];
 
         for (let i = 0; i < pointCount; i++) {
-          const angle = (i * 0.3) + offset + (strand * Math.PI);
+          const angle = i * 0.3 + offset + strand * Math.PI;
           const x = centerX + Math.cos(angle) * helixRadius;
           const y = i * spacing;
 
@@ -82,15 +74,15 @@ export function DNAHelix() {
 
       // Draw connecting bars between strands
       for (let i = 0; i < pointCount; i++) {
-        const angle1 = (i * 0.3) + offset;
-        const angle2 = (i * 0.3) + offset + Math.PI;
+        const angle1 = i * 0.3 + offset;
+        const angle2 = i * 0.3 + offset + Math.PI;
 
         const x1 = centerX + Math.cos(angle1) * helixRadius;
         const x2 = centerX + Math.cos(angle2) * helixRadius;
         const y = i * spacing;
 
         // Only draw bar if strands are close enough
-        if (Math.abs(angle1 % (Math.PI * 2) - Math.PI) < 0.5) {
+        if (Math.abs((angle1 % (Math.PI * 2)) - Math.PI) < 0.5) {
           ctx.beginPath();
           ctx.moveTo(x1, y);
           ctx.lineTo(x2, y);
@@ -112,7 +104,7 @@ export function DNAHelix() {
 
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ['class']
+      attributeFilter: ['class'],
     });
 
     return () => {

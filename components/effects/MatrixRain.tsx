@@ -43,7 +43,8 @@ export function MatrixRain() {
     window.addEventListener('resize', updateCanvasSize);
 
     // Matrix characters
-    const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+    const chars =
+      '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
     const fontSize = 14;
     const columns = Math.floor(canvas.width / fontSize);
 

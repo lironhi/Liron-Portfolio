@@ -46,7 +46,13 @@ export function AnimatedWaves() {
       // Draw multiple wave layers
       const waves = [
         { amplitude: 30, frequency: 0.01, speed: 0.5, opacity: 0.1, yOffset: canvas.height * 0.3 },
-        { amplitude: 40, frequency: 0.008, speed: 0.3, opacity: 0.15, yOffset: canvas.height * 0.5 },
+        {
+          amplitude: 40,
+          frequency: 0.008,
+          speed: 0.3,
+          opacity: 0.15,
+          yOffset: canvas.height * 0.5,
+        },
         { amplitude: 50, frequency: 0.012, speed: 0.7, opacity: 0.1, yOffset: canvas.height * 0.7 },
       ];
 
@@ -55,7 +61,8 @@ export function AnimatedWaves() {
         ctx.moveTo(0, canvas.height);
 
         for (let x = 0; x <= canvas.width; x++) {
-          const y = wave.yOffset + Math.sin(x * wave.frequency + time * wave.speed) * wave.amplitude;
+          const y =
+            wave.yOffset + Math.sin(x * wave.frequency + time * wave.speed) * wave.amplitude;
           ctx.lineTo(x, y);
         }
 
@@ -81,10 +88,5 @@ export function AnimatedWaves() {
     };
   }, [isDark]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 pointer-events-none"
-    />
-  );
+  return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" />;
 }

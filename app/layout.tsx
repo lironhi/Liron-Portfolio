@@ -1,12 +1,13 @@
-import { Inter } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
-import { Nav } from '@/components/Nav';
-import { Footer } from '@/components/Footer';
-import { ThemeProvider } from '@/components/ThemeProvider';
-import { SearchProvider } from '@/components/SearchProvider';
-import { ProgressBar } from '@/components/ProgressBar';
+import { Inter } from 'next/font/google';
 import { ChatBot } from '@/components/ChatBot';
+import { ChatProvider } from '@/components/ChatProvider';
+import { Footer } from '@/components/Footer';
+import { Nav } from '@/components/Nav';
 import { PageLoader } from '@/components/PageLoader';
+import { ProgressBar } from '@/components/ProgressBar';
+import { SearchProvider } from '@/components/SearchProvider';
+import { ThemeProvider } from '@/components/ThemeProvider';
 import { data } from '@/lib/data';
 import { generateOgImageUrl } from '@/lib/utils';
 import './globals.css';
@@ -21,7 +22,7 @@ const inter = Inter({
 
 export async function generateMetadata() {
   const siteInfo = await data.getSiteInfo();
-  
+
   return {
     title: {
       default: siteInfo.title,
@@ -71,11 +72,7 @@ export async function generateMetadata() {
   };
 }
 
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   // Load all data for search indexing
   const [projects, skills, certificates, experiences] = await Promise.all([
     data.getProjects(),
@@ -87,6 +84,13 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/*
+          This site ships its own light/dark theme (next-themes + `color-scheme`).
+          The lock tells Dark Reader to stand down instead of rewriting our inline
+          styles before React hydrates, which otherwise produces hydration mismatches
+          and repaints the brand colours.
+        */}
+        <meta name="darkreader-lock" />
         <link rel="icon" href="/icons/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/icons/favicon.ico" />
       </head>
@@ -103,14 +107,16 @@ export default async function RootLayout({
             certificates={certificates}
             experiences={experiences}
           >
-            <PageLoader />
-            <ProgressBar />
-            <div className="relative flex min-h-screen flex-col">
-              <Nav />
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </div>
-            <ChatBot />
+            <ChatProvider>
+              <PageLoader />
+              <ProgressBar />
+              <div className="relative flex min-h-screen flex-col">
+                <Nav />
+                <main className="flex-1">{children}</main>
+                <Footer />
+              </div>
+              <ChatBot />
+            </ChatProvider>
           </SearchProvider>
         </ThemeProvider>
         <Analytics />

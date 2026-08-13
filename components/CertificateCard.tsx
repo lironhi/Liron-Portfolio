@@ -1,18 +1,16 @@
 'use client';
 
 import { Award, Calendar, ExternalLink, ShieldCheck } from 'lucide-react';
+import type { Certificate } from '@/lib/data/types';
 import { Badge } from './Badge';
 import { Button } from './Button';
-import type { Certificate } from '@/lib/data/types';
 
 interface CertificateCardProps {
   certificate: Certificate;
 }
 
 export function CertificateCard({ certificate }: CertificateCardProps) {
-  const isActive = certificate.expiryDate
-    ? new Date(certificate.expiryDate) > new Date()
-    : true;
+  const isActive = certificate.expiryDate ? new Date(certificate.expiryDate) > new Date() : true;
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -53,25 +51,21 @@ export function CertificateCard({ certificate }: CertificateCardProps) {
       <div className="space-y-4">
         {/* Header */}
         <div className="flex items-start gap-3">
-          <div className="text-3xl flex-shrink-0">{issuerStyle.icon}</div>
+          <div className="text-3xl shrink-0">{issuerStyle.icon}</div>
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">
               {certificate.name}
             </h3>
-            <p className={`text-sm font-medium ${issuerStyle.color} mt-1`}>
-              {certificate.issuer}
-            </p>
+            <p className={`text-sm font-medium ${issuerStyle.color} mt-1`}>{certificate.issuer}</p>
           </div>
           {isActive && (
-            <ShieldCheck className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0" />
+            <ShieldCheck className="h-5 w-5 text-green-600 dark:text-green-400 shrink-0" />
           )}
         </div>
 
         {/* Description */}
         {certificate.description && (
-          <p className="text-sm text-muted-foreground line-clamp-3">
-            {certificate.description}
-          </p>
+          <p className="text-sm text-muted-foreground line-clamp-3">{certificate.description}</p>
         )}
 
         {/* Date Info */}
@@ -107,12 +101,7 @@ export function CertificateCard({ certificate }: CertificateCardProps) {
         {/* Actions */}
         <div className="flex items-center gap-2 pt-2">
           {certificate.credentialUrl && (
-            <Button
-              variant="outline"
-              size="sm"
-              asChild
-              className="text-xs"
-            >
+            <Button variant="outline" size="sm" asChild className="text-xs">
               <a
                 href={certificate.credentialUrl}
                 target="_blank"

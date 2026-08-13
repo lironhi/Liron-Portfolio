@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import { useEffect, useRef, useState } from 'react';
 
 interface TechItem {
   name: string;
@@ -12,8 +12,16 @@ interface TechItem {
 const techStack: TechItem[] = [
   // Frontend
   { name: 'React', icon: '/images/logos/tech-stack/reactjs-svgrepo-com.svg', category: 'frontend' },
-  { name: 'Next.js', icon: '/images/logos/tech-stack/nextjs-fill-svgrepo-com.svg', category: 'frontend' },
-  { name: 'TypeScript', icon: '/images/logos/tech-stack/typescript-official-svgrepo-com.svg', category: 'frontend' },
+  {
+    name: 'Next.js',
+    icon: '/images/logos/tech-stack/nextjs-fill-svgrepo-com.svg',
+    category: 'frontend',
+  },
+  {
+    name: 'TypeScript',
+    icon: '/images/logos/tech-stack/typescript-official-svgrepo-com.svg',
+    category: 'frontend',
+  },
   { name: 'CSS', icon: '/images/logos/tech-stack/css-svgrepo-com.svg', category: 'frontend' },
 
   // Backend
@@ -87,19 +95,23 @@ export function TechStackSection() {
           >
             <div className="relative">
               {/* Icon container */}
-              <div className={`
+              <div
+                className={`
                 relative w-16 h-16 sm:w-20 sm:h-20 mx-auto p-3 sm:p-4
                 rounded-2xl bg-background border border-border
                 transition-all duration-300
                 group-hover:scale-110 group-hover:shadow-xl
                 group-hover:border-primary/50
                 ${hoveredIndex === index ? 'ring-2 ring-primary/30' : ''}
-              `}>
+              `}
+              >
                 {/* Gradient background on hover */}
-                <div className={`
+                <div
+                  className={`
                   absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100
-                  transition-opacity duration-300 bg-gradient-to-br ${categoryColors[tech.category]}
-                `} />
+                  transition-opacity duration-300 bg-linear-to-br ${categoryColors[tech.category]}
+                `}
+                />
 
                 {/* Icon */}
                 <div className="relative w-full h-full">
@@ -118,13 +130,15 @@ export function TechStackSection() {
               </div>
 
               {/* Tooltip */}
-              <div className={`
+              <div
+                className={`
                 absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap
                 px-3 py-1.5 rounded-lg bg-foreground text-background text-xs font-medium
                 opacity-0 group-hover:opacity-100 pointer-events-none
                 transition-all duration-200 group-hover:-translate-y-2
                 shadow-lg z-10
-              `}>
+              `}
+              >
                 {tech.name}
                 {/* Arrow */}
                 <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-foreground rotate-45" />
@@ -135,7 +149,7 @@ export function TechStackSection() {
       </div>
 
       {/* Bottom gradient line */}
-      <div className="mt-16 h-px w-full bg-gradient-to-r from-transparent via-border to-transparent" />
+      <div className="mt-16 h-px w-full bg-linear-to-r from-transparent via-border to-transparent" />
     </div>
   );
 }

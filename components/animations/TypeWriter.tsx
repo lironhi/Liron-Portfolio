@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface TypeWriterProps {
   words: string[];
@@ -26,35 +26,45 @@ export function TypeWriter({
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (isPaused) {
-        setIsPaused(false);
-        setIsDeleting(true);
-        return;
-      }
-
-      const currentWord = words[currentWordIndex];
-
-      if (!isDeleting) {
-        // Typing
-        if (currentText.length < currentWord.length) {
-          setCurrentText(currentWord.slice(0, currentText.length + 1));
-        } else {
-          setIsPaused(true);
+    const timeout = setTimeout(
+      () => {
+        if (isPaused) {
+          setIsPaused(false);
+          setIsDeleting(true);
+          return;
         }
-      } else {
-        // Deleting
-        if (currentText.length > 0) {
+
+        const currentWord = words[currentWordIndex];
+
+        if (!isDeleting) {
+          // Typing
+          if (currentText.length < currentWord.length) {
+            setCurrentText(currentWord.slice(0, currentText.length + 1));
+          } else {
+            setIsPaused(true);
+          }
+        } else if (currentText.length > 0) {
+          // Deleting
           setCurrentText(currentText.slice(0, -1));
         } else {
           setIsDeleting(false);
           setCurrentWordIndex((prev) => (prev + 1) % words.length);
         }
-      }
-    }, isPaused ? pauseDuration : isDeleting ? deleteSpeed : typeSpeed);
+      },
+      isPaused ? pauseDuration : isDeleting ? deleteSpeed : typeSpeed
+    );
 
     return () => clearTimeout(timeout);
-  }, [currentText, isDeleting, isPaused, currentWordIndex, words, typeSpeed, deleteSpeed, pauseDuration]);
+  }, [
+    currentText,
+    isDeleting,
+    isPaused,
+    currentWordIndex,
+    words,
+    typeSpeed,
+    deleteSpeed,
+    pauseDuration,
+  ]);
 
   return (
     <motion.span

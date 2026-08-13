@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface ImageItem {
   src: string;
@@ -19,24 +19,84 @@ interface ImageItemWithOrientation extends ImageItem {
 
 const imagesByProject: Record<string, ImageItemWithOrientation[]> = {
   'eliana-beauty': [
-    { src: '/projects/eliana-beauty/main.png', alt: 'Landing Page', label: 'Landing Page', orientation: 'landscape' },
-    { src: '/projects/eliana-beauty/services.png', alt: 'Services', label: 'Services Catalog', orientation: 'landscape' },
-    { src: '/projects/eliana-beauty/booking.png', alt: 'Booking', label: 'Booking System', orientation: 'landscape' },
-    { src: '/projects/eliana-beauty/dashboard.png', alt: 'Dashboard', label: 'Admin Dashboard', orientation: 'landscape' },
-    { src: '/projects/eliana-beauty/appointment.png', alt: 'Appointments', label: 'Appointments', orientation: 'landscape' },
-    { src: '/projects/eliana-beauty/profil.png', alt: 'Profile', label: 'Client Profile', orientation: 'landscape' },
-    { src: '/projects/eliana-beauty/msg.png', alt: 'Messages', label: 'Messaging', orientation: 'landscape' },
-    { src: '/projects/eliana-beauty/main_mob.png', alt: 'Mobile', label: 'Mobile View', orientation: 'portrait' },
+    {
+      src: '/projects/eliana-beauty/main.png',
+      alt: 'Landing Page',
+      label: 'Landing Page',
+      orientation: 'landscape',
+    },
+    {
+      src: '/projects/eliana-beauty/services.png',
+      alt: 'Services',
+      label: 'Services Catalog',
+      orientation: 'landscape',
+    },
+    {
+      src: '/projects/eliana-beauty/booking.png',
+      alt: 'Booking',
+      label: 'Booking System',
+      orientation: 'landscape',
+    },
+    {
+      src: '/projects/eliana-beauty/dashboard.png',
+      alt: 'Dashboard',
+      label: 'Admin Dashboard',
+      orientation: 'landscape',
+    },
+    {
+      src: '/projects/eliana-beauty/appointment.png',
+      alt: 'Appointments',
+      label: 'Appointments',
+      orientation: 'landscape',
+    },
+    {
+      src: '/projects/eliana-beauty/profil.png',
+      alt: 'Profile',
+      label: 'Client Profile',
+      orientation: 'landscape',
+    },
+    {
+      src: '/projects/eliana-beauty/msg.png',
+      alt: 'Messages',
+      label: 'Messaging',
+      orientation: 'landscape',
+    },
+    {
+      src: '/projects/eliana-beauty/main_mob.png',
+      alt: 'Mobile',
+      label: 'Mobile View',
+      orientation: 'portrait',
+    },
   ],
   'aquarium-frame': [
-    { src: '/projects/aquarium-frame/Aquarium Frame.png', alt: 'Aquarium Frame', label: 'Aquarium Frame System', orientation: 'landscape' },
+    {
+      src: '/projects/aquarium-frame/Aquarium Frame.png',
+      alt: 'Aquarium Frame',
+      label: 'Aquarium Frame System',
+      orientation: 'landscape',
+    },
   ],
   'kpi-generator': [
-    { src: '/projects/kpi-generator/main_gui.png', alt: 'Main GUI', label: 'Main Interface', orientation: 'landscape' },
-    { src: '/projects/kpi-generator/kpi_Conversion_by_agent_team_Last_30_days_-_ES_IL_Team_Ashkelon_FTD___RETENTION_.png', alt: 'KPI Dashboard', label: 'KPI Dashboard - Conversion by Agent Team', orientation: 'landscape' },
+    {
+      src: '/projects/kpi-generator/main_gui.png',
+      alt: 'Main GUI',
+      label: 'Main Interface',
+      orientation: 'landscape',
+    },
+    {
+      src: '/projects/kpi-generator/kpi_Conversion_by_agent_team_Last_30_days_-_ES_IL_Team_Ashkelon_FTD___RETENTION_.png',
+      alt: 'KPI Dashboard',
+      label: 'KPI Dashboard - Conversion by Agent Team',
+      orientation: 'landscape',
+    },
   ],
   'post-tracking-system': [
-    { src: '/projects/post-tracking-system/tracking pack system.png', alt: 'Tracking System', label: 'Post Tracking System', orientation: 'landscape' },
+    {
+      src: '/projects/post-tracking-system/tracking pack system.png',
+      alt: 'Tracking System',
+      label: 'Post Tracking System',
+      orientation: 'landscape',
+    },
   ],
 };
 
@@ -92,7 +152,7 @@ export function ProjectImageGallery({ projectSlug }: ProjectImageGalleryProps) {
                 <div
                   key={index}
                   className={`group relative overflow-hidden bg-background cursor-pointer ${
-                    isPortrait ? 'aspect-[9/16]' : 'aspect-video'
+                    isPortrait ? 'aspect-9/16' : 'aspect-video'
                   }`}
                   onClick={() => openModal(index)}
                 >
@@ -101,7 +161,7 @@ export function ProjectImageGallery({ projectSlug }: ProjectImageGalleryProps) {
                     alt={image.alt}
                     className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="absolute bottom-2 left-2 text-white text-xs font-medium">
                       {image.label}
                     </div>
@@ -116,7 +176,7 @@ export function ProjectImageGallery({ projectSlug }: ProjectImageGalleryProps) {
       {/* Modal/Lightbox */}
       {selectedIndex !== null && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-xs animate-in fade-in duration-200"
           onClick={closeModal}
         >
           {/* Close Button */}
@@ -168,7 +228,7 @@ export function ProjectImageGallery({ projectSlug }: ProjectImageGalleryProps) {
             />
 
             {/* Image Label */}
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4 md:p-6 rounded-b-lg">
+            <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/90 to-transparent p-4 md:p-6 rounded-b-lg">
               <p className="text-white text-sm md:text-lg font-medium">
                 {images[selectedIndex].label}
               </p>
@@ -188,17 +248,13 @@ export function ProjectImageGallery({ projectSlug }: ProjectImageGalleryProps) {
                     e.stopPropagation();
                     setSelectedIndex(index);
                   }}
-                  className={`flex-shrink-0 w-20 h-14 rounded overflow-hidden border-2 transition-all ${
+                  className={`shrink-0 w-20 h-14 rounded overflow-hidden border-2 transition-all ${
                     index === selectedIndex
                       ? 'border-white scale-110'
                       : 'border-white/30 hover:border-white/60'
                   }`}
                 >
-                  <img
-                    src={image.src}
-                    alt={image.alt}
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={image.src} alt={image.alt} className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>

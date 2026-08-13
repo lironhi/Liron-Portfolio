@@ -129,7 +129,7 @@ export function FloatingParticles() {
       className="absolute inset-0 pointer-events-none"
       style={{
         opacity: isDark ? 0.4 : 0.5,
-        mixBlendMode: isDark ? 'screen' : 'multiply'
+        mixBlendMode: isDark ? 'screen' : 'multiply',
       }}
     />
   );

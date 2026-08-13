@@ -1,13 +1,8 @@
 'use client';
 
 import { useEffect } from 'react';
-import {
-  indexProjects,
-  indexSkills,
-  indexCertificates,
-  indexExperiences,
-} from '@/lib/search';
-import type { Project, Skill, Certificate, Experience } from '@/lib/data/types';
+import type { Certificate, Experience, Project, Skill } from '@/lib/data/types';
+import { indexCertificates, indexExperiences, indexProjects, indexSkills } from '@/lib/search';
 
 interface SearchProviderProps {
   projects: Project[];

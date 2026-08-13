@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(npm update *)",
+      "Bash(npm ls *)"
     ],
     "deny": [],
     "ask": []

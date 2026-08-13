@@ -13,15 +13,7 @@ export function Skeleton({ className, variant = 'rectangular' }: SkeletonProps) 
     rounded: 'rounded-lg',
   };
 
-  return (
-    <div
-      className={cn(
-        'animate-pulse bg-muted',
-        variantClasses[variant],
-        className
-      )}
-    />
-  );
+  return <div className={cn('animate-pulse bg-muted', variantClasses[variant], className)} />;
 }
 
 export function SkeletonCard() {

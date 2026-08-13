@@ -3,8 +3,8 @@
  * Provides actionable tools for contact, navigation, and user interactions
  */
 
+import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import type { McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
 import { data } from '@/lib/data';
 
 /**
@@ -202,7 +202,11 @@ export function registerActionTools(server: McpServer) {
             { label: 'Skills', href: '/skills', description: 'Technical skills and expertise' },
             { label: 'Resume', href: '/resume', description: 'Professional resume/CV' },
             { label: 'Contact', href: '/contact', description: 'Get in touch' },
-            { label: 'Currently', href: '/currently', description: 'Current activities and interests' },
+            {
+              label: 'Currently',
+              href: '/currently',
+              description: 'Current activities and interests',
+            },
           ],
         };
 
@@ -257,15 +261,14 @@ export function registerActionTools(server: McpServer) {
             p.title.toLowerCase().includes(searchLower) ||
             p.summary.toLowerCase().includes(searchLower) ||
             p.tags.some((t) => t.name.toLowerCase().includes(searchLower)) ||
-            (p.technologies &&
-              p.technologies.some((tech) => tech.toLowerCase().includes(searchLower)))
+            p.technologies?.some((tech) => tech.toLowerCase().includes(searchLower))
         );
 
         // Search skills
         const matchingSkills = skills.filter(
           (s) =>
             s.name.toLowerCase().includes(searchLower) ||
-            (s.description && s.description.toLowerCase().includes(searchLower))
+            s.description?.toLowerCase().includes(searchLower)
         );
 
         // Search experience
@@ -279,8 +282,7 @@ export function registerActionTools(server: McpServer) {
 
         const results = {
           query,
-          totalResults:
-            matchingProjects.length + matchingSkills.length + matchingExperience.length,
+          totalResults: matchingProjects.length + matchingSkills.length + matchingExperience.length,
           projects: matchingProjects.map((p) => ({
             title: p.title,
             slug: p.slug,
@@ -348,10 +350,7 @@ export function registerActionTools(server: McpServer) {
             if (p.tags.some((t) => t.name.toLowerCase().includes(interestLower))) score += 2;
 
             // Check technologies
-            if (
-              p.technologies &&
-              p.technologies.some((tech) => tech.toLowerCase().includes(interestLower))
-            )
+            if (p.technologies?.some((tech) => tech.toLowerCase().includes(interestLower)))
               score += 2;
 
             // Boost featured projects slightly

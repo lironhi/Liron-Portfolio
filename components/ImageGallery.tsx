@@ -1,7 +1,7 @@
 'use client';
 
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useState } from 'react';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface ImageItem {
   src: string;
@@ -60,7 +60,7 @@ export function ImageGallery({ images }: ImageGalleryProps) {
                   alt={image.alt}
                   className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <div className="absolute bottom-2 left-2 text-white text-xs font-medium">
                     {image.label}
                   </div>
@@ -74,7 +74,7 @@ export function ImageGallery({ images }: ImageGalleryProps) {
       {/* Modal/Lightbox */}
       {selectedIndex !== null && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xs"
           onClick={closeModal}
           onKeyDown={handleKeyDown}
           tabIndex={0}
@@ -124,10 +124,8 @@ export function ImageGallery({ images }: ImageGalleryProps) {
             />
 
             {/* Image Label */}
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 rounded-b-lg">
-              <p className="text-white text-lg font-medium">
-                {images[selectedIndex].label}
-              </p>
+            <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/80 to-transparent p-6 rounded-b-lg">
+              <p className="text-white text-lg font-medium">{images[selectedIndex].label}</p>
               <p className="text-white/60 text-sm mt-1">
                 {selectedIndex + 1} / {images.length}
               </p>
@@ -143,17 +141,13 @@ export function ImageGallery({ images }: ImageGalleryProps) {
                   e.stopPropagation();
                   setSelectedIndex(index);
                 }}
-                className={`flex-shrink-0 w-16 h-12 rounded overflow-hidden border-2 transition-all ${
+                className={`shrink-0 w-16 h-12 rounded overflow-hidden border-2 transition-all ${
                   index === selectedIndex
                     ? 'border-white scale-110'
                     : 'border-white/30 hover:border-white/60'
                 }`}
               >
-                <img
-                  src={image.src}
-                  alt={image.alt}
-                  className="w-full h-full object-cover"
-                />
+                <img src={image.src} alt={image.alt} className="w-full h-full object-cover" />
               </button>
             ))}
           </div>

@@ -1,8 +1,8 @@
 'use client';
 
+import { ChevronLeft, ChevronRight, Download, Loader2, ZoomIn, ZoomOut } from 'lucide-react';
 import { useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
-import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Download, Loader2 } from 'lucide-react';
 import { Button } from './Button';
 
 // Configure PDF.js worker
@@ -103,11 +103,7 @@ export function PDFViewer({ url, filename }: PDFViewerProps) {
           </Button>
         </div>
 
-        <Button
-          variant="default"
-          size="sm"
-          asChild
-        >
+        <Button variant="default" size="sm" asChild>
           <a href={url} download={filename} aria-label={`Download ${filename}`}>
             <Download className="h-4 w-4 mr-2" />
             Download

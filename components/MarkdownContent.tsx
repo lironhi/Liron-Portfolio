@@ -20,7 +20,10 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
             <h1 className="mt-2 scroll-m-20 text-4xl font-bold tracking-tight" {...props} />
           ),
           h2: ({ node, ...props }) => (
-            <h2 className="mt-12 scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight first:mt-0" {...props} />
+            <h2
+              className="mt-12 scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight first:mt-0"
+              {...props}
+            />
           ),
           h3: ({ node, ...props }) => (
             <h3 className="mt-8 scroll-m-20 text-xl font-semibold tracking-tight" {...props} />
@@ -31,31 +34,29 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
           a: ({ node, ...props }) => (
             <a className="font-medium text-primary underline underline-offset-4" {...props} />
           ),
-          p: ({ node, ...props }) => (
-            <p className="leading-7 [&:not(:first-child)]:mt-6" {...props} />
-          ),
-          ul: ({ node, ...props }) => (
-            <ul className="my-6 ml-6 list-disc [&>li]:mt-2" {...props} />
-          ),
+          p: ({ node, ...props }) => <p className="leading-7 not-first:mt-6" {...props} />,
+          ul: ({ node, ...props }) => <ul className="my-6 ml-6 list-disc [&>li]:mt-2" {...props} />,
           ol: ({ node, ...props }) => (
             <ol className="my-6 ml-6 list-decimal [&>li]:mt-2" {...props} />
           ),
-          li: ({ node, ...props }) => (
-            <li className="[&>p]:mt-0" {...props} />
-          ),
+          li: ({ node, ...props }) => <li className="[&>p]:mt-0" {...props} />,
           blockquote: ({ node, ...props }) => (
             <blockquote className="mt-6 border-l-2 border-primary pl-6 italic" {...props} />
           ),
-          img: ({ node, ...props }) => (
-            <img className="rounded-md shadow-lg my-4" {...props} />
-          ),
+          img: ({ node, ...props }) => <img className="rounded-md shadow-lg my-4" {...props} />,
           pre: ({ node, ...props }) => (
-            <pre className="mb-4 mt-6 overflow-x-auto rounded-lg border bg-muted px-4 py-4" {...props} />
+            <pre
+              className="mb-4 mt-6 overflow-x-auto rounded-lg border bg-muted px-4 py-4"
+              {...props}
+            />
           ),
           code: ({ node, inline, ...props }: any) => {
             if (inline) {
               return (
-                <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm" {...props} />
+                <code
+                  className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm"
+                  {...props}
+                />
               );
             }
             return <code className="font-mono text-sm" {...props} />;
@@ -65,15 +66,11 @@ export function MarkdownContent({ content }: MarkdownContentProps) {
               <table className="w-full" {...props} />
             </div>
           ),
-          tr: ({ node, ...props }) => (
-            <tr className="m-0 border-t p-0 even:bg-muted" {...props} />
-          ),
+          tr: ({ node, ...props }) => <tr className="m-0 border-t p-0 even:bg-muted" {...props} />,
           th: ({ node, ...props }) => (
             <th className="border px-4 py-2 text-left font-bold" {...props} />
           ),
-          td: ({ node, ...props }) => (
-            <td className="border px-4 py-2 text-left" {...props} />
-          ),
+          td: ({ node, ...props }) => <td className="border px-4 py-2 text-left" {...props} />,
         }}
       >
         {content}

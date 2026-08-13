@@ -10,7 +10,7 @@ export function Skeleton({ className, ...props }: SkeletonProps) {
       className={cn(
         'animate-pulse rounded-md bg-muted/50 relative overflow-hidden',
         'before:absolute before:inset-0',
-        'before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent',
+        'before:bg-linear-to-r before:from-transparent before:via-white/10 before:to-transparent',
         'before:animate-shimmer-skeleton',
         className
       )}
@@ -42,11 +42,7 @@ export function SkeletonText({ lines = 3 }: { lines?: number }) {
   return (
     <div className="space-y-2">
       {Array.from({ length: lines }).map((_, i) => (
-        <Skeleton
-          key={i}
-          className="h-4"
-          style={{ width: i === lines - 1 ? '80%' : '100%' }}
-        />
+        <Skeleton key={i} className="h-4" style={{ width: i === lines - 1 ? '80%' : '100%' }} />
       ))}
     </div>
   );
