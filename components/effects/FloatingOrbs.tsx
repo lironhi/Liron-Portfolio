@@ -131,6 +131,7 @@ export function FloatingOrbs() {
       className="absolute inset-0 pointer-events-none"
       style={{
         filter: 'blur(40px)',
+        opacity: 0.55,
       }}
     />
   );

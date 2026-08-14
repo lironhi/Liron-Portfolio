@@ -34,9 +34,30 @@ export default async function ResumePage() {
     (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
   );
 
-  const topSkills = skills
-    .filter((skill) => skill.level === 'expert' || skill.level === 'advanced')
-    .slice(0, 12);
+  /**
+   * A flat row of a dozen identical pills tells a reader nothing. Grouping by
+   * category gives the eye a structure to scan, and keeping only expert/advanced
+   * keeps it a summary rather than a second Skills page.
+   */
+  const CATEGORY_LABELS: Record<string, string> = {
+    languages: 'Languages',
+    frameworks: 'Frameworks',
+    databases: 'Data',
+    cloud: 'Cloud',
+    tools: 'Tooling',
+    other: 'Engineering',
+  };
+
+  const skillGroups = Object.entries(
+    skills
+      .filter((skill) => skill.level === 'expert' || skill.level === 'advanced')
+      .reduce<Record<string, typeof skills>>((acc, skill) => {
+        (acc[skill.category] ??= []).push(skill);
+        return acc;
+      }, {})
+  ).sort(
+    ([a], [b]) => Object.keys(CATEGORY_LABELS).indexOf(a) - Object.keys(CATEGORY_LABELS).indexOf(b)
+  );
 
   return (
     <div className="relative min-h-screen">
@@ -81,16 +102,28 @@ export default async function ResumePage() {
             </div>
 
             {/* Skills Summary */}
-            {topSkills.length > 0 && (
+            {skillGroups.length > 0 && (
               <div className="space-y-6">
                 <h2 className="text-2xl font-semibold text-foreground">Core Skills</h2>
-                <div className="flex flex-wrap gap-2">
-                  {topSkills.map((skill) => (
-                    <Badge key={skill.id} variant="secondary">
-                      {skill.name}
-                    </Badge>
+                <dl className="space-y-4">
+                  {skillGroups.map(([category, group]) => (
+                    <div
+                      key={category}
+                      className="grid gap-2 sm:grid-cols-[9rem_1fr] sm:items-baseline"
+                    >
+                      <dt className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+                        {CATEGORY_LABELS[category] ?? category}
+                      </dt>
+                      <dd className="flex flex-wrap gap-1.5">
+                        {group.map((skill) => (
+                          <Badge key={skill.id} variant="secondary">
+                            {skill.name}
+                          </Badge>
+                        ))}
+                      </dd>
+                    </div>
                   ))}
-                </div>
+                </dl>
               </div>
             )}
 
@@ -130,7 +163,7 @@ export default async function ResumePage() {
                             <p className="text-sm text-muted-foreground">GPA: {edu.gpa}</p>
                           )}
                         </div>
-                        <div className="text-right text-sm text-muted-foreground">
+                        <div className="font-mono text-right text-sm text-muted-foreground">
                           <div>{formatDateRange(edu.startDate, edu.endDate)}</div>
                           <div>{edu.location}</div>
                         </div>

@@ -128,7 +128,7 @@ export function FloatingParticles() {
       ref={canvasRef}
       className="absolute inset-0 pointer-events-none"
       style={{
-        opacity: isDark ? 0.4 : 0.5,
+        opacity: isDark ? 0.28 : 0.3,
         mixBlendMode: isDark ? 'screen' : 'multiply',
       }}
     />

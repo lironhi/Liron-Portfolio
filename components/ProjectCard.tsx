@@ -39,7 +39,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
   return (
     <HoverCard className="h-full" scale={1.03} lift={true} glow={true}>
-      <div className="group relative overflow-hidden rounded-lg border bg-card h-full flex flex-col shadow-md transition-all duration-300 hover:shadow-xl hover:border-primary/50">
+      <div className="group relative overflow-hidden rounded-lg border bg-card h-full flex flex-col shadow-e1 transition-all duration-300 hover:shadow-e2 hover:border-primary/50">
         {/*
           Whole-card link. Sits above the content (z-20) so a click on the image,
           the summary or the tags opens the project; the Code/Demo/Learn more row
@@ -110,7 +110,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
                 <h3 className="text-xl font-semibold leading-none tracking-tight transition-all duration-300 group-hover:text-primary group-hover:translate-x-1">
                   {project.title}
                 </h3>
-                <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors duration-300">
+                <span className="font-mono text-sm text-muted-foreground group-hover:text-foreground transition-colors duration-300">
                   {project.year}
                 </span>
               </div>

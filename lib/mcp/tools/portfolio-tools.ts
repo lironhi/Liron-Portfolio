@@ -395,7 +395,7 @@ export function registerPortfolioTools(server: McpServer) {
    */
   server.tool(
     'get_currently',
-    'Get information about what Liron is currently learning, working on, reading, or exploring',
+    'Get what Liron is currently shipping at work, building on the side, has recently shipped, or is exploring',
     {},
     async () => {
       try {
@@ -407,9 +407,9 @@ export function registerPortfolioTools(server: McpServer) {
               type: 'text',
               text: `Currently (Last updated: ${currently.lastUpdated}):\n\n${JSON.stringify(
                 {
-                  learning: currently.learning,
-                  working: currently.working,
-                  reading: currently.reading,
+                  shipping: currently.shipping,
+                  building: currently.building,
+                  shipped: currently.shipped,
                   exploring: currently.exploring,
                 },
                 null,

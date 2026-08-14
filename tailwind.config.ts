@@ -12,6 +12,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-display)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-mono)', 'SFMono-Regular', 'Consolas', 'monospace'],
       },
       colors: {
@@ -49,10 +50,29 @@ const config: Config = {
           foreground: 'hsl(var(--card-foreground))',
         },
       },
+      /**
+       * Three radii, on purpose. The site previously mixed 6, 8, 12, 16 and 24px -
+       * 6 and 8 appeared about as often as each other, which nobody can tell apart
+       * but the eye still registers as sloppiness. Every Tailwind step now maps
+       * onto one of three intentions: control, card, container.
+       */
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        sm: '8px',
+        md: '8px',
+        lg: '8px',
+        xl: '14px',
+        '2xl': '14px',
+        '3xl': '20px',
+      },
+
+      /**
+       * Elevation scale. On a dark ground a pure drop shadow reads as mud, so each
+       * step pairs a soft ambient shadow with a faint light edge.
+       */
+      boxShadow: {
+        e1: '0 1px 2px rgb(0 0 0 / 0.16), 0 1px 3px -1px rgb(0 0 0 / 0.12)',
+        e2: '0 4px 12px -2px rgb(0 0 0 / 0.28), 0 2px 6px -2px rgb(0 0 0 / 0.16)',
+        e3: '0 16px 40px -8px rgb(0 0 0 / 0.42), 0 6px 16px -6px rgb(0 0 0 / 0.24)',
       },
       typography: {
         DEFAULT: {

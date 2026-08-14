@@ -137,44 +137,47 @@ export interface SiteInfo {
   };
 }
 
-export interface LearningItem {
+/**
+ * A thing being built, at work or on the side.
+ *
+ * Deliberately no `progress` percentage: "MCP, 60%" is unverifiable, and for
+ * someone who already ships this in production it reads as catching up rather
+ * than as delivering.
+ */
+export interface CurrentlyItem {
   id: string;
   title: string;
   description: string;
   icon: string;
-  progress: number;
+  /** Where the work happens - shown as a small label on the card. */
+  context?: string;
+  technologies?: string[];
   link?: string;
 }
 
-export interface WorkingItem {
+export interface ShippedItem {
   id: string;
   title: string;
   description: string;
   icon: string;
-  status: 'planning' | 'in-progress' | 'paused';
-  technologies: string[];
-}
-
-export interface ReadingItem {
-  id: string;
-  title: string;
-  author: string;
-  icon: string;
-  progress: number;
+  /** Year or month it went live. */
+  when: string;
   link?: string;
 }
 
 export interface ExploringItem {
   id: string;
   title: string;
-  description: string;
   icon: string;
 }
 
 export interface Currently {
-  learning: LearningItem[];
-  working: WorkingItem[];
-  reading: ReadingItem[];
+  /** Paid work in flight right now. */
+  shipping: CurrentlyItem[];
+  /** Personal projects - the ones that show curiosity beyond the day job. */
+  building: CurrentlyItem[];
+  /** Done and live. Proof of velocity rather than intent. */
+  shipped: ShippedItem[];
   exploring: ExploringItem[];
   lastUpdated: string;
 }

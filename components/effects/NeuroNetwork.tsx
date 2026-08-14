@@ -170,7 +170,7 @@ export function NeuroNetwork() {
     <canvas
       ref={canvasRef}
       className="absolute inset-0 pointer-events-none"
-      style={{ width: '100%', height: '100%' }}
+      style={{ width: '100%', height: '100%', opacity: 0.35 }}
     />
   );
 }

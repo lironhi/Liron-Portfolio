@@ -111,7 +111,7 @@ export function HomePageClient({
             <div className="mb-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-y border-border/60 py-4">
               {proofPoints.map((point) => (
                 <div key={point.label} className="flex items-baseline gap-1.5">
-                  <span className="text-xl lg:text-2xl font-bold text-foreground tabular-nums">
+                  <span className="font-mono text-xl lg:text-2xl font-bold text-foreground tabular-nums">
                     {point.value}
                   </span>
                   <span className="text-xs lg:text-sm text-muted-foreground">{point.label}</span>
@@ -303,7 +303,7 @@ export function HomePageClient({
                 What I'm Up To
               </h2>
               <p className="text-lg text-muted-foreground">
-                A glimpse into what I'm learning, building, and exploring right now
+                What I'm shipping at work, building on the side, and just finished
               </p>
             </div>
           </FadeIn>

@@ -117,7 +117,9 @@ export function DNAHelix() {
     <canvas
       ref={canvasRef}
       className="absolute inset-0 pointer-events-none"
-      style={{ width: '100%', height: '100%', zIndex: 0, opacity: 0.4 }}
+      // Was 0.4: the helix runs straight through the About page body text and
+      // competed with it. Decoration should sit behind content, not in it.
+      style={{ width: '100%', height: '100%', zIndex: 0, opacity: 0.1 }}
     />
   );
 }

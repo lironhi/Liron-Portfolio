@@ -1,71 +1,61 @@
 {
-  "learning": [
+  "shipping": [
     {
-      "id": "advanced-langgraph",
-      "title": "Advanced LangGraph Patterns",
-      "description": "Deep diving into multi-agent orchestration and state management for complex AI workflows",
-      "icon": "🤖",
-      "progress": 75,
-      "link": "https://langchain-ai.github.io/langgraph/"
+      "id": "callisto-ai-crm",
+      "title": "AI-augmented CRM",
+      "description": "Building an advanced CRM for Callisto with AI woven through it: API integrations with external platforms and data pulled from external databases, so the sales teams work from one place instead of five.",
+      "icon": "🧠",
+      "context": "Callisto",
+      "technologies": ["Python", "REST APIs", "LangGraph", "MCP", "SQL"]
     },
     {
-      "id": "anthropic-mcp",
-      "title": "Model Context Protocol (MCP)",
-      "description": "Exploring Anthropic's MCP for seamless LLM context management and tool integration",
-      "icon": "🔌",
-      "progress": 60,
-      "link": "https://docs.anthropic.com/"
+      "id": "freelance-platforms",
+      "title": "Client web platforms",
+      "description": "Freelance full-stack work: booking and CRM products taken from data model to the interface non-technical users live in every day.",
+      "icon": "🚀",
+      "context": "Freelance",
+      "technologies": ["Next.js", "React", "TypeScript", "Node.js"]
     }
   ],
-  "working": [
+  "building": [
     {
-      "id": "portfolio-chatbot",
-      "title": "AI Portfolio Assistant",
-      "description": "Building an intelligent chatbot using LangGraph and Claude to answer questions about my experience and projects",
+      "id": "godot-ai-game",
+      "title": "Co-op game with on-device AI",
+      "description": "A Godot multiplayer co-op game built around two models of my own, both running locally: one generates and animates each player's face in-game (eyes, mouth, expressions), the other clones the player's own voice for in-game speech.",
+      "icon": "🎮",
+      "context": "Side project",
+      "technologies": ["Godot", "Local inference", "Facial animation", "Voice cloning", "Multiplayer"]
+    }
+  ],
+  "shipped": [
+    {
+      "id": "portfolio-ai-assistant",
+      "title": "The AI assistant on this site",
+      "description": "Answers questions about my work by calling tools against my real project files over MCP, streaming the reply as it is written.",
       "icon": "💬",
-      "status": "in-progress",
-      "technologies": ["LangGraph", "Claude API", "Next.js", "TypeScript"]
+      "when": "2026",
+      "link": "/"
     },
     {
-      "id": "automation-framework",
-      "title": "Multi-Agent Automation Framework",
-      "description": "Developing a scalable framework for orchestrating AI agents in enterprise environments",
+      "id": "kpi-pipeline",
+      "title": "Sales KPI reporting pipeline",
+      "description": "Python tool auto-generating per-vendor and per-branch reports. Cut report generation from 2 hours to under 2 seconds for the management team.",
+      "icon": "📊",
+      "when": "2025"
+    },
+    {
+      "id": "multi-agent-automation",
+      "title": "Multi-agent automation system",
+      "description": "LangGraph and MCP agents chained in sequence for automated responses, database management, file analysis and report generation across six branches.",
       "icon": "⚡",
-      "status": "planning",
-      "technologies": ["Python", "LangGraph", "Docker", "Redis"]
-    }
-  ],
-  "reading": [
-    {
-      "id": "designing-data-intensive",
-      "title": "Designing Data-Intensive Applications",
-      "author": "Martin Kleppmann",
-      "icon": "📚",
-      "progress": 40,
-      "link": "https://dataintensive.net/"
-    },
-    {
-      "id": "ai-engineering",
-      "title": "Building LLM Apps",
-      "author": "Anthropic Team",
-      "icon": "📖",
-      "progress": 80,
-      "link": "https://docs.anthropic.com/en/docs/build-with-claude"
+      "when": "2025"
     }
   ],
   "exploring": [
-    {
-      "id": "rust-systems",
-      "title": "Rust for Systems Programming",
-      "description": "Learning Rust to build high-performance backend services",
-      "icon": "🦀"
-    },
-    {
-      "id": "vector-databases",
-      "title": "Vector Databases & RAG",
-      "description": "Implementing efficient semantic search with Pinecone and FAISS",
-      "icon": "🔍"
-    }
+    { "id": "local-inference", "title": "Running models on-device", "icon": "🔒" },
+    { "id": "voice-synthesis", "title": "Real-time voice synthesis", "icon": "🎙️" },
+    { "id": "realtime-multiplayer", "title": "Real-time multiplayer netcode", "icon": "🌐" },
+    { "id": "rag", "title": "RAG with Redis & FAISS", "icon": "🔍" }
   ],
-  "lastUpdated": "2025-01-22"
+  "lastUpdated": "2026-08-14"
 }

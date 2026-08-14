@@ -70,9 +70,9 @@ export default function AboutPage() {
                   <AnimatedTitle
                     text="About Me"
                     as="h1"
-                    className="text-4xl font-bold tracking-tight sm:text-5xl"
+                    className="text-3xl font-bold tracking-tight sm:text-4xl"
                   />
-                  <p className="text-xl leading-8 text-muted-foreground max-w-2xl mx-auto">
+                  <p className="text-lg leading-8 text-muted-foreground max-w-2xl mx-auto">
                     Full-stack developer with 3+ years shipping production systems — now building AI
                     agents into them.
                   </p>

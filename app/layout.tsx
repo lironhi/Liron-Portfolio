@@ -1,10 +1,9 @@
 import { Analytics } from '@vercel/analytics/react';
-import { Inter } from 'next/font/google';
+import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google';
 import { ChatBot } from '@/components/ChatBot';
 import { ChatProvider } from '@/components/ChatProvider';
 import { Footer } from '@/components/Footer';
 import { Nav } from '@/components/Nav';
-import { PageLoader } from '@/components/PageLoader';
 import { ProgressBar } from '@/components/ProgressBar';
 import { SearchProvider } from '@/components/SearchProvider';
 import { ThemeProvider } from '@/components/ThemeProvider';
@@ -12,12 +11,35 @@ import { data } from '@/lib/data';
 import { generateOgImageUrl } from '@/lib/utils';
 import './globals.css';
 
+/**
+ * Three roles, three faces:
+ * - Inter carries body copy, where neutrality is a virtue.
+ * - Space Grotesk carries headings; its geometric quirks are what stop the site
+ *   reading like every other Inter-only template.
+ * - JetBrains Mono carries data - years, levels, counts, tags - which is where
+ *   an engineering portfolio earns its texture.
+ */
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
   display: 'swap',
   preload: true,
   fallback: ['system-ui', 'arial'],
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-display',
+  display: 'swap',
+  preload: true,
+  fallback: ['system-ui', 'arial'],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  display: 'swap',
+  fallback: ['SFMono-Regular', 'Consolas', 'monospace'],
 });
 
 export async function generateMetadata() {
@@ -94,7 +116,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="icon" href="/icons/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/icons/favicon.ico" />
       </head>
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body
+        className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans antialiased`}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
@@ -108,7 +132,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             experiences={experiences}
           >
             <ChatProvider>
-              <PageLoader />
               <ProgressBar />
               <div className="relative flex min-h-screen flex-col">
                 <Nav />

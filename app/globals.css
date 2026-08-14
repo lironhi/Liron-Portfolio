@@ -146,6 +146,16 @@
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
+  /* Headings carry the display face by default, so every page picks it up
+     without each component having to remember `font-display`. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display), var(--font-inter), system-ui, sans-serif;
+    letter-spacing: -0.02em;
+  }
+
   /* Smooth transitions for theme switching */
   * {
     transition-property: background-color, border-color, color, fill, stroke;

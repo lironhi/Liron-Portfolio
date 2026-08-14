@@ -119,7 +119,7 @@ export function TechStackSection() {
                     src={tech.icon}
                     alt={tech.name}
                     fill
-                    className="object-contain transition-transform duration-300 group-hover:scale-110"
+                    className="object-contain grayscale opacity-60 transition-all duration-300 group-hover:scale-110 group-hover:grayscale-0 group-hover:opacity-100"
                     onError={(e) => {
                       // Fallback if image doesn't exist
                       const target = e.target as HTMLImageElement;

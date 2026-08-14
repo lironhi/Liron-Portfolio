@@ -1,16 +1,8 @@
 'use client';
 
-import {
-  BookOpen,
-  Clock,
-  Code,
-  Compass,
-  ExternalLink,
-  Hammer,
-  TrendingUp,
-  Zap,
-} from 'lucide-react';
-import type { Currently } from '@/lib/data/types';
+import { CheckCircle2, Compass, ExternalLink, Hammer, Rocket } from 'lucide-react';
+import Link from 'next/link';
+import type { Currently, CurrentlyItem, ShippedItem } from '@/lib/data/types';
 import { FadeIn, StaggerContainer, StaggerItem } from './animations';
 import { Badge } from './Badge';
 
@@ -18,320 +10,171 @@ interface CurrentlySectionProps {
   data: Currently;
 }
 
-// Calculate stats
-const calculateStats = (data: Currently) => {
-  const totalItems =
-    data.learning.length + data.working.length + data.reading.length + data.exploring.length;
-  const avgProgress =
-    data.learning.length > 0
-      ? Math.round(
-          data.learning.reduce((acc, item) => acc + item.progress, 0) / data.learning.length
-        )
-      : 0;
-  const inProgressProjects = data.working.filter((item) => item.status === 'in-progress').length;
-
-  return { totalItems, avgProgress, inProgressProjects };
-};
-
-export function CurrentlySection({ data }: CurrentlySectionProps) {
-  const stats = calculateStats(data);
-
+/** One in-flight project - work or side project. */
+function BuildCard({ item, accent }: { item: CurrentlyItem; accent: string }) {
   return (
-    <div className="space-y-8">
-      {/* Stats Overview */}
-      <FadeIn>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          <div className="relative overflow-hidden rounded-2xl bg-linear-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20 p-6 hover:shadow-lg transition-all duration-300 group">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500" />
-            <div className="relative">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <TrendingUp className="h-5 w-5 text-primary" />
-                </div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                  Active Items
-                </p>
-              </div>
-              <p className="text-3xl font-bold text-foreground">{stats.totalItems}</p>
-              <p className="text-xs text-muted-foreground mt-1">Things I'm working on</p>
-            </div>
-          </div>
-
-          <div className="relative overflow-hidden rounded-2xl bg-linear-to-br from-blue-500/10 via-blue-500/5 to-transparent border border-blue-500/20 p-6 hover:shadow-lg transition-all duration-300 group">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500" />
-            <div className="relative">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 rounded-lg bg-blue-500/10">
-                  <Zap className="h-5 w-5 text-blue-500" />
-                </div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                  Avg Progress
-                </p>
-              </div>
-              <p className="text-3xl font-bold text-foreground">{stats.avgProgress}%</p>
-              <p className="text-xs text-muted-foreground mt-1">Learning completion</p>
-            </div>
-          </div>
-
-          <div className="relative overflow-hidden rounded-2xl bg-linear-to-br from-green-500/10 via-green-500/5 to-transparent border border-green-500/20 p-6 hover:shadow-lg transition-all duration-300 group">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500" />
-            <div className="relative">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 rounded-lg bg-green-500/10">
-                  <Clock className="h-5 w-5 text-green-500" />
-                </div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                  In Progress
-                </p>
-              </div>
-              <p className="text-3xl font-bold text-foreground">{stats.inProgressProjects}</p>
-              <p className="text-xs text-muted-foreground mt-1">Active projects</p>
-            </div>
+    <div className="group relative h-full overflow-hidden rounded-2xl border bg-card/60 p-5 backdrop-blur-xs shadow-e1 transition-all duration-300 hover:border-primary/40 hover:shadow-e2">
+      <div
+        className={`absolute -right-16 -top-16 h-32 w-32 rounded-full ${accent} transition-transform duration-500 group-hover:scale-110`}
+      />
+      <div className="relative space-y-3">
+        <div className="flex items-start gap-3">
+          <span className="text-2xl leading-none" aria-hidden="true">
+            {item.icon}
+          </span>
+          <div className="min-w-0 flex-1">
+            <h4 className="font-semibold leading-snug text-foreground">{item.title}</h4>
+            {item.context && (
+              <p className="font-mono text-xs font-medium uppercase tracking-wide text-primary">
+                {item.context}
+              </p>
+            )}
           </div>
         </div>
-      </FadeIn>
 
-      {/* Categories Grid */}
-      <div className="grid gap-8 lg:grid-cols-3">
-        {/* Learning */}
-        {data.learning.length > 0 && (
-          <FadeIn>
-            <div className="space-y-6">
-              {/* Category Header */}
-              <div className="flex items-center gap-3 p-4 rounded-xl bg-linear-to-br from-blue-500/10 via-blue-500/5 to-transparent border border-blue-500/20">
-                <div className="p-3 rounded-lg bg-blue-500/10 text-blue-500">
-                  <BookOpen className="h-6 w-6" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-foreground">Learning</h3>
-                  <p className="text-xs text-muted-foreground">{data.learning.length} active</p>
-                </div>
-              </div>
+        <p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p>
 
-              {/* Items */}
-              <StaggerContainer className="space-y-3">
-                {data.learning.map((item) => (
-                  <StaggerItem key={item.id}>
-                    <div className="group relative overflow-hidden rounded-xl border bg-card/50 backdrop-blur-xs p-4 hover:bg-card hover:shadow-lg hover:border-blue-500/30 transition-all duration-300">
-                      <div className="space-y-3">
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex items-start gap-3 flex-1">
-                            <span className="text-2xl shrink-0">{item.icon}</span>
-                            <div className="flex-1 min-w-0">
-                              <h4 className="font-semibold text-foreground group-hover:text-blue-500 transition-colors text-sm">
-                                {item.title}
-                              </h4>
-                              <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                                {item.description}
-                              </p>
-                            </div>
-                          </div>
-                          {item.link && (
-                            <a
-                              href={item.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-muted-foreground hover:text-blue-500 transition-colors shrink-0"
-                              aria-label={`Learn more about ${item.title}`}
-                            >
-                              <ExternalLink className="h-4 w-4" />
-                            </a>
-                          )}
-                        </div>
-                        <div className="space-y-1.5">
-                          <div className="flex items-center justify-between text-xs">
-                            <span className="text-muted-foreground font-medium">Progress</span>
-                            <span className="text-blue-500 font-semibold">{item.progress}%</span>
-                          </div>
-                          <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-linear-to-r from-blue-500 to-blue-400 rounded-full transition-all duration-700 ease-out"
-                              style={{ width: `${item.progress}%` }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </StaggerItem>
-                ))}
-              </StaggerContainer>
-            </div>
-          </FadeIn>
-        )}
-
-        {/* Working On */}
-        {data.working.length > 0 && (
-          <FadeIn delay={0.1}>
-            <div className="space-y-6">
-              {/* Category Header */}
-              <div className="flex items-center gap-3 p-4 rounded-xl bg-linear-to-br from-green-500/10 via-green-500/5 to-transparent border border-green-500/20">
-                <div className="p-3 rounded-lg bg-green-500/10 text-green-500">
-                  <Hammer className="h-6 w-6" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-foreground">Building</h3>
-                  <p className="text-xs text-muted-foreground">{data.working.length} projects</p>
-                </div>
-              </div>
-
-              {/* Items */}
-              <StaggerContainer className="space-y-3">
-                {data.working.map((item) => (
-                  <StaggerItem key={item.id}>
-                    <div className="group relative overflow-hidden rounded-xl border bg-card/50 backdrop-blur-xs p-4 hover:bg-card hover:shadow-lg hover:border-green-500/30 transition-all duration-300">
-                      <div className="space-y-3">
-                        <div className="flex items-start gap-3">
-                          <span className="text-2xl shrink-0">{item.icon}</span>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between gap-2 mb-1">
-                              <h4 className="font-semibold text-foreground group-hover:text-green-500 transition-colors text-sm">
-                                {item.title}
-                              </h4>
-                              <Badge
-                                variant={item.status === 'in-progress' ? 'default' : 'outline'}
-                                className={`text-xs shrink-0 ${
-                                  item.status === 'in-progress'
-                                    ? 'bg-green-500/10 text-green-500 border-green-500/30'
-                                    : ''
-                                }`}
-                              >
-                                {item.status === 'in-progress'
-                                  ? 'In Progress'
-                                  : item.status === 'planning'
-                                    ? 'Planning'
-                                    : 'Paused'}
-                              </Badge>
-                            </div>
-                            <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
-                              {item.description}
-                            </p>
-                            <div className="flex flex-wrap gap-1.5">
-                              {item.technologies.map((tech) => (
-                                <Badge
-                                  key={tech}
-                                  variant="secondary"
-                                  className="text-xs px-2 py-0.5"
-                                >
-                                  {tech}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </StaggerItem>
-                ))}
-              </StaggerContainer>
-            </div>
-          </FadeIn>
-        )}
-
-        {/* Reading */}
-        {data.reading.length > 0 && (
-          <FadeIn delay={0.2}>
-            <div className="space-y-6">
-              {/* Category Header */}
-              <div className="flex items-center gap-3 p-4 rounded-xl bg-linear-to-br from-purple-500/10 via-purple-500/5 to-transparent border border-purple-500/20">
-                <div className="p-3 rounded-lg bg-purple-500/10 text-purple-500">
-                  <Code className="h-6 w-6" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-foreground">Reading</h3>
-                  <p className="text-xs text-muted-foreground">{data.reading.length} books</p>
-                </div>
-              </div>
-
-              {/* Items */}
-              <StaggerContainer className="space-y-3">
-                {data.reading.map((item) => (
-                  <StaggerItem key={item.id}>
-                    <div className="group relative overflow-hidden rounded-xl border bg-card/50 backdrop-blur-xs p-4 hover:bg-card hover:shadow-lg hover:border-purple-500/30 transition-all duration-300">
-                      <div className="space-y-3">
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex items-start gap-3 flex-1">
-                            <span className="text-2xl shrink-0">{item.icon}</span>
-                            <div className="flex-1 min-w-0">
-                              <h4 className="font-semibold text-foreground group-hover:text-purple-500 transition-colors text-sm">
-                                {item.title}
-                              </h4>
-                              <p className="text-xs text-muted-foreground mt-0.5">
-                                by {item.author}
-                              </p>
-                            </div>
-                          </div>
-                          {item.link && (
-                            <a
-                              href={item.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-muted-foreground hover:text-purple-500 transition-colors shrink-0"
-                              aria-label={`View ${item.title}`}
-                            >
-                              <ExternalLink className="h-4 w-4" />
-                            </a>
-                          )}
-                        </div>
-                        <div className="space-y-1.5">
-                          <div className="flex items-center justify-between text-xs">
-                            <span className="text-muted-foreground font-medium">Progress</span>
-                            <span className="text-purple-500 font-semibold">{item.progress}%</span>
-                          </div>
-                          <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-linear-to-r from-purple-500 to-purple-400 rounded-full transition-all duration-700 ease-out"
-                              style={{ width: `${item.progress}%` }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </StaggerItem>
-                ))}
-              </StaggerContainer>
-            </div>
-          </FadeIn>
-        )}
-
-        {/* Exploring */}
-        {data.exploring.length > 0 && (
-          <FadeIn delay={0.3}>
-            <div className="space-y-6">
-              {/* Category Header */}
-              <div className="flex items-center gap-3 p-4 rounded-xl bg-linear-to-br from-orange-500/10 via-orange-500/5 to-transparent border border-orange-500/20">
-                <div className="p-3 rounded-lg bg-orange-500/10 text-orange-500">
-                  <Compass className="h-6 w-6" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-foreground">Exploring</h3>
-                  <p className="text-xs text-muted-foreground">{data.exploring.length} topics</p>
-                </div>
-              </div>
-
-              {/* Items */}
-              <StaggerContainer className="space-y-3">
-                {data.exploring.map((item) => (
-                  <StaggerItem key={item.id}>
-                    <div className="group relative overflow-hidden rounded-xl border bg-card/50 backdrop-blur-xs p-4 hover:bg-card hover:shadow-lg hover:border-orange-500/30 transition-all duration-300">
-                      <div className="flex items-start gap-3">
-                        <span className="text-2xl shrink-0">{item.icon}</span>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold text-foreground group-hover:text-orange-500 transition-colors text-sm">
-                            {item.title}
-                          </h4>
-                          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                            {item.description}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </StaggerItem>
-                ))}
-              </StaggerContainer>
-            </div>
-          </FadeIn>
+        {item.technologies && item.technologies.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {item.technologies.map((tech) => (
+              <Badge key={tech} variant="secondary" className="text-xs">
+                {tech}
+              </Badge>
+            ))}
+          </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function ShippedRow({ item }: { item: ShippedItem }) {
+  const body = (
+    <>
+      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" aria-hidden="true" />
+      <div className="min-w-0 flex-1">
+        <div className="flex items-baseline gap-2">
+          <span className="font-medium text-foreground">{item.title}</span>
+          <span className="font-mono text-xs text-muted-foreground tabular-nums">{item.when}</span>
+          {item.link && (
+            <ExternalLink
+              className="h-3 w-3 text-muted-foreground transition-colors group-hover:text-primary"
+              aria-hidden="true"
+            />
+          )}
+        </div>
+        <p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+      </div>
+    </>
+  );
+
+  const className =
+    'group flex gap-3 rounded-xl border border-transparent px-3 py-2.5 transition-colors hover:border-border hover:bg-muted/40';
+
+  return item.link ? (
+    <Link href={item.link} className={className}>
+      {body}
+    </Link>
+  ) : (
+    <div className={className}>{body}</div>
+  );
+}
+
+function GroupHeading({
+  icon,
+  title,
+  subtitle,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  subtitle: string;
+}) {
+  return (
+    <div className="mb-4 flex items-center gap-3">
+      <div className="rounded-lg bg-primary/10 p-2 text-primary">{icon}</div>
+      <div>
+        <h3 className="text-lg font-semibold text-foreground">{title}</h3>
+        <p className="text-xs text-muted-foreground">{subtitle}</p>
+      </div>
+    </div>
+  );
+}
+
+export function CurrentlySection({ data }: CurrentlySectionProps) {
+  return (
+    <div className="space-y-10">
+      {data.shipping.length > 0 && (
+        <FadeIn>
+          <GroupHeading
+            icon={<Rocket className="h-5 w-5" />}
+            title="Shipping now"
+            subtitle="Paid work in flight"
+          />
+          <StaggerContainer staggerDelay={0.08}>
+            <div className="grid gap-4 md:grid-cols-2">
+              {data.shipping.map((item) => (
+                <StaggerItem key={item.id}>
+                  <BuildCard item={item} accent="bg-primary/5" />
+                </StaggerItem>
+              ))}
+            </div>
+          </StaggerContainer>
+        </FadeIn>
+      )}
+
+      {data.building.length > 0 && (
+        <FadeIn delay={0.1}>
+          <GroupHeading
+            icon={<Hammer className="h-5 w-5" />}
+            title="Building on the side"
+            subtitle="Where the curiosity goes"
+          />
+          <StaggerContainer staggerDelay={0.08}>
+            <div className="grid gap-4">
+              {data.building.map((item) => (
+                <StaggerItem key={item.id}>
+                  <BuildCard item={item} accent="bg-purple-500/5" />
+                </StaggerItem>
+              ))}
+            </div>
+          </StaggerContainer>
+        </FadeIn>
+      )}
+
+      {data.shipped.length > 0 && (
+        <FadeIn delay={0.15}>
+          <GroupHeading
+            icon={<CheckCircle2 className="h-5 w-5" />}
+            title="Recently shipped"
+            subtitle="Done and live"
+          />
+          <div className="space-y-1">
+            {data.shipped.map((item) => (
+              <ShippedRow key={item.id} item={item} />
+            ))}
+          </div>
+        </FadeIn>
+      )}
+
+      {data.exploring.length > 0 && (
+        <FadeIn delay={0.2}>
+          <div className="flex flex-wrap items-center gap-2 border-t pt-6">
+            <span className="mr-1 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <Compass className="h-4 w-4" aria-hidden="true" />
+              Currently exploring
+            </span>
+            {data.exploring.map((item) => (
+              <span
+                key={item.id}
+                className="inline-flex items-center gap-1.5 rounded-full border bg-muted/40 px-3 py-1 text-xs text-muted-foreground"
+              >
+                <span aria-hidden="true">{item.icon}</span>
+                {item.title}
+              </span>
+            ))}
+          </div>
+        </FadeIn>
+      )}
     </div>
   );
 }
