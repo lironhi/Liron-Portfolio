@@ -1,6 +1,6 @@
 'use client';
 
-import { Bot, Loader2, Send, Sparkles, User, Wrench, X } from 'lucide-react';
+import { Bot, Loader2, RotateCcw, Send, Sparkles, User, Wrench, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { quickReplies } from '@/lib/chatbot/suggested-questions';
@@ -26,10 +26,41 @@ interface Message {
   failed?: boolean;
   /** Set when the answer was cut short; shown under the partial text. */
   notice?: string;
+  /** Server signature of a complete answer - required for it to count as history. */
+  signature?: string;
 }
 
 const FALLBACK_ERROR =
   "I can't reach my brain right now. Try again in a moment, or email Liron directly at lironbenharrouch@gmail.com.";
+
+/**
+ * The conversation survives a reload or a visit to a project page and back -
+ * a recruiter mid-thread used to lose everything. Per tab, gone when it closes.
+ */
+const STORAGE_KEY = 'liron-chat-v1';
+const STORED_MESSAGES = 40;
+
+function loadConversation(): Message[] {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as Array<Omit<Message, 'timestamp'> & { timestamp: string }>;
+    return parsed.map((m) => ({ ...m, timestamp: new Date(m.timestamp) }));
+  } catch {
+    // Storage blocked (private mode, site data off) or a corrupted entry.
+    return [];
+  }
+}
+
+function saveConversation(messages: Message[]) {
+  try {
+    const kept = messages.filter((m) => m.id !== 'greeting').slice(-STORED_MESSAGES);
+    if (kept.length) sessionStorage.setItem(STORAGE_KEY, JSON.stringify(kept));
+    else sessionStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // Quota or blocked storage: the conversation simply won't survive a reload.
+  }
+}
 
 /** Turn `get_project_details` into `project details` for the UI. */
 function prettyToolName(name: string) {
@@ -40,7 +71,7 @@ const GREETING: Message = {
   id: 'greeting',
   role: 'assistant',
   content:
-    "Hi — I'm Liron's AI assistant. I read his actual project files, skills and experience, so ask me anything specific: a technology, a project, his availability.",
+    "Hi — I'm an AI that answers as Liron, from his real project files, skills and experience. Ask me anything specific: a project, a technology, my availability.",
   timestamp: new Date(0),
 };
 
@@ -54,13 +85,33 @@ export function ChatBot() {
   // question sent then used to vanish without a trace.
   const [isStreaming, setIsStreaming] = useState(false);
   const [hasBeenOpened, setHasBeenOpened] = useState(false);
+  // Read out by screen readers once an answer is complete. The streaming message
+  // itself is not a live region: it would be announced token by token.
+  const [announcement, setAnnouncement] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const inFlight = useRef(false);
+  const restored = useRef(false);
   // Mirrors `messages` so sendMessage can read the history without a stale closure
   // and without doing side effects inside a state updater.
   const messagesRef = useRef<Message[]>(messages);
   messagesRef.current = messages;
+
+  // Restored after mount, not in the initial state: the server render has no
+  // sessionStorage, and differing first renders would break hydration.
+  useEffect(() => {
+    const saved = loadConversation();
+    if (saved.length) {
+      setMessages([GREETING, ...saved]);
+      setHasBeenOpened(true);
+    }
+    restored.current = true;
+  }, []);
+
+  // Saved between answers only - not on every streamed token.
+  useEffect(() => {
+    if (restored.current && !isStreaming) saveConversation(messages);
+  }, [messages, isStreaming]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: messages is the trigger, not a value read inside the effect - we scroll whenever one is added.
   useEffect(() => {
@@ -105,7 +156,7 @@ export function ChatBot() {
         body: JSON.stringify({
           messages: [...history, userMessage]
             .filter((m) => m.id !== 'greeting' && !m.failed)
-            .map((msg) => ({ role: msg.role, content: msg.content })),
+            .map((msg) => ({ role: msg.role, content: msg.content, signature: msg.signature })),
         }),
       });
 
@@ -142,6 +193,8 @@ export function ChatBot() {
           updateReply((m) => ({ ...m, projects: event.items as ChatProject[] }));
         } else if (event.type === 'followups') {
           updateReply((m) => ({ ...m, followups: event.items as string[] }));
+        } else if (event.type === 'signature') {
+          updateReply((m) => ({ ...m, signature: event.value }));
         } else if (event.type === 'error') {
           // Nothing written yet: the notice becomes the message. Otherwise keep
           // the partial answer and flag it as cut short.
@@ -175,6 +228,7 @@ export function ChatBot() {
       if (!replyText && !replyFailed) {
         updateReply((m) => ({ ...m, content: FALLBACK_ERROR, failed: true }));
       }
+      setAnnouncement(replyText || FALLBACK_ERROR);
     } catch (error) {
       console.error('Chat error:', error);
       // The API explains quota and rate-limit situations in plain language;
@@ -183,6 +237,7 @@ export function ChatBot() {
       const isUseful =
         fromServer && !/^(failed to fetch|load failed|networkerror)/i.test(fromServer);
       const content = isUseful ? fromServer : FALLBACK_ERROR;
+      setAnnouncement(content);
 
       setMessages((prev) => {
         const reply = prev.find((m) => m.id === replyId);
@@ -206,14 +261,22 @@ export function ChatBot() {
     }
   }, []);
 
-  // A question handed over from the hero bar: send it as soon as the panel opens.
+  // A question handed over from the hero bar: sent as soon as the panel is open
+  // and free. Asked while an answer was still streaming, it used to be dropped.
   useEffect(() => {
-    if (isOpen && pendingQuestion) {
+    if (isOpen && pendingQuestion && !isStreaming) {
       const question = pendingQuestion;
       clearPendingQuestion();
       void sendMessage(question);
     }
-  }, [isOpen, pendingQuestion, clearPendingQuestion, sendMessage]);
+  }, [isOpen, pendingQuestion, isStreaming, clearPendingQuestion, sendMessage]);
+
+  const startOver = () => {
+    if (inFlight.current) return;
+    setMessages([GREETING]);
+    setAnnouncement('');
+    inputRef.current?.focus();
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -259,17 +322,35 @@ export function ChatBot() {
             <p className="text-xs text-muted-foreground">Answers from his real portfolio data</p>
           </div>
         </div>
-        <button
-          type="button"
-          onClick={closeChat}
-          className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-muted/60"
-          aria-label="Close chat"
-        >
-          <X className="h-4 w-4" />
-        </button>
+        <div className="flex items-center gap-1">
+          {messages.length > 1 && (
+            <button
+              type="button"
+              onClick={startOver}
+              disabled={isStreaming}
+              className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-muted/60 disabled:opacity-40"
+              aria-label="Start a new conversation"
+              title="New conversation"
+            >
+              <RotateCcw className="h-4 w-4" />
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={closeChat}
+            className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-muted/60"
+            aria-label="Close chat"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
-      <div className="flex-1 space-y-4 overflow-y-auto p-4">
+      <p className="sr-only" aria-live="polite">
+        {announcement}
+      </p>
+
+      <div className="flex-1 space-y-4 overflow-y-auto p-4" aria-busy={isStreaming}>
         {messages.map((message) => (
           <div
             key={message.id}
@@ -404,6 +485,7 @@ export function ChatBot() {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyPress}
             placeholder="Ask about a project, a stack, availability..."
+            aria-label="Your question"
             disabled={isLoading}
             className="flex-1 rounded-lg border border-border bg-muted/40 px-4 py-2 text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-primary/50 disabled:opacity-50"
           />
@@ -412,6 +494,7 @@ export function ChatBot() {
             disabled={!input.trim() || isStreaming}
             size="icon"
             className="shrink-0"
+            aria-label="Send question"
           >
             {isLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />

@@ -7,7 +7,6 @@ import {
   Database,
   Download,
   Eye,
-  EyeOff,
   FileText,
   RefreshCw,
   Settings,
@@ -25,51 +24,8 @@ type Tab = 'overview' | 'content' | 'settings' | 'analytics';
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<Tab>('overview');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [password, setPassword] = useState('');
-
-  const handleAuth = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Simple authentication - en production, utiliser un vrai système d'auth
-    if (password === 'admin123') {
-      setIsAuthenticated(true);
-    } else {
-      alert('Mot de passe incorrect');
-    }
-  };
-
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-background via-muted/20 to-background">
-        <div className="w-full max-w-md p-8 rounded-2xl border bg-card/50 backdrop-blur-xs shadow-2xl">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
-              <Settings className="h-8 w-8 text-primary" />
-            </div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">Admin Panel</h1>
-            <p className="text-muted-foreground">Accès réservé aux administrateurs</p>
-          </div>
-
-          <form onSubmit={handleAuth} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">Mot de passe</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent outline-hidden transition-all"
-                placeholder="Entrez le mot de passe"
-                autoFocus
-              />
-            </div>
-            <Button type="submit" className="w-full" size="lg">
-              Se connecter
-            </Button>
-          </form>
-        </div>
-      </div>
-    );
-  }
+  // Access is enforced by middleware.ts (HTTP Basic auth against ADMIN_PASSWORD).
+  // The password used to be compared here, in the browser - it shipped in the JS bundle.
 
   const tabs = [
     { id: 'overview', label: "Vue d'ensemble", icon: Eye },
@@ -101,10 +57,6 @@ export default function AdminPage() {
               <h1 className="text-4xl font-bold text-foreground mb-2">Admin Panel</h1>
               <p className="text-muted-foreground">Gérez votre portfolio</p>
             </div>
-            <Button variant="outline" onClick={() => setIsAuthenticated(false)}>
-              <EyeOff className="h-4 w-4 mr-2" />
-              Se déconnecter
-            </Button>
           </div>
 
           {/* Tabs */}

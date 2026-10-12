@@ -1,342 +1,61 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { systemPrompt } from '@/lib/chatbot/knowledge-base';
-import { data, type Project } from '@/lib/data';
+import {
+  buildFollowUps,
+  parseArgs,
+  pickCards,
+  shortTitle,
+  trimHistory,
+} from '@/lib/chatbot/conversation';
+import {
+  type ChatMessage,
+  GroqQuotaError,
+  type OpenedRound,
+  openRound,
+  quotaMessage,
+  type Round,
+  readRound,
+  ToolCallError,
+} from '@/lib/chatbot/groq';
+import { buildSystemPrompt } from '@/lib/chatbot/knowledge-base';
+import { isSignedAnswer, signAnswer } from '@/lib/chatbot/signing';
+import { data } from '@/lib/data';
 import { callTool, getGroqTools } from '@/lib/mcp/registry';
-import { clientKey, rateLimit } from '@/lib/rateLimit';
+import { checkLimits, clientKey, type LimitWindow } from '@/lib/rateLimit';
 
 // fs access (the tools read from data/ and content/) rules out the edge runtime.
 export const runtime = 'nodejs';
 
-const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
-
 /**
- * Tried in order. Groq retires models with little notice - llama-3.3-70b-versatile
- * vanished and every single question answered 500 until the code changed. Each
- * model also has its own per-minute token bucket, so the second one absorbs a
- * burst that throttles the first. GROQ_MODEL swaps the primary without a code change.
+ * Public endpoint spending our own API credits. Per minute against bursts; per
+ * day because a single script at 15/min drains Groq's 1k requests/day in about an
+ * hour, for every visitor. The daily cap defaults to production only - the eval
+ * suite fires ~40 questions from localhost in one run - and CHAT_DAILY_LIMIT
+ * overrides it (and switches it on locally).
  */
-const MODELS = [
-  ...new Set([process.env.GROQ_MODEL || 'openai/gpt-oss-120b', 'openai/gpt-oss-20b']),
+const DAILY_LIMIT =
+  Number(process.env.CHAT_DAILY_LIMIT) || (process.env.NODE_ENV === 'production' ? 40 : 0);
+
+const LIMITS: LimitWindow[] = [
+  { name: 'chat-minute', limit: 15, windowMs: 60_000 },
+  ...(DAILY_LIMIT > 0 ? [{ name: 'chat-day', limit: DAILY_LIMIT, windowMs: 86_400_000 }] : []),
 ];
-
-/** Models Groq answered 404 for, skipped for the lifetime of this instance. */
-const retiredModels = new Set<string>();
-
-/** Public endpoint spending our own API credits - keep casual abuse in check. */
-const RATE_LIMIT = 15;
-const RATE_WINDOW_MS = 60_000;
 
 /** Rounds in which the model may call tools; the round after that must answer. */
 const MAX_TOOL_ROUNDS = 2;
 
-/**
- * Groq's free tier allows 8k tokens per minute per model, and the system prompt,
- * tool schemas, history and tool results are re-sent on every round. These caps
- * keep a typical question (one tool round, then the answer) near half of that.
- */
+/** Tool results are re-sent on every following round, against 8k tokens per minute. */
 const MAX_TOOL_RESULT_CHARS = 5000;
-const MAX_HISTORY_CHARS = 6000;
-const MAX_MESSAGES = 20;
-const MAX_CHARS_PER_MESSAGE = 2000;
-
-const COMPLETION = { temperature: 0.5, max_tokens: 1024, stream: true } as const;
-
-interface ChatMessage {
-  role: 'system' | 'user' | 'assistant' | 'tool';
-  content: string | null;
-  tool_calls?: ToolCall[];
-  tool_call_id?: string;
-  name?: string;
-}
-
-interface ToolCall {
-  id: string;
-  type: 'function';
-  function: { name: string; arguments: string };
-}
-
-interface Usage {
-  prompt_tokens: number;
-  completion_tokens: number;
-}
-
-interface StreamChunk {
-  error?: unknown;
-  choices?: Array<{
-    delta?: {
-      content?: string;
-      tool_calls?: Array<{
-        index?: number;
-        id?: string;
-        function?: { name?: string; arguments?: string };
-      }>;
-    };
-  }>;
-  x_groq?: { usage?: Usage };
-}
-
-/** Raised when Groq itself throttles us - quota, not a bug in our code. */
-class GroqQuotaError extends Error {
-  constructor(public readonly perDay: boolean) {
-    super('groq quota exhausted');
-  }
-}
-
-/** Groq rejected a function call the model produced (`tool_use_failed`). */
-class ToolCallError extends Error {}
-
-function quotaMessage(perDay: boolean) {
-  return perDay
-    ? "I've hit my daily question limit. Try again tomorrow, or email Liron at lironbenharrouch@gmail.com."
-    : "I'm getting a lot of questions right now. Give me a minute and ask again.";
-}
-
-async function groq(body: Record<string, unknown>, apiKey: string, signal: AbortSignal) {
-  let quota: GroqQuotaError | null = null;
-
-  for (const model of MODELS) {
-    if (retiredModels.has(model)) continue;
-
-    const response = await fetch(GROQ_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model,
-        // gpt-oss reasons before it answers, and those tokens come out of the same
-        // per-minute budget. Answering from tool data needs very little of it.
-        ...(model.startsWith('openai/gpt-oss') ? { reasoning_effort: 'low' } : {}),
-        ...body,
-      }),
-      signal,
-    });
-
-    if (response.ok) return { response, model };
-
-    const detail = await response.text();
-    if (response.status === 404 && detail.includes('model_not_found')) {
-      console.error(`Groq no longer serves ${model} - update MODELS or GROQ_MODEL`);
-      retiredModels.add(model);
-      continue;
-    }
-    if (response.status === 429 || response.status === 413) {
-      // Quotas are per model, so the next one may still have room. A visitor must
-      // never see "Internal server error" because a budget ran out.
-      quota = new GroqQuotaError(/per day|TPD|RPD/i.test(detail));
-      continue;
-    }
-    if (detail.includes('tool_use_failed')) throw new ToolCallError(detail.slice(0, 300));
-    throw new Error(`Groq ${response.status} (${model}): ${detail.slice(0, 300)}`);
-  }
-
-  throw quota ?? new Error('Groq serves none of the configured models');
-}
-
-/** Open a streamed round, offering the tools when they are given. */
-async function openRound(
-  messages: ChatMessage[],
-  tools: unknown[] | null,
-  apiKey: string,
-  signal: AbortSignal
-) {
-  const withTools = tools ? { tools, tool_choice: 'auto' } : {};
-  try {
-    return await groq({ messages, ...COMPLETION, ...withTools }, apiKey, signal);
-  } catch (error) {
-    // A malformed function call must not cost the visitor their answer: retry
-    // without tools and let the model answer from the system prompt.
-    if (!(error instanceof ToolCallError) || !tools) throw error;
-    console.warn('Tool call rejected, answering without tools');
-    return groq({ messages, ...COMPLETION }, apiKey, signal);
-  }
-}
-
-interface Round {
-  text: string;
-  toolCalls: ToolCall[];
-  usage?: Usage;
-}
-
-/**
- * Read one streamed completion. Text is forwarded as it arrives; tool calls come
- * as fragments keyed by index and are reassembled. A question that needs no tool
- * is therefore answered by a single Groq call, streamed from the first token.
- */
-async function readRound(response: Response, onText: (delta: string) => void): Promise<Round> {
-  const round: Round = { text: '', toolCalls: [] };
-  const reader = response.body?.getReader();
-  if (!reader) return round;
-
-  const decoder = new TextDecoder();
-  let buffer = '';
-
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-
-    buffer += decoder.decode(value, { stream: true });
-    const lines = buffer.split('\n');
-    buffer = lines.pop() ?? '';
-
-    for (const line of lines) {
-      const trimmed = line.trim();
-      if (!trimmed.startsWith('data:')) continue;
-
-      const payload = trimmed.slice(5).trim();
-      if (payload === '[DONE]') continue;
-
-      let chunk: StreamChunk;
-      try {
-        chunk = JSON.parse(payload);
-      } catch {
-        continue; // Keep-alive or partial frame.
-      }
-
-      if (chunk.error) {
-        const detail = JSON.stringify(chunk.error).slice(0, 300);
-        throw detail.includes('tool_use_failed')
-          ? new ToolCallError(detail)
-          : new Error(`Groq stream: ${detail}`);
-      }
-
-      const delta = chunk.choices?.[0]?.delta;
-      if (delta?.content) {
-        round.text += delta.content;
-        onText(delta.content);
-      }
-      for (const part of delta?.tool_calls ?? []) {
-        const index = part.index ?? 0;
-        if (!round.toolCalls[index]) {
-          round.toolCalls[index] = {
-            id: '',
-            type: 'function',
-            function: { name: '', arguments: '' },
-          };
-        }
-        const call = round.toolCalls[index];
-        if (part.id) call.id = part.id;
-        if (part.function?.name) call.function.name += part.function.name;
-        if (part.function?.arguments) call.function.arguments += part.function.arguments;
-      }
-      if (chunk.x_groq?.usage) round.usage = chunk.x_groq.usage;
-    }
-  }
-
-  round.toolCalls = round.toolCalls.filter((call) => call?.function.name);
-  return round;
-}
-
-function parseArgs(raw: string): Record<string, unknown> {
-  try {
-    const parsed = raw ? JSON.parse(raw) : {};
-    // Models emit the literal "null" for a zero-parameter tool, and
-    // JSON.parse("null") succeeds - a try/catch alone lets a null through.
-    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
-  } catch {
-    // Malformed arguments: run the tool with no filters rather than failing.
-    return {};
-  }
-}
-
-/**
- * Only role + content are trusted from the client. The newest turns are kept
- * until the budget is spent - the latest question always survives - so a long
- * conversation can't grow past the per-minute token limit on its own.
- */
-function trimHistory(incoming: unknown[]): ChatMessage[] {
-  const clean = incoming
-    .slice(-MAX_MESSAGES)
-    .filter((m): m is ChatMessage => {
-      const role = (m as ChatMessage | null)?.role;
-      return role === 'user' || role === 'assistant';
-    })
-    .map((m) => ({
-      role: m.role,
-      content: String(m.content ?? '')
-        .slice(0, MAX_CHARS_PER_MESSAGE)
-        .trim(),
-    }))
-    // An empty assistant turn (a stream that died) says nothing and some models reject it.
-    .filter((m) => m.content);
-
-  const kept: ChatMessage[] = [];
-  let used = 0;
-  for (let i = clean.length - 1; i >= 0; i--) {
-    used += clean[i].content.length;
-    if (used > MAX_HISTORY_CHARS && kept.length > 0) break;
-    kept.unshift(clean[i]);
-  }
-  return kept;
-}
-
-/** The name people actually write: "Eliana Beauty", not "Eliana Beauty - Booking & CRM System". */
-function shortTitle(title: string) {
-  return title
-    .split(/\s[-–—:]\s/)[0]
-    .replace(/\s*\(.*\)\s*$/, '')
-    .trim();
-}
-
-/** Two words are distinctive enough, and survive "Codii CRM" for "Codii CRM System". */
-function mentionPattern(title: string) {
-  const key = shortTitle(title).split(/\s+/).slice(0, 2).join(' ');
-  return new RegExp(`\\b${key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
-}
-
-/**
- * Cards for the projects the answer actually talks about, in the order it names
- * them. Falls back to the project the model looked up, for follow-ups such as
- * "which stack did it use?" whose answer never repeats the name.
- */
-function pickCards(projects: Project[], answer: string, lookedUp: Set<string>) {
-  // gpt-oss writes non-breaking hyphens (U+2011): "LLM‑Based CRM Agent".
-  const text = answer.replace(/[‐-―]/g, '-');
-  const named = projects
-    .map((project) => ({ project, at: text.search(mentionPattern(project.title)) }))
-    .filter(({ at }) => at !== -1)
-    .sort((a, b) => a.at - b.at)
-    .map(({ project }) => project);
-
-  return (named.length ? named : projects.filter((p) => lookedUp.has(p.slug)))
-    .slice(0, 3)
-    .map((p) => ({
-      slug: p.slug,
-      title: p.title,
-      summary: p.summary,
-      year: p.year,
-      image: p.image ?? p.coverImage ?? null,
-      tags: p.tags.slice(0, 3).map((t) => t.name),
-    }));
-}
-
-/**
- * Follow-up suggestions are derived, not generated: a second LLM call would cost
- * another round of tokens for three short strings, and these appear instantly.
- * Questions the visitor already asked are not offered again.
- */
-function buildFollowUps(projectName: string | undefined, asked: string[]): string[] {
-  const candidates = projectName
-    ? [
-        `What was the hardest part of ${projectName}?`,
-        `Which stack did ${projectName} use?`,
-        'Show me a different project',
-      ]
-    : [
-        'What is his most complex AI project?',
-        'How deep is his LangGraph and MCP experience?',
-        'Is he available for hire?',
-      ];
-  const seen = new Set(asked.map((q) => q.trim().toLowerCase()));
-  return candidates.filter((q) => !seen.has(q.toLowerCase()));
-}
 
 export async function POST(req: NextRequest) {
-  const limited = rateLimit(clientKey(req), RATE_LIMIT, RATE_WINDOW_MS);
+  const limited = await checkLimits(clientKey(req), LIMITS);
   if (!limited.ok) {
     return NextResponse.json(
-      { error: 'Too many messages. Give me a moment and try again.' },
+      {
+        error:
+          limited.exceeded === 'chat-day'
+            ? "You've reached today's question limit. Email Liron at lironbenharrouch@gmail.com - he answers himself."
+            : 'Too many messages. Give me a moment and try again.',
+      },
       { status: 429, headers: { 'Retry-After': String(limited.retryAfter) } }
     );
   }
@@ -350,7 +69,11 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json().catch(() => null);
-  const history = trimHistory(Array.isArray(body?.messages) ? body.messages : []);
+  const history = trimHistory(
+    Array.isArray(body?.messages) ? body.messages : [],
+    // A forged "earlier answer" never reaches the model - see signing.ts.
+    isSignedAnswer
+  );
   if (history.at(-1)?.role !== 'user') {
     return NextResponse.json({ error: 'Messages must end with a user question' }, { status: 400 });
   }
@@ -361,14 +84,9 @@ export async function POST(req: NextRequest) {
   req.signal.addEventListener('abort', () => abort.abort());
 
   try {
-    // Giving the model the real slugs stops it inventing one for get_project_details.
     const projects = await data.getProjects();
-    const catalogue = `\n\nPROJECT SLUGS (use these verbatim with get_project_details):\n${projects
-      .map((p) => `- ${p.slug}: ${p.title}`)
-      .join('\n')}`;
-
     const messages: ChatMessage[] = [
-      { role: 'system', content: systemPrompt + catalogue },
+      { role: 'system', content: await buildSystemPrompt(projects) },
       ...history,
     ];
     const tools = getGroqTools();
@@ -394,7 +112,7 @@ export async function POST(req: NextRequest) {
           }
         };
 
-        let pending: Awaited<ReturnType<typeof groq>> | null = first;
+        let pending: OpenedRound | null = first;
         let answer = '';
         const toolsUsed: string[] = [];
         const lookedUp = new Set<string>();
@@ -475,6 +193,9 @@ export async function POST(req: NextRequest) {
             });
             return;
           }
+
+          // The client sends this back with the answer on the next turn.
+          send({ type: 'signature', value: signAnswer(answer) });
 
           const cards = pickCards(projects, answer, lookedUp);
           if (cards.length) send({ type: 'projects', items: cards });

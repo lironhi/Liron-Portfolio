@@ -1,0 +1,32 @@
+# Asks the live chatbot one question a day. Groq retired the model it ran on and
+# every question answered 500 for an unknown length of time - nothing noticed.
+# A failed run makes GitHub email whoever last edited this schedule.
+#
+# Costs one chat request a day. Run it by hand from the Actions tab after a deploy.
+name: Chatbot health
+
+on:
+  schedule:
+    - cron: '17 6 * * *' # every day, 06:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ask:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # The eval runner only uses built-in fetch: no npm install needed.
+      - name: Ask the production chatbot
+        run: node scripts/eval-chatbot.mjs --group=facts --only=email
+        env:
+          # Override in Settings > Variables if the site moves.
+          CHAT_URL: ${{ vars.CHAT_URL || 'https://liron-portfolio.vercel.app' }}

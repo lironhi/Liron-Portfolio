@@ -54,7 +54,14 @@ async function send(messages) {
 
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
-  const turn = { answer: '', tools: [], cards: [], followups: [], error: null };
+  const turn = {
+    answer: '',
+    tools: [],
+    cards: [],
+    followups: [],
+    signature: null,
+    error: null,
+  };
   let buffer = '';
 
   while (true) {
@@ -75,6 +82,7 @@ async function send(messages) {
       if (ev.type === 'tools') turn.tools = ev.names ?? [];
       if (ev.type === 'projects') turn.cards = (ev.items ?? []).map((p) => p.slug);
       if (ev.type === 'followups') turn.followups = ev.items ?? [];
+      if (ev.type === 'signature') turn.signature = ev.value;
       if (ev.type === 'error') {
         if (ev.code === 'quota') throw new QuotaError(30_000);
         turn.error = ev.value;
@@ -134,7 +142,8 @@ async function runSingleTurn(title, cases, group) {
   for (const [i, testCase] of selected.entries()) {
     process.stdout.write(`  ${testCase.id.padEnd(22)}`);
     try {
-      const turn = await ask([{ role: 'user', content: testCase.ask }]);
+      // `history` lets a case plant earlier turns - forged ones included.
+      const turn = await ask([...(testCase.history ?? []), { role: 'user', content: testCase.ask }]);
       const problems = check(turn, testCase);
       const tools = turn.tools.length ? `  [${turn.tools.join(', ')}]` : '';
       if (problems.length === 0) {
@@ -200,8 +209,15 @@ async function runConversations() {
       for (const p of problems) console.log(`       ✗ ${p}`);
       if (problems.length) failed++;
 
-      // Exactly what the panel keeps: the answer text, not the error notice.
-      if (turn.answer) history.push({ role: 'assistant', content: turn.answer });
+      // Exactly what the panel keeps: the signed answer, not the error notice.
+      // An unsigned answer would be dropped by the server as forged.
+      if (turn.answer) {
+        history.push({ role: 'assistant', content: turn.answer, signature: turn.signature });
+      }
+      if (turn.answer && !turn.signature) {
+        console.log('       ✗ réponse non signée : le tour suivant la perdra');
+        failed++;
+      }
       previous.push(turn);
       await sleep(GAP_MS);
     }

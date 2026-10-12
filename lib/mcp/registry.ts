@@ -96,7 +96,7 @@ function dropEmpty(this: unknown, _key: string, value: unknown) {
  * and if a list still doesn't fit, drop per-item detail rather than cutting the
  * list off: plain truncation used to hide ten of the fourteen projects.
  */
-function fitForModel(text: string, maxChars: number): string {
+export function fitForModel(text: string, maxChars: number): string {
   const start = text.search(/[[{]/);
   if (start === -1) return text.slice(0, maxChars);
 
