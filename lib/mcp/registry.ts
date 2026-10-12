@@ -46,9 +46,9 @@ function captureTools(): CapturedTool[] {
 }
 
 /**
- * Subset exposed to the chatbot. The MCP server still serves every tool; a 70B
- * model just picks more reliably from a short menu than from thirteen options,
- * and each schema costs tokens on every single request.
+ * Subset exposed to the chatbot. The MCP server still serves every tool; a model
+ * just picks more reliably from a short menu than from thirteen options, and each
+ * schema costs tokens on every single request.
  */
 const CHAT_TOOLS = [
   'get_projects',
@@ -78,11 +78,59 @@ export function getToolNames(): string[] {
   return captureTools().map((t) => t.name);
 }
 
+/** Per-item fields dropped first when a list is too long for the model's budget. */
+const DETAIL_FIELDS = ['highlights', 'description', 'caseStudy'];
+
+/** Inside objects, `null`, `""` and `[]` carry nothing - don't pay tokens for them. */
+function dropEmpty(this: unknown, _key: string, value: unknown) {
+  if (Array.isArray(this)) return value;
+  if (value === null || value === '' || (Array.isArray(value) && value.length === 0)) {
+    return undefined;
+  }
+  return value;
+}
+
 /**
- * Run one tool and flatten its MCP result down to plain text for the model.
+ * Handlers pretty-print JSON for MCP clients, but the chatbot re-sends every tool
+ * result on each round against a per-minute token budget. Re-serialise compactly,
+ * and if a list still doesn't fit, drop per-item detail rather than cutting the
+ * list off: plain truncation used to hide ten of the fourteen projects.
+ */
+function fitForModel(text: string, maxChars: number): string {
+  const start = text.search(/[[{]/);
+  if (start === -1) return text.slice(0, maxChars);
+
+  let value: unknown;
+  try {
+    value = JSON.parse(text.slice(start));
+  } catch {
+    return text.slice(0, maxChars);
+  }
+
+  const header = text.slice(0, start).trim();
+  let out = `${header}\n${JSON.stringify(value, dropEmpty)}`;
+
+  if (out.length > maxChars && Array.isArray(value)) {
+    const slim = value.map((item) =>
+      item && typeof item === 'object'
+        ? Object.fromEntries(Object.entries(item).filter(([key]) => !DETAIL_FIELDS.includes(key)))
+        : item
+    );
+    out = `${header} (per-item details omitted to fit; ask about one item to get them)\n${JSON.stringify(slim, dropEmpty)}`;
+  }
+
+  return out.length > maxChars ? `${out.slice(0, maxChars)}... [truncated]` : out;
+}
+
+/**
+ * Run one tool and flatten its MCP result down to compact text for the model.
  * Never throws: a failed tool comes back as a message the model can react to.
  */
-export async function callTool(name: string, args: Record<string, unknown>): Promise<string> {
+export async function callTool(
+  name: string,
+  args: Record<string, unknown>,
+  maxChars = 5000
+): Promise<string> {
   const tool = captureTools().find((t) => t.name === name);
   if (!tool) {
     return `Error: unknown tool "${name}".`;
@@ -103,7 +151,7 @@ export async function callTool(name: string, args: Record<string, unknown>): Pro
       .map((part) => part.text)
       .join('\n');
 
-    return text || 'The tool returned no content.';
+    return text ? fitForModel(text, maxChars) : 'The tool returned no content.';
   } catch (error) {
     return `Error running "${name}": ${error instanceof Error ? error.message : 'unknown error'}`;
   }

@@ -19,7 +19,17 @@ interface Message {
   projects?: ChatProject[];
   /** Suggested next questions, offered once the answer is complete. */
   followups?: string[];
+  /**
+   * An error notice rather than an answer. Shown to the visitor but never sent
+   * back as history - the model would otherwise read it as something it said.
+   */
+  failed?: boolean;
+  /** Set when the answer was cut short; shown under the partial text. */
+  notice?: string;
 }
+
+const FALLBACK_ERROR =
+  "I can't reach my brain right now. Try again in a moment, or email Liron directly at lironbenharrouch@gmail.com.";
 
 /** Turn `get_project_details` into `project details` for the UI. */
 function prettyToolName(name: string) {
@@ -40,6 +50,9 @@ export function ChatBot() {
   const [messages, setMessages] = useState<Message[]>([GREETING]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  // Still true while the answer streams in, after the spinner has gone. A second
+  // question sent then used to vanish without a trace.
+  const [isStreaming, setIsStreaming] = useState(false);
   const [hasBeenOpened, setHasBeenOpened] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -77,6 +90,13 @@ export function ChatBot() {
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
+    setIsStreaming(true);
+
+    const replyId = `a-${Date.now()}`;
+    let replyText = '';
+    let replyFailed = false;
+    const updateReply = (patch: (m: Message) => Message) =>
+      setMessages((prev) => prev.map((m) => (m.id === replyId ? patch(m) : m)));
 
     try {
       const response = await fetch('/api/chat', {
@@ -84,7 +104,7 @@ export function ChatBot() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: [...history, userMessage]
-            .filter((m) => m.id !== 'greeting')
+            .filter((m) => m.id !== 'greeting' && !m.failed)
             .map((msg) => ({ role: msg.role, content: msg.content })),
         }),
       });
@@ -98,7 +118,6 @@ export function ChatBot() {
       if (!reader) throw new Error('No response body');
 
       // The answer streams in as newline-delimited JSON events.
-      const replyId = `a-${Date.now()}`;
       setMessages((prev) => [
         ...prev,
         { id: replyId, role: 'assistant', content: '', timestamp: new Date() },
@@ -114,16 +133,24 @@ export function ChatBot() {
         names?: string[];
         items?: unknown;
       }) => {
-        setMessages((prev) =>
-          prev.map((m) => {
-            if (m.id !== replyId) return m;
-            if (event.type === 'text') return { ...m, content: m.content + (event.value ?? '') };
-            if (event.type === 'tools') return { ...m, tools: event.names };
-            if (event.type === 'projects') return { ...m, projects: event.items as ChatProject[] };
-            if (event.type === 'followups') return { ...m, followups: event.items as string[] };
-            return m;
-          })
-        );
+        if (event.type === 'text') {
+          replyText += event.value ?? '';
+          updateReply((m) => ({ ...m, content: m.content + (event.value ?? '') }));
+        } else if (event.type === 'tools') {
+          updateReply((m) => ({ ...m, tools: event.names }));
+        } else if (event.type === 'projects') {
+          updateReply((m) => ({ ...m, projects: event.items as ChatProject[] }));
+        } else if (event.type === 'followups') {
+          updateReply((m) => ({ ...m, followups: event.items as string[] }));
+        } else if (event.type === 'error') {
+          // Nothing written yet: the notice becomes the message. Otherwise keep
+          // the partial answer and flag it as cut short.
+          const value = event.value || FALLBACK_ERROR;
+          replyFailed = !replyText;
+          updateReply((m) =>
+            replyText ? { ...m, notice: value } : { ...m, content: value, failed: true }
+          );
+        }
       };
 
       while (true) {
@@ -143,6 +170,11 @@ export function ChatBot() {
           }
         }
       }
+
+      // A stream that closed without a word would leave a cursor blinking forever.
+      if (!replyText && !replyFailed) {
+        updateReply((m) => ({ ...m, content: FALLBACK_ERROR, failed: true }));
+      }
     } catch (error) {
       console.error('Chat error:', error);
       // The API explains quota and rate-limit situations in plain language;
@@ -150,20 +182,26 @@ export function ChatBot() {
       const fromServer = error instanceof Error ? error.message : '';
       const isUseful =
         fromServer && !/^(failed to fetch|load failed|networkerror)/i.test(fromServer);
+      const content = isUseful ? fromServer : FALLBACK_ERROR;
 
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `e-${Date.now()}`,
+      setMessages((prev) => {
+        const reply = prev.find((m) => m.id === replyId);
+        // The connection dropped mid-answer: keep what arrived, flag the rest.
+        if (reply?.content) {
+          return prev.map((m) => (m.id === replyId ? { ...m, notice: FALLBACK_ERROR } : m));
+        }
+        const error: Message = {
+          id: replyId,
           role: 'assistant',
-          content: isUseful
-            ? fromServer
-            : "I can't reach my brain right now. Try again in a moment, or email Liron directly at lironbenharrouch@gmail.com.",
+          content,
           timestamp: new Date(),
-        },
-      ]);
+          failed: true,
+        };
+        return reply ? prev.map((m) => (m.id === replyId ? error : m)) : [...prev, error];
+      });
     } finally {
       setIsLoading(false);
+      setIsStreaming(false);
       inFlight.current = false;
     }
   }, []);
@@ -284,6 +322,10 @@ export function ChatBot() {
                     </div>
                   )}
 
+                  {message.notice && (
+                    <p className="mt-2 text-xs italic text-muted-foreground">{message.notice}</p>
+                  )}
+
                   {message.projects && message.projects.length > 0 && (
                     <div className="mt-3 space-y-2">
                       {message.projects.map((project) => (
@@ -306,7 +348,7 @@ export function ChatBot() {
         {/* Follow-up suggestions attached to the most recent answer */}
         {(() => {
           const latest = messages[messages.length - 1];
-          if (!latest?.followups?.length || isLoading) return null;
+          if (!latest?.followups?.length || isStreaming) return null;
           return (
             <div className="flex flex-wrap gap-2 pl-11">
               {latest.followups.map((question) => (
@@ -367,7 +409,7 @@ export function ChatBot() {
           />
           <Button
             onClick={() => void sendMessage(input)}
-            disabled={!input.trim() || isLoading}
+            disabled={!input.trim() || isStreaming}
             size="icon"
             className="shrink-0"
           >

@@ -7,6 +7,52 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { data } from '@/lib/data';
 
+/** Words that say nothing about what to look for. */
+const STOP_WORDS = new Set(
+  'a an and any are at about by did do does for from has have he his how in is it many much of on or the there to was what which who with you your number'.split(
+    ' '
+  )
+);
+
+/**
+ * Split a query into terms, each matched on its own. A model writes queries like
+ * "students taught Codii"; matched as one string, that found nothing at all.
+ * Short terms ("AI", "C#") must match a whole word, or "ai" would hit "email".
+ */
+function searchTerms(query: string): Array<(text: string) => boolean> {
+  const words = query
+    .toLowerCase()
+    .split(/[^\p{L}\p{N}+#.]+/u)
+    .filter((w) => w.length > 1 && !STOP_WORDS.has(w));
+  const terms = words.length ? words : [query.toLowerCase().trim()];
+
+  return terms.map((term) => {
+    if (term.length > 3) return (text: string) => text.includes(term);
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const word = new RegExp(`(^|[^\\p{L}\\p{N}])${escaped}($|[^\\p{L}\\p{N}])`, 'u');
+    return (text: string) => word.test(text);
+  });
+}
+
+/** Items matching the most terms first; items matching none are dropped. */
+function rank<T>(items: T[], fields: (item: T) => string[], terms: Array<(t: string) => boolean>) {
+  return items
+    .map((item) => {
+      const text = fields(item).join(' \n ').toLowerCase();
+      return { item, score: terms.filter((match) => match(text)).length };
+    })
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
+    .map(({ item }) => item);
+}
+
+/** The lines that actually matched - the evidence, not just the item's name. */
+function matchingLines(lines: string[] | undefined, terms: Array<(t: string) => boolean>) {
+  return (lines ?? [])
+    .filter((line) => terms.some((match) => match(line.toLowerCase())))
+    .slice(0, 3);
+}
+
 /**
  * Register all action-related tools with the MCP server
  */
@@ -241,9 +287,9 @@ export function registerActionTools(server: McpServer) {
    */
   server.tool(
     'search_portfolio',
-    'Search across projects, skills, and experience for specific keywords',
+    'Search projects, skills and work experience (including achievements and metrics) by keywords. Returns the matching lines themselves.',
     {
-      query: z.string().describe('Search query'),
+      query: z.string().describe('Keywords, e.g. "LangGraph" or "students Codii"'),
     },
     async ({ query }) => {
       try {
@@ -253,32 +299,32 @@ export function registerActionTools(server: McpServer) {
           data.getExperience(),
         ]);
 
-        const searchLower = query.toLowerCase();
+        const terms = searchTerms(query);
 
-        // Search projects
-        const matchingProjects = projects.filter(
-          (p) =>
-            p.title.toLowerCase().includes(searchLower) ||
-            p.summary.toLowerCase().includes(searchLower) ||
-            p.tags.some((t) => t.name.toLowerCase().includes(searchLower)) ||
-            p.technologies?.some((tech) => tech.toLowerCase().includes(searchLower))
+        const matchingProjects = rank(
+          projects,
+          (p) => [
+            p.title,
+            p.summary,
+            ...p.tags.map((t) => t.name),
+            ...(p.technologies ?? []),
+            ...p.highlights,
+          ],
+          terms
+        ).slice(0, 6);
+
+        const matchingSkills = rank(skills, (s) => [s.name, s.description ?? ''], terms).slice(
+          0,
+          6
         );
 
-        // Search skills
-        const matchingSkills = skills.filter(
-          (s) =>
-            s.name.toLowerCase().includes(searchLower) ||
-            s.description?.toLowerCase().includes(searchLower)
-        );
-
-        // Search experience
-        const matchingExperience = experience.filter(
-          (e) =>
-            e.company.toLowerCase().includes(searchLower) ||
-            e.position.toLowerCase().includes(searchLower) ||
-            e.description.toLowerCase().includes(searchLower) ||
-            e.technologies.some((tech) => tech.toLowerCase().includes(searchLower))
-        );
+        // Achievements carry the figures (team size, students, time saved), and
+        // they were not searched at all - "how many students?" came back empty.
+        const matchingExperience = rank(
+          experience,
+          (e) => [e.company, e.position, e.description, ...e.technologies, ...e.achievements],
+          terms
+        ).slice(0, 3);
 
         const results = {
           query,
@@ -287,15 +333,21 @@ export function registerActionTools(server: McpServer) {
             title: p.title,
             slug: p.slug,
             summary: p.summary,
+            matches: matchingLines(p.highlights, terms),
           })),
           skills: matchingSkills.map((s) => ({
             name: s.name,
             category: s.category,
             level: s.level,
+            yearsOfExperience: s.yearsOfExperience,
+            description: s.description,
           })),
           experience: matchingExperience.map((e) => ({
             company: e.company,
             position: e.position,
+            startDate: e.startDate,
+            endDate: e.endDate || 'Present',
+            matches: matchingLines([e.description, ...e.achievements], terms),
           })),
         };
 

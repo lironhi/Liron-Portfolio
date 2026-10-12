@@ -1,232 +1,76 @@
-# AI Chatbot - Personal Assistant
+# AI assistant (chatbot)
 
-This chatbot acts as Liron's AI assistant, answering questions about his experience, projects, skills, and background.
+The assistant answers visitors' questions about Liron, speaking as him, from the
+real portfolio data. It runs on **Groq** (free tier) with function calling: the
+model pulls projects, skills and experience through the same tools the MCP server
+exposes (`lib/mcp/`).
 
-## Features
-
-- **RAG System**: Retrieves relevant information from portfolio data
-- **Context-Aware**: Understands what information is relevant to each question
-- **Multi-lingual**: Can respond in French, English, and Hebrew
-- **Real-time**: Instant responses powered by OpenAI GPT-4
-- **Persistent UI**: Floating chat widget accessible from any page
-
-## Setup
-
-### 1. Get OpenAI API Key
-
-1. Go to [OpenAI Platform](https://platform.openai.com/api-keys)
-2. Create a new API key
-3. Copy the key
-
-### 2. Configure Environment
-
-Add your OpenAI API key to `.env.local`:
-
-```bash
-OPENAI_API_KEY=sk-your-api-key-here
-```
-
-### 3. Install Dependencies
-
-The chatbot uses:
-- `langchain` - For AI orchestration
-- `@langchain/openai` - OpenAI integration
-- `ai` - Vercel AI SDK (optional, for streaming)
-
-Dependencies are already installed via npm.
-
-## Architecture
+## Request flow
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    ChatBot UI Component                  │
-│                   (components/ChatBot.tsx)               │
-└───────────────────┬─────────────────────────────────────┘
-                    │ Sends messages
-                    ▼
-┌─────────────────────────────────────────────────────────┐
-│                  API Route (/api/chat)                   │
-│                 (app/api/chat/route.ts)                  │
-└───────────────────┬─────────────────────────────────────┘
-                    │
-        ┌───────────┴──────────┐
-        ▼                      ▼
-┌──────────────────┐  ┌────────────────────┐
-│  Knowledge Base  │  │  Portfolio Context │
-│                  │  │                    │
-│ - Personal Info  │  │ - Projects         │
-│ - Expertise      │  │ - Experience       │
-│ - Personality    │  │ - Skills           │
-│ - Guidelines     │  │ - Certificates     │
-└──────────────────┘  └────────────────────┘
-                    │
-                    ▼
-        ┌──────────────────────┐
-        │    OpenAI GPT-4      │
-        │  (gpt-4o-mini)       │
-        └──────────────────────┘
-                    │
-                    ▼
-                Response
+ChatBot.tsx ──POST /api/chat {messages}──▶ app/api/chat/route.ts
+                                              │
+          system prompt (knowledge-base.ts) + project slugs + trimmed history
+                                              │
+                         round 1 ── Groq, streamed, tools offered
+                            │ tool calls? ──▶ lib/mcp/registry.ts callTool()
+                         round 2 ── Groq, streamed, tools offered
+                            │ tool calls? ──▶ callTool()
+                         round 3 ── Groq, streamed, no tools: must answer
+                                              │
+◀── NDJSON events: tools · text… · projects · followups  (or error)
 ```
 
-## Files Structure
+A question that needs no tool costs **one** Groq call, streamed from the first
+token. Most tool questions cost two.
 
-```
-lib/chatbot/
-├── knowledge-base.ts          # Static personal information and system prompt
-├── portfolio-context.ts       # Dynamic portfolio data loader
-├── suggested-questions.ts     # Quick reply suggestions
-└── README.md                  # This file
+### Stream events
 
-app/api/chat/
-└── route.ts                   # Chat API endpoint
+| `type`      | payload                         | when                                  |
+| ----------- | ------------------------------- | ------------------------------------- |
+| `tools`     | `names: string[]`               | after a tool round                    |
+| `text`      | `value: string`                 | answer tokens, as they arrive         |
+| `projects`  | `items: ChatProject[]`          | end - projects the answer names       |
+| `followups` | `items: string[]`               | end - suggested next questions        |
+| `error`     | `value: string`, `code`         | `quota`, `empty` or `failed`          |
 
-components/
-└── ChatBot.tsx                # Chat UI component
-```
+Quota and configuration problems on the first round come back as a plain HTTP
+error (`429` / `500`) with `{ error }` instead of a stream.
 
-## How It Works
+## Model and quotas
 
-### 1. User Asks Question
+- Models are tried in order: `GROQ_MODEL` (default `openai/gpt-oss-120b`), then
+  `openai/gpt-oss-20b`. A model Groq answers `404 model_not_found` for is skipped
+  from then on; a `429` falls through to the next one, since quotas are per model.
+- Groq retires models without much notice. `llama-3.3-70b-versatile` disappeared
+  and every question answered 500. If the chat breaks overnight, check the model
+  list first: `curl https://api.groq.com/openai/v1/models -H "Authorization: Bearer $GROQ_API_KEY"`.
+- Free tier, per model: **8k tokens per minute, 1k requests per day**. The system
+  prompt, tool schemas, history and tool results are re-sent on every round, so the
+  route caps history at 6k characters and each tool result at 5k
+  (`registry.ts` re-serialises results compactly and drops per-item detail from
+  long lists rather than cutting them off).
+- Every request logs one line: model, rounds, tools, tokens, remaining budget.
 
-User types a question in the chat UI.
+## Where facts live
 
-### 2. Context Retrieval
-
-The API route:
-- Analyzes the question to determine relevant context
-- Fetches matching data from portfolio (projects, skills, etc.)
-- Combines with static knowledge base
-
-### 3. AI Processing
-
-- Sends question + context to OpenAI GPT-4
-- Uses system prompt to ensure AI responds as Liron
-- Temperature set to 0.7 for natural but consistent responses
-
-### 4. Response Display
-
-- AI response is sent back to UI
-- Displayed in chat interface
-- Conversation history maintained
-
-## Customization
-
-### Modify Personality
-
-Edit `lib/chatbot/knowledge-base.ts`:
-
-```typescript
-export const personalInfo = {
-  // Update bio, personality traits, fun facts
-};
-```
-
-### Change AI Model
-
-Edit `app/api/chat/route.ts`:
-
-```typescript
-model: 'gpt-4o-mini', // Change to 'gpt-4' for better quality
-temperature: 0.7,      // Adjust for creativity (0.0-1.0)
-max_tokens: 500,       // Increase for longer responses
-```
-
-### Add More Context
-
-Edit `lib/chatbot/portfolio-context.ts` to include additional data sources.
-
-### Update Suggested Questions
-
-Edit `lib/chatbot/suggested-questions.ts`:
-
-```typescript
-export const quickReplies = [
-  "Your custom questions here",
-];
-```
-
-## Cost Optimization
-
-The chatbot uses `gpt-4o-mini` for cost efficiency:
-
-- ~$0.00015 per 1K input tokens
-- ~$0.0006 per 1K output tokens
-- Average query: $0.001-0.002
-
-For production with high traffic, consider:
-- Implementing response caching
-- Rate limiting
-- Using smaller models for simple questions
-- Implementing a free tier limit
-
-## Deployment
-
-### Vercel (Recommended)
-
-The chatbot works automatically on Vercel:
-
-1. Add `OPENAI_API_KEY` to Vercel environment variables
-2. Deploy: `vercel --prod`
-
-The API route runs on Vercel Edge Runtime for fast responses.
-
-### Alternative Platforms
-
-For Railway, Render, or other platforms:
-- Ensure Node.js 18+ is available
-- Set environment variables
-- The API route will run as serverless function
+- `knowledge-base.ts` - identity, current role, education, rules. Re-sent on every
+  request, so keep it small; anything detailed belongs in `data/` or `content/`.
+- `data/*.json`, `content/projects/*.mdx` - read through the tools.
+  `get_project_details` includes a digest of the MDX body (prose only, challenges
+  and lessons first, roadmap sections skipped).
+- `suggested-questions.ts` - chips under the hero bar and in the empty panel.
 
 ## Testing
 
-Test the chatbot with various questions:
+With the dev server running (`npm run dev`):
 
-```
-✅ "Who are you?"
-✅ "What technologies do you use?"
-✅ "Tell me about your projects"
-✅ "What's your experience with Python?"
-✅ "How can I contact you?"
-✅ "Can you work in French?"
+```bash
+npm run eval:chat                            # everything (~8 min, paced for the quota)
+npm run eval:chat -- --group=conversations   # multi-turn conversations only
+npm run eval:chat -- --only=email,career-thread
 ```
 
-## Troubleshooting
-
-### "OpenAI API key not configured"
-
-- Check `.env.local` has `OPENAI_API_KEY`
-- Restart dev server after adding env var
-
-### No response from chatbot
-
-- Check browser console for errors
-- Verify API key is valid
-- Check OpenAI API status
-
-### Incorrect information
-
-- Update `knowledge-base.ts` with correct info
-- Ensure portfolio data is up to date
-- Adjust system prompt for better guidance
-
-## Future Enhancements
-
-Potential improvements:
-
-- [ ] Add LangGraph for multi-step reasoning
-- [ ] Implement conversation memory with Redis
-- [ ] Add voice input/output
-- [ ] Multilingual UI (not just responses)
-- [ ] Analytics dashboard for questions asked
-- [ ] Fine-tuned model specifically on Liron's data
-- [ ] Integrate with calendar for availability
-- [ ] Email follow-up capability
-
-## Privacy & Security
-
-- No user data is stored
-- Conversations are not logged
-- OpenAI API calls follow their privacy policy
-- Consider adding rate limiting for production
+`scripts/chatbot-eval-cases.mjs` holds the cases: single-turn facts, prompt
+injection, and multi-turn conversations where every turn carries the assistant's
+real previous answers, like the panel does.
